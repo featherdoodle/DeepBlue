@@ -14,12 +14,19 @@ import java.util.ArrayList;
  */
 public class AI extends Player{
     
+    public int difficulty;
+    
     public AI(Colour _colour){
         super(_colour);
     }
     
     @Override
     public void move(Board board){
+        ArrayList<Board> moves = getAllMoves(board, colour);
+        int[] values = new int[moves.size()];
+        for(int i = 0; i < moves.size(); i++){//size()
+            values[i] = getMoveValue(moves.get(i), colour, difficulty);//checkColour
+        }
         //board = getBestMove(getAllMoves(), colour);
         
     }

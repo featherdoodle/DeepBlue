@@ -16,8 +16,13 @@ import java.util.ArrayList;
 public class Board {
     
     public Piece[][] pieces = new Piece[8][8];//am i making twice the number of new Pieces
-    boolean turn;
+    //if im flipping the board, i need a boolean turn, or access to game's turn
     
+    public WinnerState winnerState;
+    
+    public static enum WinnerState{
+        UNFINISHED, PLAYER_ONE_WINS, PLAYER_TWO_WINS
+    }
     
     public void setupBoard(){
         //black
@@ -90,12 +95,6 @@ public class Board {
         
     }
     
-    public int getBoardValue(){
-        int value = 0;//not 0 :P
-        
-        return value;
-    }
-    
     public ArrayList<Board> getPieceMoves(int x, int y){
         ArrayList<Board> moves = new ArrayList<>();
         
@@ -156,4 +155,71 @@ public class Board {
         return moves;
     }
     
+    public int getBoardValue(){
+        int value = 0;//not 0 :P
+        boolean whiteKing = false;
+        boolean blackKing = false;
+        
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(pieces[i][j].pieceType != null){
+                    if(pieces[i][j].pieceType == PieceType.KING){
+                        if(pieces[i][j].colour == Colour.WHITE){
+                            whiteKing = true;
+                        }else{
+                            blackKing = true;
+                        }
+                    }else{
+                        value += getPieceValue(pieces[i][j]);
+                    }
+                }
+            }
+            
+            if(!whiteKing){
+                value = -100000;
+            }else if(!blackKing){
+                value = +100000;
+            }
+            
+        }
+        return value;
+    }
+    
+    public static int getPieceValue(Piece piece){
+        
+        int value = 0;
+        
+        if(piece.pieceType == PieceType.PAWN){
+            value = 1;
+        }else if(piece.pieceType == PieceType.ROOK){
+            value = 5;
+        }else if(piece.pieceType == PieceType.BISHOP){
+            value = 3;
+        }else if(piece.pieceType == PieceType.KNIGHT){
+            value = 3;
+        }else if(piece.pieceType == PieceType.QUEEN){
+            value = 9;
+        }
+        
+        if(piece.colour == Colour.BLACK){
+            value *= -1;
+        }
+        return value;
+    }
+    
+    /*Individual pieces:
+
+Pawn - 1 point
+Knight - 3 points
+Bishop - 3 points
+Rook - 5 points
+Queen - 9 points
+Piece combinations:
+Rook and Knight - 7.5 points
+Rook and Bishop - 8 points
+Pair of Rooks - 10 points
+Three light pieces - 10 points
+Rook and two light pieces - 11 points
+http://chess.stackexchange.com/questions/2409/how-many-points-is-each-chess-piece-worth
+*/
 }
