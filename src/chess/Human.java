@@ -19,7 +19,7 @@ public class Human extends Player{
     }
     
     @Override
-    public void move(Board board){
+    public Board move(Board board){
         Scanner scan = new Scanner(System.in);
         
         int x1, y1, x2, y2; 
@@ -40,6 +40,9 @@ public class Human extends Player{
         
         if(board.getPieceMoves(x1, y1).contains(destinationBoard)){ //do the coordinates need to be in arrays?
             board = destinationBoard;
+            return destinationBoard;
+        }else{
+            return null;
         }
         //i guess return a board perhaps
     }

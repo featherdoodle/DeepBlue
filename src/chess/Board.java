@@ -14,14 +14,14 @@ import java.util.ArrayList;
  * @author Owner
  */
 public class Board {
-    
+    //MAKE BOARD EQUALS AND CONTAIN METHODS
     public Piece[][] pieces = new Piece[8][8];//am i making twice the number of new Pieces
     //if im flipping the board, i need a boolean turn, or access to game's turn
     
     public WinnerState winnerState;
     
     public static enum WinnerState{
-        UNFINISHED, PLAYER_ONE_WINS, PLAYER_TWO_WINS
+        UNFINISHED, PLAYER_ONE_WINS, PLAYER_TWO_WINS, TIE
     }
     
     public void setupBoard(){
@@ -95,11 +95,34 @@ public class Board {
         
     }
     
-    public ArrayList<Board> getPieceMoves(int x, int y){
+    public ArrayList<Board> getPieceMoves(int x, int y){ //erm i think this should take in baord
+        //need method for which pieces can attack
+        //check situations
         ArrayList<Board> moves = new ArrayList<>();
         
         if(pieces[x][y].pieceType == PieceType.PAWN){
-            
+            if(pieces[x][y].colour == Colour.WHITE){
+                //do i put individually under each if a check for y==0 and queen
+                if(pieces[x][y--].pieceType == null){
+                    //i need the old board
+                    //maybe i can return pieces instead
+                    moves.add(0, new Board());
+                    moves.get(0).pieces = makeMove(x, y, x, y-1);
+                }if((pieces[x][y-2].pieceType == null)&&(pieces[x][y].moveTwo)){
+                    pieces[x][y].moveTwo = false;
+                    moves.add(0, new Board());
+                    moves.get(0).pieces = makeMove(x, y, x, y-2);
+                }if(pieces[x-1][y-1].colour == Colour.BLACK){ //this is a capture
+                    moves.add(0, new Board());
+                    moves.get(0).pieces = makeMove(x, y, x-1, y-1);
+                }if(pieces[x+1][y-1].colour == Colour.BLACK){ //this is a capture
+                    moves.add(0, new Board());
+                    moves.get(0).pieces = makeMove(x, y, x+1, y-1);
+                }
+                
+            }else if(pieces[x][y].colour == Colour.BLACK){
+                
+            }
         }else if(pieces[x][y].pieceType == PieceType.ROOK){
             //can i loop this somehow
             //i need to check for opposite colour, but it needs to break when it hits a piece of the opp colour.
@@ -133,7 +156,25 @@ public class Board {
             }
                 
         }else if(pieces[x][y].pieceType == PieceType.KNIGHT){
-            
+            //LOOOOOOOOOOOOOOOOOP
+            //|| is not same colour
+            if(pieces[x+2][y-1].pieceType == null){
+                
+            }if(pieces[x+2][y+1].pieceType == null){
+                
+            }if(pieces[x-2][y-1].pieceType == null){
+                
+            }if(pieces[x-2][y+1].pieceType == null){
+                
+            }if(pieces[x+1][y-2].pieceType == null){
+                
+            }if(pieces[x+1][y+2].pieceType == null){
+                
+            }if(pieces[x-1][y-2].pieceType == null){
+                
+            }if(pieces[x-1][y+2].pieceType == null){
+                
+            }
         }else if(pieces[x][y].pieceType == PieceType.BISHOP){
             
         }else if(pieces[x][y].pieceType == PieceType.QUEEN){
@@ -153,6 +194,13 @@ public class Board {
         }
         
         return moves;
+    }
+    
+    public Piece[][] makeMove(int x1, int y1, int x2, int y2){
+        Piece[][] returnPieces = pieces;
+        returnPieces[x2][y2] = pieces[x1][y1];
+        returnPieces[x1][y1] = null;
+        return returnPieces;
     }
     
     public int getBoardValue(){

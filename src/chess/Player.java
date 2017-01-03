@@ -19,6 +19,6 @@ public abstract class Player {
         colour = _colour;
     }
     
-    public abstract void move(Board board);
+    public abstract Board move(Board board);
     
 }

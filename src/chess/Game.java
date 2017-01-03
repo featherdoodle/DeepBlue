@@ -22,7 +22,7 @@ public class Game {
     public void menu(){
         
         Scanner scan = new Scanner(System.in);
-        System.out.println("1. P v P\n2. P v AI\n3.AI v AI");
+        System.out.println("1. P v P\n2. P v AI\n3. AI v AI");
         int choice = scan.nextInt();
         
         if(choice == 1){
@@ -30,28 +30,33 @@ public class Game {
             playerTwo = new Human(Colour.BLACK);
         }else if(choice == 2){
             System.out.println("Human playing as black or white?");
-            if(scan.nextLine().equalsIgnoreCase("white")){
+            scan.nextLine();
+            String colourChoice = scan.nextLine();
+            System.out.println("Select the difficulty of the AI (1, 2 or 3)");
+            int difficulty = scan.nextInt();
+            if(colourChoice.equalsIgnoreCase("white")){
                 playerOne = new Human(Colour.WHITE);
-                playerTwo = new AI(Colour.BLACK);
+                playerTwo = new AI(Colour.BLACK, difficulty);
             }else{//i guess error checking here
-                playerOne = new AI(Colour.WHITE);
+                playerOne = new AI(Colour.WHITE, difficulty);
                 playerTwo = new Human(Colour.BLACK);
             }
-            
-            System.out.println("Select the difficulty of the AI (1, 2 or 3)");
-            playerTwo.difficulty = scan.nextInt();
         }else if(choice == 3){
-            playerOne = new AI(Colour.WHITE);
-            playerTwo = new AI(Colour.BLACK);
+            System.out.println("Select the difficulty of the first AI (1, 2 or 3)");
+            int difficulty1 = scan.nextInt();
+            System.out.println("Select the difficulty of the first AI (1, 2 or 3)");
+            int difficulty2 = scan.nextInt();
+            playerOne = new AI(Colour.WHITE, difficulty1);
+            playerTwo = new AI(Colour.BLACK, difficulty2);
             
-            System.out.println("Select the difficulty of the first AI (1, 2 or 3)");
-            playerOne.difficulty = scan.nextInt();
-            System.out.println("Select the difficulty of the first AI (1, 2 or 3)");
-            playerOne.difficulty = scan.nextInt();
         }
+        step();
     }
     
     public void step(){
+        board.setupBoard();
+        board.printBoard();
+        
         while(board.winnerState == WinnerState.UNFINISHED){
             if(turn){
                 playerOne.move(board);
@@ -60,6 +65,14 @@ public class Game {
                 playerTwo.move(board);
                 turn = true;
             }
+        }
+        
+        if(board.winnerState == WinnerState.PLAYER_ONE_WINS){
+            System.out.println("Player 1 Wins");
+        }else if(board.winnerState == WinnerState.PLAYER_TWO_WINS){
+            System.out.println("Player 2 Wins");
+        }else if(board.winnerState == WinnerState.TIE){
+            System.out.println("Tie");
         }
     }
     
