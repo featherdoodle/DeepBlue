@@ -50,7 +50,6 @@ public class Game {
             playerTwo = new AI(Colour.BLACK, difficulty2);
             
         }
-        step();
     }
     
     public void step(){

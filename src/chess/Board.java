@@ -18,7 +18,7 @@ public class Board {
     public Piece[][] pieces = new Piece[8][8];//am i making twice the number of new Pieces
     //if im flipping the board, i need a boolean turn, or access to game's turn
     
-    public WinnerState winnerState;
+    public WinnerState winnerState = WinnerState.UNFINISHED;
     
     public static enum WinnerState{
         UNFINISHED, PLAYER_ONE_WINS, PLAYER_TWO_WINS, TIE
@@ -95,112 +95,134 @@ public class Board {
         
     }
     
-    public ArrayList<Board> getPieceMoves(int x, int y){ //erm i think this should take in baord
+    public ArrayList<Board> getPieceMoves(Board board, int x, int y){
+        //CASTLING AND EN PASSANT
         //need method for which pieces can attack
         //check situations
         ArrayList<Board> moves = new ArrayList<>();
         
-        if(pieces[x][y].pieceType == PieceType.PAWN){
-            if(pieces[x][y].colour == Colour.WHITE){
+        if(board.pieces[x][y].pieceType == PieceType.PAWN){
+            if(board.pieces[x][y].colour == Colour.WHITE){
                 //do i put individually under each if a check for y==0 and queen
-                if(pieces[x][y--].pieceType == null){
+                if(board.pieces[x][y--].pieceType == null){
                     //i need the old board
                     //maybe i can return pieces instead
                     moves.add(0, new Board());
-                    moves.get(0).pieces = makeMove(x, y, x, y-1);
-                }if((pieces[x][y-2].pieceType == null)&&(pieces[x][y].moveTwo)){
-                    pieces[x][y].moveTwo = false;
+                    moves.get(0) = makeMove(board, x, y, x, y-1);
+                }if((board.pieces[x][y-2].pieceType == null)&&(board.pieces[x][y].moveTwo)){
+                    board.pieces[x][y].moveTwo = false;
                     moves.add(0, new Board());
-                    moves.get(0).pieces = makeMove(x, y, x, y-2);
-                }if(pieces[x-1][y-1].colour == Colour.BLACK){ //this is a capture
+                    moves.get(0) = makeMove(board, x, y, x, y-2);
+                }if(board.pieces[x-1][y-1].colour == Colour.BLACK){ //this is a capture
                     moves.add(0, new Board());
-                    moves.get(0).pieces = makeMove(x, y, x-1, y-1);
-                }if(pieces[x+1][y-1].colour == Colour.BLACK){ //this is a capture
+                    moves.get(0) = makeMove(board, x, y, x-1, y-1);
+                }if(board.pieces[x+1][y-1].colour == Colour.BLACK){ //this is a capture
                     moves.add(0, new Board());
-                    moves.get(0).pieces = makeMove(x, y, x+1, y-1);
+                    moves.get(0) = makeMove(board, x, y, x+1, y-1);
                 }
                 
-            }else if(pieces[x][y].colour == Colour.BLACK){
+            }else if(board.pieces[x][y].colour == Colour.BLACK){
                 
             }
-        }else if(pieces[x][y].pieceType == PieceType.ROOK){
-            //can i loop this somehow
-            //i need to check for opposite colour, but it needs to break when it hits a piece of the opp colour.
-            int i = 1;
-            while(pieces[x+i][y] == null){
-                moves.add(0, new Board());
-                moves.get(0).pieces[x+i][y] = pieces[x][y];
-                moves.get(0).pieces[x][y] = null;
-                i += 1;
+        }else if(board.pieces[x][y].pieceType == PieceType.ROOK){
+            moves = getRookMoves(moves, board, x, y);
+        }else if(board.pieces[x][y].pieceType == PieceType.KNIGHT){
+            //knight is simple, but those if statements are long :o simplify?
+            for(int i = -2; i <= 2; i+=4){
+                for(int j = -1; j <= 1; j+=2){
+                    //if spaceAvailable() != 0
+                    if((board.pieces[x+i][y+j].pieceType == null)||(board.pieces[x+i][y+j].colour != board.pieces[x][y].colour)){
+                        makeMove(board, x, y, x+i, y+j);
+                    }if((pieces[x+j][y+i].pieceType == null)||(board.pieces[x+i][y+j].colour != board.pieces[x][y].colour)){
+                        makeMove(board, x, y, x+j, y+i);
+                    }
+                }
             }
-            i = -1;
-            while(pieces[x+i][y] == null){
-                moves.add(0, new Board());
-                moves.get(0).pieces[x+i][y] = pieces[x][y];
-                moves.get(0).pieces[x][y] = null;
-                i -= 1;
-            }
-            i = 1;
-            while(pieces[x][y+i] == null){
-                moves.add(0, new Board());
-                moves.get(0).pieces[x][y+i] = pieces[x][y];
-                moves.get(0).pieces[x][y] = null;
-                i += 1;
-            }
-            i = -1;
-            while(pieces[x][y+i] == null){
-                moves.add(0, new Board());
-                moves.get(0).pieces[x][y+i] = pieces[x][y];
-                moves.get(0).pieces[x][y] = null;
-                i -= 1;
-            }
-                
-        }else if(pieces[x][y].pieceType == PieceType.KNIGHT){
-            //LOOOOOOOOOOOOOOOOOP
-            //|| is not same colour
-            if(pieces[x+2][y-1].pieceType == null){
-                
-            }if(pieces[x+2][y+1].pieceType == null){
-                
-            }if(pieces[x-2][y-1].pieceType == null){
-                
-            }if(pieces[x-2][y+1].pieceType == null){
-                
-            }if(pieces[x+1][y-2].pieceType == null){
-                
-            }if(pieces[x+1][y+2].pieceType == null){
-                
-            }if(pieces[x-1][y-2].pieceType == null){
-                
-            }if(pieces[x-1][y+2].pieceType == null){
-                
-            }
-        }else if(pieces[x][y].pieceType == PieceType.BISHOP){
-            
-        }else if(pieces[x][y].pieceType == PieceType.QUEEN){
-            //call bishop and rook somehow. split each piece into methods?
-        }else if(pieces[x][y].pieceType == PieceType.KING){
+        }else if(board.pieces[x][y].pieceType == PieceType.BISHOP){
+            moves = getBishopMoves(moves, board, x, y);
+        }else if(board.pieces[x][y].pieceType == PieceType.QUEEN){
+            moves = getRookMoves(moves, board, x, y);
+            moves = getBishopMoves(moves, board, x, y);
+        }else if(board.pieces[x][y].pieceType == PieceType.KING){
             for(int i = -1; i <= 1; i++){
                 for(int j = -1; j <= 1; j++){
                     //this will try the current position, but that won't work
-                    if(pieces[x+i][y+j] == null){
-                        //do i need to make sure it isn't checkmate? new method for that
-                        moves.add(0, new Board());
-                        moves.get(0).pieces[x+i][y+j] = pieces[x][y];
-                        moves.get(0).pieces[x][y] = null;
+                    if((board.pieces[x+i][y+j] == null)||(board.pieces[x][y].colour != board.pieces[x+i][y+j].colour)){
+                        
+                        moves.add(0, makeMove(board, x, y, x+i, y+j));
+                        
                     }
                 }
             }
         }
-        
+        //return null if the list is empty
         return moves;
     }
     
-    public Piece[][] makeMove(int x1, int y1, int x2, int y2){
-        Piece[][] returnPieces = pieces;
-        returnPieces[x2][y2] = pieces[x1][y1];
-        returnPieces[x1][y1] = null;
-        return returnPieces;
+    public ArrayList<Board> getRookMoves(ArrayList<Board> moves, Board board, int x, int y){
+        //maybe take in the current array so it can be replaced instead for loops above
+        
+        boolean empty = true;
+        
+        int[] i = {-1, 1, 0, 0};
+        int[] j = {0, 0, -1, 1};
+        
+        
+        for(int index = 0; index < 4; index++){
+            while(empty){
+
+                if(board.pieces[x+i[index]][y+j[index]].pieceType == null){
+                    moves.add(0, makeMove(board, x, y, x+i[index], y+j[index]));
+                }else if(board.pieces[x][y].colour != board.pieces[x+i[index]][y+j[index]].colour){
+                    moves.add(0, makeMove(board, x, y, x+i[index], y+j[index]));
+                    empty = false;
+                }else{
+                    empty = false;
+                }
+
+            }
+        }
+        return moves;
+    }
+    
+    public ArrayList<Board> getBishopMoves(ArrayList<Board> moves, Board board, int x, int y){
+        
+        boolean empty = true;
+        
+        for(int i = -1; i <= 1; i+=2){
+            for(int j = -1; j <= 1; j += 2){
+                while(empty){
+
+                    if(board.pieces[x+i][y+j].pieceType == null){
+                        moves.add(0, makeMove(board, x, y, x+i, y+j));
+                    }else if(board.pieces[x][y].colour != board.pieces[x+i][y+j].colour){
+                        moves.add(0, makeMove(board, x, y, x+i, y+j));
+                        empty = false;
+                    }else{
+                        empty = false;
+                    }
+
+                }
+            }
+        }
+        return moves;
+    }
+    
+    public Board makeMove(Board board, int x1, int y1, int x2, int y2){
+        Board returnBoard = board;
+        returnBoard.pieces[x2][y2] = board.pieces[x1][y1];
+        returnBoard.pieces[x1][y1] = null;
+        
+        if(!check(board.pieces[x1][y1].colour)){
+            return returnBoard;
+        }else{
+            return null;
+        }
+        //check for checkmate here
+    }
+    
+    public boolean check(Colour coulour){
+        
     }
     
     public int getBoardValue(){
