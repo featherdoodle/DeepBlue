@@ -64,6 +64,7 @@ public class Game {
                 playerTwo.move(board);
                 turn = true;
             }
+            board.updateWinnerState();
         }
         
         if(board.winnerState == WinnerState.PLAYER_ONE_WINS){
@@ -74,5 +75,6 @@ public class Game {
             System.out.println("Tie");
         }
     }
+    
     
 }

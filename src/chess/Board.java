@@ -14,8 +14,9 @@ import java.util.ArrayList;
  * @author Owner
  */
 public class Board {
+    //CHECK ABOUT PARAMETERS
     //MAKE BOARD EQUALS AND CONTAIN METHODS
-    public Piece[][] pieces = new Piece[8][8];//am i making twice the number of new Pieces
+    public Piece[][] pieces = new Piece[8][8];
     //if im flipping the board, i need a boolean turn, or access to game's turn
     
     public WinnerState winnerState = WinnerState.UNFINISHED;
@@ -95,63 +96,94 @@ public class Board {
         
     }
     
-    public ArrayList<Board> getPieceMoves(Board board, int x, int y){
-        //CASTLING AND EN PASSANT
+    public ArrayList<Board> getPieceMoves(int x, int y){
+        //CASTLING FOR WHITE AND EN PASSANT
         //need method for which pieces can attack
         //check situations
         ArrayList<Board> moves = new ArrayList<>();
         
-        if(board.pieces[x][y].pieceType == PieceType.PAWN){
-            if(board.pieces[x][y].colour == Colour.WHITE){
-                //do i put individually under each if a check for y==0 and queen
-                if(board.pieces[x][y--].pieceType == null){
-                    //i need the old board
-                    //maybe i can return pieces instead
-                    moves.add(0, new Board());
-                    moves.get(0) = makeMove(board, x, y, x, y-1);
-                }if((board.pieces[x][y-2].pieceType == null)&&(board.pieces[x][y].moveTwo)){
-                    board.pieces[x][y].moveTwo = false;
-                    moves.add(0, new Board());
-                    moves.get(0) = makeMove(board, x, y, x, y-2);
-                }if(board.pieces[x-1][y-1].colour == Colour.BLACK){ //this is a capture
-                    moves.add(0, new Board());
-                    moves.get(0) = makeMove(board, x, y, x-1, y-1);
-                }if(board.pieces[x+1][y-1].colour == Colour.BLACK){ //this is a capture
-                    moves.add(0, new Board());
-                    moves.get(0) = makeMove(board, x, y, x+1, y-1);
+        if(pieces[x][y].pieceType == PieceType.PAWN){
+            if(pieces[x][y].colour == Colour.WHITE){
+                if(pieces[x][y-1].pieceType == null){
+                    moves.add(0, makeMove(pieces, x, y, x, y-1));
+                    if((y-1) == 0){
+                        moves.get(0).pieces[x][y-1].pieceType = PieceType.QUEEN;
+                    }
+                }if((pieces[x][y-2].pieceType == null)&&(pieces[x][y].moveTwo)){
+                    moves.add(0, makeMove(pieces, x, y, x, y-2));
+                    moves.get(0).pieces[x][y].moveTwo = false;
+                }if(pieces[x-1][y-1].colour == Colour.BLACK){ //this is a capture
+                    moves.add(0, makeMove(pieces, x, y, x-1, y-1));
+                    if((y-1) == 0){
+                        moves.get(0).pieces[x-1][y-1].pieceType = PieceType.QUEEN;
+                    }
+                }if(pieces[x+1][y-1].colour == Colour.BLACK){ //this is a capture
+                    moves.add(0, makeMove(pieces, x, y, x+1, y-1));
+                    if((y-1) == 0){
+                        moves.get(0).pieces[x+1][y-1].pieceType = PieceType.QUEEN;
+                    }
                 }
                 
-            }else if(board.pieces[x][y].colour == Colour.BLACK){
+            }else if(pieces[x][y].colour == Colour.BLACK){
+                
+                if(pieces[x][y+1].pieceType == null){
+                    moves.add(0, makeMove(pieces, x, y, x, y+1));
+                    if((y+1) == 0){
+                        moves.get(0).pieces[x][y+1].pieceType = PieceType.QUEEN;
+                    }
+                }if((pieces[x][y+2].pieceType == null)&&(pieces[x][y].moveTwo)){
+                    moves.add(0, makeMove(pieces, x, y, x, y+2));
+                    moves.get(0).pieces[x][y].moveTwo = false;
+                }if(pieces[x-1][y+1].colour == Colour.BLACK){ //this is a capture
+                    moves.add(0, makeMove(pieces, x, y, x-1, y+1));
+                    if((y+1) == 0){
+                        moves.get(0).pieces[x-1][y+1].pieceType = PieceType.QUEEN;
+                    }
+                }if(pieces[x+1][y+1].colour == Colour.BLACK){ //this is a capture
+                    moves.add(0, makeMove(pieces, x, y, x+1, y+1));
+                    if((y+1) == 0){
+                        moves.get(0).pieces[x+1][y+1].pieceType = PieceType.QUEEN;
+                    }
+                }
                 
             }
-        }else if(board.pieces[x][y].pieceType == PieceType.ROOK){
-            moves = getRookMoves(moves, board, x, y);
-        }else if(board.pieces[x][y].pieceType == PieceType.KNIGHT){
+        }else if(pieces[x][y].pieceType == PieceType.ROOK){
+            moves = getRookMoves(moves, x, y);
+        }else if(pieces[x][y].pieceType == PieceType.KNIGHT){
             //knight is simple, but those if statements are long :o simplify?
             for(int i = -2; i <= 2; i+=4){
                 for(int j = -1; j <= 1; j+=2){
                     //if spaceAvailable() != 0
-                    if((board.pieces[x+i][y+j].pieceType == null)||(board.pieces[x+i][y+j].colour != board.pieces[x][y].colour)){
-                        makeMove(board, x, y, x+i, y+j);
-                    }if((pieces[x+j][y+i].pieceType == null)||(board.pieces[x+i][y+j].colour != board.pieces[x][y].colour)){
-                        makeMove(board, x, y, x+j, y+i);
+                    if((pieces[x+i][y+j].pieceType == null)||(pieces[x+i][y+j].colour != pieces[x][y].colour)){
+                        moves.add(0, makeMove(pieces, x, y, x+i, y+j));
+                    }if((pieces[x+j][y+i].pieceType == null)||(pieces[x+i][y+j].colour != pieces[x][y].colour)){
+                        moves.add(0, makeMove(pieces, x, y, x+j, y+i));
                     }
                 }
             }
-        }else if(board.pieces[x][y].pieceType == PieceType.BISHOP){
-            moves = getBishopMoves(moves, board, x, y);
-        }else if(board.pieces[x][y].pieceType == PieceType.QUEEN){
-            moves = getRookMoves(moves, board, x, y);
-            moves = getBishopMoves(moves, board, x, y);
-        }else if(board.pieces[x][y].pieceType == PieceType.KING){
+        }else if(pieces[x][y].pieceType == PieceType.BISHOP){
+            moves = getBishopMoves(moves, x, y);
+        }else if(pieces[x][y].pieceType == PieceType.QUEEN){
+            moves = getRookMoves(moves, x, y);
+            moves = getBishopMoves(moves, x, y);
+        }else if(pieces[x][y].pieceType == PieceType.KING){
             for(int i = -1; i <= 1; i++){
                 for(int j = -1; j <= 1; j++){
                     //this will try the current position, but that won't work
-                    if((board.pieces[x+i][y+j] == null)||(board.pieces[x][y].colour != board.pieces[x+i][y+j].colour)){
-                        
-                        moves.add(0, makeMove(board, x, y, x+i, y+j));
-                        
+                    if((pieces[x+i][y+j] == null)||(pieces[x][y].colour != pieces[x+i][y+j].colour)){
+                        moves.add(0, makeMove(pieces, x, y, x+i, y+j));
+                        moves.get(0).pieces[x][y].castling = false;
                     }
+                }
+            }
+            if((pieces[x][y].castling)&&(pieces[x][y].castling)){
+                if(pieces[x][y].colour == Colour.BLACK){
+                    if((pieces[1][0] == null)&&(pieces[2][0] == null)){
+                        moves.add(0, makeMove(pieces, x, y, 1, 0));
+                        moves.set(0, makeMove(moves.get(0).pieces, 0, 0, 2, 0));
+                    }
+                }else{
+                    
                 }
             }
         }
@@ -159,7 +191,7 @@ public class Board {
         return moves;
     }
     
-    public ArrayList<Board> getRookMoves(ArrayList<Board> moves, Board board, int x, int y){
+    public ArrayList<Board> getRookMoves(ArrayList<Board> moves, int x, int y){
         //maybe take in the current array so it can be replaced instead for loops above
         
         boolean empty = true;
@@ -171,10 +203,12 @@ public class Board {
         for(int index = 0; index < 4; index++){
             while(empty){
 
-                if(board.pieces[x+i[index]][y+j[index]].pieceType == null){
-                    moves.add(0, makeMove(board, x, y, x+i[index], y+j[index]));
-                }else if(board.pieces[x][y].colour != board.pieces[x+i[index]][y+j[index]].colour){
-                    moves.add(0, makeMove(board, x, y, x+i[index], y+j[index]));
+                if(pieces[x+i[index]][y+j[index]].pieceType == null){
+                    moves.add(0, makeMove(pieces, x, y, x+i[index], y+j[index]));
+                    moves.get(0).pieces[x][y].castling = false;
+                }else if(pieces[x][y].colour != pieces[x+i[index]][y+j[index]].colour){
+                    moves.add(0, makeMove(pieces, x, y, x+i[index], y+j[index]));
+                    moves.get(0).pieces[x][y].castling = false;
                     empty = false;
                 }else{
                     empty = false;
@@ -185,7 +219,7 @@ public class Board {
         return moves;
     }
     
-    public ArrayList<Board> getBishopMoves(ArrayList<Board> moves, Board board, int x, int y){
+    public ArrayList<Board> getBishopMoves(ArrayList<Board> moves, int x, int y){
         
         boolean empty = true;
         
@@ -193,10 +227,10 @@ public class Board {
             for(int j = -1; j <= 1; j += 2){
                 while(empty){
 
-                    if(board.pieces[x+i][y+j].pieceType == null){
-                        moves.add(0, makeMove(board, x, y, x+i, y+j));
-                    }else if(board.pieces[x][y].colour != board.pieces[x+i][y+j].colour){
-                        moves.add(0, makeMove(board, x, y, x+i, y+j));
+                    if(pieces[x+i][y+j].pieceType == null){
+                        moves.add(0, makeMove(pieces, x, y, x+i, y+j));
+                    }else if(pieces[x][y].colour != pieces[x+i][y+j].colour){
+                        moves.add(0, makeMove(pieces, x, y, x+i, y+j));
                         empty = false;
                     }else{
                         empty = false;
@@ -208,21 +242,34 @@ public class Board {
         return moves;
     }
     
-    public Board makeMove(Board board, int x1, int y1, int x2, int y2){
-        Board returnBoard = board;
-        returnBoard.pieces[x2][y2] = board.pieces[x1][y1];
+    public Board makeMove(Piece[][] currentPieces, int x1, int y1, int x2, int y2){
+        Board returnBoard = new Board();
+        returnBoard.pieces = currentPieces;
+        returnBoard.pieces[x2][y2] = currentPieces[x1][y1];
         returnBoard.pieces[x1][y1] = null;
         
-        if(!check(board.pieces[x1][y1].colour)){
-            return returnBoard;
-        }else{
-            return null;
-        }
+        return returnBoard;
         //check for checkmate here
     }
     
-    public boolean check(Colour coulour){
+    public ArrayList<Board> refinePieceMoves(int x, int y){
+        Colour colour = pieces[x][y].colour;
         
+        ArrayList<Board> moves = getPieceMoves(x, y);
+        ArrayList<Board> refinedMoves = new ArrayList<>();
+        
+        for(int i = 0; i < moves.size(); i++){
+            if(colour == Colour.BLACK){
+                if(getBoardValue() < 100000){
+                    refinedMoves.add(0, moves.get(i));
+                }
+            }else{
+                if(getBoardValue() > -100000){
+                    refinedMoves.add(0, moves.get(i));
+                }
+            }
+        }
+        return refinedMoves;
     }
     
     public int getBoardValue(){
@@ -275,6 +322,28 @@ public class Board {
             value *= -1;
         }
         return value;
+    }
+    
+    @Override
+    public boolean equals(Object object){
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(pieces[i][j] != this.pieces[i][j]){//is that proper use of this
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    public void updateWinnerState(){
+        if(getBoardValue() >= 100000){
+            winnerState = WinnerState.PLAYER_ONE_WINS;
+        }else if(getBoardValue() <= -100000){
+            winnerState = WinnerState.PLAYER_TWO_WINS;
+        }else{
+            //check tie, and then unfinished
+        }
     }
     
     /*Individual pieces:

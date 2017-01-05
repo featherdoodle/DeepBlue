@@ -6,6 +6,7 @@
 package chess;
 
 import chess.Piece.Colour;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -37,13 +38,19 @@ public class Human extends Player{
         Board destinationBoard = board;
         destinationBoard.pieces[x2][y2] = destinationBoard.pieces[x1][y1];
         destinationBoard.pieces[x1][y1] = null;
+        //um check board as parameter
         
-        if(board.getPieceMoves(x1, y1).contains(destinationBoard)){ //do the coordinates need to be in arrays?
-            board = destinationBoard;
+        boolean contains = false;
+        ArrayList<Board> allMoves = board.refinePieceMoves(x1, y1);
+        for(int i = 0; i < allMoves.size(); i++){
+            if(allMoves.get(i).equals(destinationBoard)){
+                contains = true;
+            }
+        }
+        if(contains){
             return destinationBoard;
         }else{
             return null;
         }
-        //i guess return a board perhaps
     }
 }
