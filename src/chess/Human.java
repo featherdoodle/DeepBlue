@@ -26,7 +26,7 @@ public class Human extends Player{
         int x1, y1, x2, y2; 
         
         System.out.print("Piece? (x, y): ");
-        
+        //fix bettwe
         x1 = scan.nextInt();
         y1 = scan.nextInt();
         
@@ -35,12 +35,24 @@ public class Human extends Player{
         x2 = scan.nextInt();
         y2 = scan.nextInt();
         
-        Board destinationBoard = board;
-        destinationBoard.pieces[x2][y2] = destinationBoard.pieces[x1][y1];
-        destinationBoard.pieces[x1][y1] = null;
+        //Board destinationBoard = board;
+        Board destinationBoard = new Board();
+        //destinationBoard = board;
+        
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                
+                destinationBoard.pieces[i][j] = board.pieces[i][j];
+                
+            }
+        }
+        
+        destinationBoard.pieces[y2][x2] = destinationBoard.pieces[y1][x1];
+        destinationBoard.pieces[y1][x1] = null;
         //um check board as parameter
         
         boolean contains = false;
+        //check here to make sure the piece is valid
         ArrayList<Board> allMoves = board.refinePieceMoves(x1, y1);
         for(int i = 0; i < allMoves.size(); i++){
             if(allMoves.get(i).equals(destinationBoard)){

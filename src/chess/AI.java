@@ -66,7 +66,8 @@ public class AI extends Player{
         ArrayList<Board> allMoves = new ArrayList<>();
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                if(board.pieces[i][j].colour == checkColour){
+                //added null check
+                if((board.pieces[i][j] != null)&&(board.pieces[i][j].colour == checkColour)){
                     ArrayList<Board> moves = new ArrayList<>();
                     moves = board.getPieceMoves(i, j);
                     for(int m = 0; m < moves.size(); m++){ //size();
