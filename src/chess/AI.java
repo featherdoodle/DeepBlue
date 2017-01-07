@@ -69,7 +69,7 @@ public class AI extends Player{
                 //added null check
                 if((board.pieces[i][j] != null)&&(board.pieces[i][j].colour == checkColour)){
                     ArrayList<Board> moves = new ArrayList<>();
-                    moves = board.getPieceMoves(i, j);
+                    moves = board.getPieceMoves(j, i);//swapped cause x y thing
                     for(int m = 0; m < moves.size(); m++){ //size();
                         allMoves.add(moves.get(m));
                     }
