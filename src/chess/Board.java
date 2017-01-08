@@ -66,7 +66,7 @@ public class Board {
             for(int j = 0; j < 8; j++){
                 
                 if(pieces[i][j] == null){
-                    System.out.print("00");
+                    System.out.print("  ");
                 }else{
                     if(pieces[i][j].colour == Colour.BLACK){
                         System.out.print("B");
@@ -98,10 +98,7 @@ public class Board {
     
     public ArrayList<Board> getPieceMoves(int x, int y){
         //CASTLING FOR WHITE AND EN PASSANT
-        //need method for which pieces can attack
-        //check situations
-        //lots of error checking == if out of bounds!
-        //method that copies a board
+        //issue with moveTwo, always false.. initialization?
         ArrayList<Board> moves = new ArrayList<>();
         
         if(pieces[y][x].pieceType == PieceType.PAWN){
@@ -152,7 +149,9 @@ public class Board {
                 
             }
         }else if(pieces[y][x].pieceType == PieceType.ROOK){
-            moves = getRookMoves(moves, x, y);
+            moves = cloneBoardList(getRookMoves(moves, x, y));
+            
+            //clone the boards in the array list and add them
         }else if(pieces[y][x].pieceType == PieceType.KNIGHT){
             //knight is simple, but those if statements are long :o simplify?
             for(int i = -2; i <= 2; i+=4){
@@ -169,10 +168,10 @@ public class Board {
                 }
             }
         }else if(pieces[y][x].pieceType == PieceType.BISHOP){
-            moves = getBishopMoves(moves, x, y);
+            moves = cloneBoardList(getBishopMoves(moves, x, y));
         }else if(pieces[y][x].pieceType == PieceType.QUEEN){
-            moves = getRookMoves(moves, x, y);
-            moves = getBishopMoves(moves, x, y);
+            moves = cloneBoardList(getRookMoves(moves, x, y));
+            moves = cloneBoardList(getBishopMoves(moves, x, y));
         }else if(pieces[y][x].pieceType == PieceType.KING){
             for(int i = -1; i <= 1; i++){
                 for(int j = -1; j <= 1; j++){
@@ -180,7 +179,7 @@ public class Board {
                     if(checkBounds(x+i, y+j)){
                         if((pieces[y+j][x+i] == null)||(pieces[y][x].colour != pieces[y+j][x+i].colour)){
                             moves.add(0, makeMove(cloneBoard(this), x, y, x+i, y+j));
-                            moves.get(0).pieces[y][x].castling = false;
+                            moves.get(0).pieces[y+j][x+i].castling = false;
                         }
                     }
                 }
@@ -210,19 +209,21 @@ public class Board {
         
         
         for(int index = 0; index < 4; index++){
+            int n = 1;
             while(empty){
 
-                if((checkBounds(x+i[index], y+j[index]))&&(pieces[y+j[index]][x+i[index]] == null)){
-                    moves.add(0, makeMove(cloneBoard(this), x, y, x+i[index], y+j[index]));
-                    moves.get(0).pieces[y+j[index]][x+i[index]].castling = false;
-                }else if((checkBounds(x+i[index], y+j[index]))&&(pieces[y][x].colour != pieces[y+j[index]][x+i[index]].colour)){
-                    moves.add(0, makeMove(cloneBoard(this), x, y, x+i[index], y+j[index]));
-                    moves.get(0).pieces[y+j[index]][x+i[index]].castling = false;
+                if((checkBounds(x+i[index]*n, y+j[index]*n))&&(pieces[y+j[index]*n][x+i[index]*n] == null)){
+                    moves.add(0, makeMove(cloneBoard(this), x, y, x+i[index]*n, y+j[index]*n));
+                    moves.get(0).pieces[y+j[index]*n][x+i[index]*n].castling = false;
+                }else if((checkBounds(x+i[index]*n, y+j[index]*n))&&(pieces[y][x].colour != pieces[y+j[index]*n][x+i[index]*n].colour)){
+                    moves.add(0, makeMove(cloneBoard(this), x, y, x+i[index]*n, y+j[index]*n));
+                    moves.get(0).pieces[y+j[index]*n][x+i[index]*n].castling = false;
                     empty = false;
                 }else{
                     empty = false;
                 }
 
+                n++;
             }
         }
         return moves;
@@ -234,17 +235,19 @@ public class Board {
         
         for(int i = -1; i <= 1; i+=2){
             for(int j = -1; j <= 1; j += 2){
+                int n = 1;
                 while(empty){
 
-                    if((checkBounds(x+i, y+j))&&(pieces[y+j][x+i] == null)){
-                        moves.add(0, makeMove(cloneBoard(this), x, y, x+i, y+j));
-                    }else if((checkBounds(x+i, y+j))&&(pieces[y][x].colour != pieces[y+j][x+i].colour)){
-                        moves.add(0, makeMove(cloneBoard(this), x, y, x+i, y+j));
+                    if((checkBounds(x+i*n, y+j*n))&&(pieces[y+j*n][x+i*n] == null)){
+                        moves.add(0, makeMove(cloneBoard(this), x, y, x+i*n, y+j*n));
+                    }else if((checkBounds(x+i*n, y+j*n))&&(pieces[y][x].colour != pieces[y+j*n][x+i*n].colour)){
+                        moves.add(0, makeMove(cloneBoard(this), x, y, x+i*n, y+j*n));
                         empty = false;
                     }else{
                         empty = false;
                     }
 
+                    n++;
                 }
             }
         }
@@ -272,6 +275,16 @@ public class Board {
         
         return returnBoard;
         
+    }
+    
+    public ArrayList<Board> cloneBoardList(ArrayList<Board> boards){
+        ArrayList<Board> returnList = new ArrayList<Board>();
+        
+        for(int i = 0; i < boards.size(); i++){
+            returnList.add(cloneBoard(boards.get(i)));
+        }
+        
+        return returnList;
     }
     
     public ArrayList<Board> refinePieceMoves(int x, int y){
@@ -322,14 +335,14 @@ public class Board {
                     }
                 }
             }
-            
-            if(!whiteKing){
+        }
+        
+        if(!whiteKing){
                 value = -100000;
             }else if(!blackKing){
                 value = +100000;
             }
-            
-        }
+        
         return value;
     }
     

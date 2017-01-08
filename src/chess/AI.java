@@ -29,7 +29,7 @@ public class AI extends Player{
             values[i] = getMoveValue(moves.get(i), colour, difficulty);//checkColour
         }
         //board = getBestMove(getAllMoves(), colour);
-        int bestValue = values[0];
+        int bestValue = values[0]; // values are all super small
         int bestIndex = 0;
         for(int i = 1; i < moves.size(); i++){
             if(values[i] > bestValue){
@@ -48,9 +48,9 @@ public class AI extends Player{
             ArrayList<Board> moves = getAllMoves(board, checkColour);//if movrd is empty
             
             if(!moves.isEmpty()){
-                int bestValue = getMoveValue(moves.get(0), checkColour, depth--);
+                int bestValue = getMoveValue(moves.get(0), checkColour, depth-1);
                 for(int i = 1; i < moves.size(); i++){ //size()
-                    int value = getMoveValue(moves.get(i), checkColour, depth--);
+                    int value = getMoveValue(moves.get(i), checkColour, depth-1);
                     if(getMinMax(checkColour, bestValue, value) == value){
                         bestValue = value;
                     }

@@ -55,6 +55,7 @@ public class Game {
     public void step(){
         board.setupBoard();
         board.printBoard();
+        System.out.println();
         
         while(board.winnerState == WinnerState.UNFINISHED){
             if(turn){
@@ -63,10 +64,12 @@ public class Game {
                     board = board.cloneBoard(playerOne.move(board));
                 //}
                 board.printBoard();
+                System.out.println();
                 turn = false;
             }else{
                 board = board.cloneBoard(playerTwo.move(board));
                 board.printBoard();
+                System.out.println();
                 turn = true;
             }
             board.updateWinnerState();
