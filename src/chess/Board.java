@@ -135,12 +135,12 @@ public class Board {
                 }if((checkBounds(x, y+2))&&(pieces[y+2][x] == null)&&(pieces[y][x].moveTwo)){
                     moves.add(0, makeMove(cloneBoard(this), x, y, x, y+2));
                     moves.get(0).pieces[y+2][x].moveTwo = false;
-                }if((checkBounds(x-1, y+1))&&(pieces[y+1][x-1] != null)&&(pieces[y+1][x-1].colour == Colour.BLACK)){ //this is a capture
+                }if((checkBounds(x-1, y+1))&&(pieces[y+1][x-1] != null)&&(pieces[y+1][x-1].colour == Colour.WHITE)){ //this is a capture
                     moves.add(0, makeMove(cloneBoard(this), x, y, x-1, y+1));
                     if((y+1) == 0){
                         moves.get(0).pieces[y+1][x-1].pieceType = PieceType.QUEEN;
                     }
-                }if((checkBounds(x+1, y+1))&&(pieces[y+1][x+1] != null)&&(pieces[y+1][x+1].colour == Colour.BLACK)){ //this is a capture
+                }if((checkBounds(x+1, y+1))&&(pieces[y+1][x+1] != null)&&(pieces[y+1][x+1].colour == Colour.WHITE)){ //this is a capture
                     moves.add(0, makeMove(cloneBoard(this), x, y, x+1, y+1));
                     if((y+1) == 0){
                         moves.get(0).pieces[y+1][x+1].pieceType = PieceType.QUEEN;
@@ -222,7 +222,6 @@ public class Board {
                 }else{
                     empty = false;
                 }
-
                 n++;
             }
         }
@@ -338,10 +337,10 @@ public class Board {
         }
         
         if(!whiteKing){
-                value = -100000;
-            }else if(!blackKing){
-                value = +100000;
-            }
+            value = -100000;
+        }else if(!blackKing){
+            value = +100000;
+        }
         
         return value;
     }
@@ -370,14 +369,18 @@ public class Board {
     
     @Override
     public boolean equals(Object object){
-        for(int i = 0; i < 8; i++){
-            for(int j = 0; j < 8; j++){
-                if(pieces[i][j] != this.pieces[i][j]){//is that proper use of this
-                    return false;
+        if(object instanceof Board){
+            for(int i = 0; i < 8; i++){
+                for(int j = 0; j < 8; j++){
+                    if(pieces[i][j] != ((Board)object).pieces[i][j]){//is that proper use of this
+                        return false;
+                    }
                 }
             }
+            return true;
+        }else{
+            return false;
         }
-        return true;
     }
     
     public void updateWinnerState(){

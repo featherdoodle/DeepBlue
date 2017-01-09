@@ -7,6 +7,7 @@ package chess;
 
 import chess.Piece.Colour;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  *
@@ -23,6 +24,7 @@ public class AI extends Player{
     
     @Override
     public Board move(Board board){
+        Random random = new Random();
         ArrayList<Board> moves = getAllMoves(board, colour);
         int[] values = new int[moves.size()];
         for(int i = 0; i < moves.size(); i++){//size()
@@ -30,14 +32,32 @@ public class AI extends Player{
         }
         //board = getBestMove(getAllMoves(), colour);
         int bestValue = values[0]; // values are all super small
-        int bestIndex = 0;
+        int worstValue = values[0];
+        ArrayList<Integer> bestIndices = new ArrayList<>();
+        bestIndices.add(0);
+        ArrayList<Integer> worstIndices = new ArrayList<>();
+        worstIndices.add(0);
         for(int i = 1; i < moves.size(); i++){
             if(values[i] > bestValue){
                 bestValue = values[i];
-                bestIndex = i;
+                bestIndices.clear();
+                bestIndices.add(i);
+            }else if(values[i] == bestValue){
+                bestIndices.add(i);
+            }
+            if(values[i] < worstValue){
+                worstValue = values[i];
+                worstIndices.clear();
+                worstIndices.add(i);
+            }else if(values[i] == worstValue){
+                worstIndices.add(i);
             }
         }
-        return moves.get(bestIndex);
+        if(colour == Colour.WHITE){
+            return moves.get(bestIndices.get(random.nextInt(bestIndices.size())));
+        }else{
+            return moves.get(worstIndices.get(random.nextInt(worstIndices.size())));
+        }
     }
     
     private int getMoveValue(Board board, Colour checkColour, int depth){
@@ -51,6 +71,15 @@ public class AI extends Player{
                 int bestValue = getMoveValue(moves.get(0), checkColour, depth-1);
                 for(int i = 1; i < moves.size(); i++){ //size()
                     int value = getMoveValue(moves.get(i), checkColour, depth-1);
+                    if(checkColour == Colour.BLACK){
+                        if(value == -100000){
+                            value *= 100-depth;
+                        }
+                    }else if(checkColour == Colour.WHITE){
+                        if(value == 100000){
+                            value *= 100-depth;
+                        }
+                    }
                     if(getMinMax(checkColour, bestValue, value) == value){
                         bestValue = value;
                     }
