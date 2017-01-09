@@ -59,13 +59,14 @@ public class Game {
         
         while(board.winnerState == WinnerState.UNFINISHED){
             if(turn){
-                //board = playerOne.move(board);
-                //while(board == null){
+                /*if(playerOne.move(board) == null){
+                    System.out.println("Invalid");
+                }else{*/
                     board = board.cloneBoard(playerOne.move(board));
+                    board.printBoard();
+                    System.out.println();
+                    turn = false;
                 //}
-                board.printBoard();
-                System.out.println();
-                turn = false;
             }else{
                 board = board.cloneBoard(playerTwo.move(board));
                 board.printBoard();
