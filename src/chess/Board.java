@@ -353,6 +353,20 @@ public class Board {
         }
         
         return value;
+        /*
+        seperate for begin, mid, end game
+        begin game :: mid squares
+        mid game :: ??
+        end game :: diff pieces that are able to checkmate
+            - Q
+            - R
+            - 2B
+            - B, N
+            - 2 N
+            - 2N | P
+            - Q | R
+        - single minor piece cannot checkmate
+        */
     }
     
     public static int getPieceValue(Piece piece){
@@ -403,20 +417,5 @@ public class Board {
         }
     }
     
-    
-    /*Individual pieces:
 
-Pawn - 1 point
-Knight - 3 points
-Bishop - 3 points
-Rook - 5 points
-Queen - 9 points
-Piece combinations:
-Rook and Knight - 7.5 points
-Rook and Bishop - 8 points
-Pair of Rooks - 10 points
-Three light pieces - 10 points
-Rook and two light pieces - 11 points
-http://chess.stackexchange.com/questions/2409/how-many-points-is-each-chess-piece-worth
-*/
 }

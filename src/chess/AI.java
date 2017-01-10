@@ -61,11 +61,14 @@ public class AI extends Player{
     }
     
     private int getMoveValue(Board board, Colour checkColour, int depth){
+        
         if(depth == 0){
             return board.getBoardValue();
         }else{
             checkColour = Colour.swap(checkColour); //check colour
             ArrayList<Board> moves = getAllMoves(board, checkColour);//if movrd is empty
+            
+            //int count = moves.size(); //erm
             
             if(!moves.isEmpty()){
                 int bestValue = getMoveValue(moves.get(0), checkColour, depth-1);
