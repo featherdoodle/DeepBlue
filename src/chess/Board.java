@@ -30,8 +30,8 @@ public class Board {
         pieces[0][0] = new Piece(PieceType.ROOK, Colour.BLACK);
         pieces[0][1] = new Piece(PieceType.KNIGHT, Colour.BLACK);
         pieces[0][2] = new Piece(PieceType.BISHOP, Colour.BLACK);
-        pieces[0][3] = new Piece(PieceType.KING, Colour.BLACK);
-        pieces[0][4] = new Piece(PieceType.QUEEN, Colour.BLACK);
+        pieces[0][3] = new Piece(PieceType.QUEEN, Colour.BLACK);
+        pieces[0][4] = new Piece(PieceType.KING, Colour.BLACK);
         pieces[0][5] = new Piece(PieceType.BISHOP, Colour.BLACK);
         pieces[0][6] = new Piece(PieceType.KNIGHT, Colour.BLACK);
         pieces[0][7] = new Piece(PieceType.ROOK, Colour.BLACK);
@@ -61,31 +61,43 @@ public class Board {
     
     public void printBoard(){
         
+        System.out.println(" |0|1|2|3|4|5|6|7");
         for(int i = 0; i < 8; i++){
+            System.out.print(i);
             System.out.print("|");
             for(int j = 0; j < 8; j++){
                 
                 if(pieces[i][j] == null){
-                    System.out.print("  ");
+                    System.out.print("\u3000");
                 }else{
-                    if(pieces[i][j].colour == Colour.BLACK){
-                        System.out.print("B");
-                    }else if(pieces[i][j].colour == Colour.WHITE){
-                        System.out.print("W");
-                    }
-
-                    if(pieces[i][j].pieceType == PieceType.PAWN){
-                        System.out.print("P");
-                    }else if(pieces[i][j].pieceType == PieceType.ROOK){
-                        System.out.print("R");
-                    }else if(pieces[i][j].pieceType == PieceType.KNIGHT){
-                        System.out.print("N");
-                    }else if(pieces[i][j].pieceType == PieceType.BISHOP){
-                        System.out.print("B");
-                    }else if(pieces[i][j].pieceType == PieceType.QUEEN){
-                        System.out.print("Q");
-                    }else if(pieces[i][j].pieceType == PieceType.KING){
-                        System.out.print("K");
+                    
+                    PieceType pieceType = pieces[i][j].pieceType;
+                    Colour colour = pieces[i][j].colour;
+                    
+                    if((pieceType == PieceType.PAWN)&&(colour == Colour.WHITE)){
+                        System.out.print("♙");
+                    }else if((pieceType == PieceType.ROOK)&&(colour == Colour.WHITE)){
+                        System.out.print("♖");
+                    }else if((pieceType == PieceType.KNIGHT)&&(colour == Colour.WHITE)){
+                        System.out.print("♘");
+                    }else if((pieceType == PieceType.BISHOP)&&(colour == Colour.WHITE)){
+                        System.out.print("♗");
+                    }else if((pieceType == PieceType.QUEEN)&&(colour == Colour.WHITE)){
+                        System.out.print("♕");
+                    }else if((pieceType == PieceType.KING)&&(colour == Colour.WHITE)){
+                        System.out.print("♔");
+                    }else if((pieceType == PieceType.PAWN)&&(colour == Colour.BLACK)){
+                        System.out.print("♟");
+                    }else if((pieceType == PieceType.ROOK)&&(colour == Colour.BLACK)){
+                        System.out.print("♜");
+                    }else if((pieceType == PieceType.KNIGHT)&&(colour == Colour.BLACK)){
+                        System.out.print("♞");
+                    }else if((pieceType == PieceType.BISHOP)&&(colour == Colour.BLACK)){
+                        System.out.print("♝");
+                    }else if((pieceType == PieceType.QUEEN)&&(colour == Colour.BLACK)){
+                        System.out.print("♛");
+                    }else if((pieceType == PieceType.KING)&&(colour == Colour.BLACK)){
+                        System.out.print("♚");
                     }
                 }
                 System.out.print("|");
@@ -202,14 +214,13 @@ public class Board {
     public ArrayList<Board> getRookMoves(ArrayList<Board> moves, int x, int y){
         //maybe take in the current array so it can be replaced instead for loops above
         
-        boolean empty = true;
-        
         int[] i = {-1, 1, 0, 0};
         int[] j = {0, 0, -1, 1};
         
         
         for(int index = 0; index < 4; index++){
             int n = 1;
+            boolean empty = true;
             while(empty){
 
                 if((checkBounds(x+i[index]*n, y+j[index]*n))&&(pieces[y+j[index]*n][x+i[index]*n] == null)){
@@ -230,11 +241,10 @@ public class Board {
     
     public ArrayList<Board> getBishopMoves(ArrayList<Board> moves, int x, int y){
         
-        boolean empty = true;
-        
         for(int i = -1; i <= 1; i+=2){
             for(int j = -1; j <= 1; j += 2){
                 int n = 1;
+                boolean empty = true;
                 while(empty){
 
                     if((checkBounds(x+i*n, y+j*n))&&(pieces[y+j*n][x+i*n] == null)){
