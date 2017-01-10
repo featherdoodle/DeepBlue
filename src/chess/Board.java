@@ -141,7 +141,7 @@ public class Board {
                 
                 if((checkBounds(x, y+1))&&(pieces[y+1][x] == null)){
                     moves.add(0, makeMove(cloneBoard(this), x, y, x, y+1));
-                    if((y+1) == 0){
+                    if((y+1) == 7){
                         moves.get(0).pieces[y+1][x].pieceType = PieceType.QUEEN;
                     }
                 }if((checkBounds(x, y+2))&&(pieces[y+2][x] == null)&&(pieces[y][x].moveTwo)){
@@ -149,12 +149,12 @@ public class Board {
                     moves.get(0).pieces[y+2][x].moveTwo = false;
                 }if((checkBounds(x-1, y+1))&&(pieces[y+1][x-1] != null)&&(pieces[y+1][x-1].colour == Colour.WHITE)){ //this is a capture
                     moves.add(0, makeMove(cloneBoard(this), x, y, x-1, y+1));
-                    if((y+1) == 0){
+                    if((y+1) == 7){
                         moves.get(0).pieces[y+1][x-1].pieceType = PieceType.QUEEN;
                     }
                 }if((checkBounds(x+1, y+1))&&(pieces[y+1][x+1] != null)&&(pieces[y+1][x+1].colour == Colour.WHITE)){ //this is a capture
                     moves.add(0, makeMove(cloneBoard(this), x, y, x+1, y+1));
-                    if((y+1) == 0){
+                    if((y+1) == 7){
                         moves.get(0).pieces[y+1][x+1].pieceType = PieceType.QUEEN;
                     }
                 }
