@@ -415,11 +415,12 @@ public class Board {
     }
     
     public void updateWinnerState(){
-        if(getBoardValue() >= 100000){
+        if(getBoardValue() >= 100000){ //should this check if the next move it will be this value? seems expensive
             winnerState = WinnerState.PLAYER_ONE_WINS;
         }else if(getBoardValue() <= -100000){
             winnerState = WinnerState.PLAYER_TWO_WINS;
         }else{
+            //should do piece count and then determine if the pieces left are able to checkmate?
             //check tie, and then unfinished
         }
     }
