@@ -119,6 +119,8 @@ public class Board {
                     moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y-1));//i kinda feel like this is wrong
                     if((y-1) == 0){
                         moves.get(moves.size()-1).pieces[y-1][x].pieceType = PieceType.QUEEN;
+                        //it needs to decide what piece to become
+                        //loop enum and add move for each :)
                     }
                 }if((checkBounds(x, y-2)&&(pieces[y-2][x] == null)&&(pieces[y][x].moveTwo))){
                     moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y-2));

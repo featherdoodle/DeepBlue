@@ -68,13 +68,13 @@ public class AI extends Player{
             checkColour = Colour.swap(checkColour); //check colour
             ArrayList<Board> moves = getAllMoves(board, checkColour);//if movrd is empty
             
-            //int count = moves.size(); //erm
+            int count = moves.size(); //erm
             
             if(!moves.isEmpty()){
-                int bestValue = getMoveValue(moves.get(0), checkColour, depth-1);
+                int bestValue = getMoveValue(moves.get(0), checkColour, depth /= count);
                 for(int i = 1; i < moves.size(); i++){ //size()
-                    int value = getMoveValue(moves.get(i), checkColour, depth-1);
-                    if(checkColour == Colour.BLACK){
+                    int value = getMoveValue(moves.get(i), checkColour, depth /= count);
+                    /*if(checkColour == Colour.BLACK){
                         if(value == -100000){
                             value *= 100-depth;
                         }
@@ -82,7 +82,7 @@ public class AI extends Player{
                         if(value == 100000){
                             value *= 100-depth;
                         }
-                    }
+                    }*/
                     if(getMinMax(checkColour, bestValue, value) == value){
                         bestValue = value;
                     }
