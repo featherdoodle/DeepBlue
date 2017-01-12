@@ -15,9 +15,9 @@ import java.util.Random;
  */
 public class AI extends Player{
     
-    public final int difficulty;
+    public final long difficulty;
     
-    public AI(Colour _colour, int _difficulty){
+    public AI(Colour _colour, long _difficulty){
         super(_colour);
         difficulty = _difficulty;
     }
@@ -60,9 +60,9 @@ public class AI extends Player{
         }
     }
     
-    private int getMoveValue(Board board, Colour checkColour, int depth){
+    private int getMoveValue(Board board, Colour checkColour, long depth){
         
-        if(depth == 0){
+        if(depth <= 1){
             return board.getBoardValue();
         }else{
             checkColour = Colour.swap(checkColour); //check colour

@@ -43,9 +43,9 @@ public class Game {
             }
         }else if(choice == 3){
             System.out.println("Select the difficulty of the first AI (1, 2 or 3)");
-            int difficulty1 = scan.nextInt();
+            long difficulty1 = scan.nextInt();
             System.out.println("Select the difficulty of the second AI (1, 2 or 3)");
-            int difficulty2 = scan.nextInt();
+            long difficulty2 = scan.nextInt();
             playerOne = new AI(Colour.WHITE, difficulty1);
             playerTwo = new AI(Colour.BLACK, difficulty2);
             
