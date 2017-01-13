@@ -71,9 +71,9 @@ public class AI extends Player{
             int count = moves.size(); //erm
             
             if(!moves.isEmpty()){
-                int bestValue = getMoveValue(moves.get(0), checkColour, depth /= count);
+                int bestValue = getMoveValue(moves.get(0), checkColour, depth/count);
                 for(int i = 1; i < moves.size(); i++){ //size()
-                    int value = getMoveValue(moves.get(i), checkColour, depth /= count);
+                    int value = getMoveValue(moves.get(i), checkColour, depth/count);
                     /*if(checkColour == Colour.BLACK){
                         if(value == -100000){
                             value *= 100-depth;
