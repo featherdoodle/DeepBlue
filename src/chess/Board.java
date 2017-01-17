@@ -8,7 +8,6 @@ package chess;
 import chess.Piece.Colour;
 import chess.Piece.PieceType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 
 /**
@@ -42,8 +41,6 @@ public class Board {
             pieces[1][i] = new Piece(PieceType.PAWN, Colour.BLACK);
         }
         
-        pieces[0][0].castling = true;
-        //white
         pieces[7][0] = new Piece(PieceType.ROOK, Colour.WHITE);
         pieces[7][1] = new Piece(PieceType.KNIGHT, Colour.WHITE);
         pieces[7][2] = new Piece(PieceType.BISHOP, Colour.WHITE);
@@ -56,8 +53,6 @@ public class Board {
         for(int i = 0; i < 8; i++){
             pieces[6][i] = new Piece(PieceType.PAWN, Colour.WHITE);
         }
-        
-        pieces[7][0].castling = true;
         
     }
     
@@ -199,22 +194,22 @@ public class Board {
                     }
                 }
             }
-            if(pieces[y][x].castling){
+            if(pieces[y][x].castling){//rook castling
                 if(pieces[y][x].colour == Colour.BLACK){
-                    if((pieces[0][0].castling)&&(pieces[0][1] == null)&&(pieces[0][2] == null)){
+                    if((pieces[0][0] != null)&&(pieces[0][0].castling)&&(pieces[0][1] == null)&&(pieces[0][2] == null)){
                         moves.add(makeMove(cloneBoard(this), x, y, 1, 0));
                         moves.set(moves.size()-1, makeMove(cloneBoard(moves.get(moves.size()-1)), 0, 0, 2, 0));
                         //set castling to false for that move.
-                    }else if((pieces[0][7].castling)&&(pieces[0][4] == null)&&(pieces[0][5] == null)&&(pieces[0][6] == null)){
+                    }else if((pieces[0][7] != null)&&(pieces[0][7].castling)&&(pieces[0][4] == null)&&(pieces[0][5] == null)&&(pieces[0][6] == null)){
                         moves.add(makeMove(cloneBoard(this), x, y, 5, 0)); //check the numbers
                         moves.set(moves.size()-1, makeMove(cloneBoard(moves.get(moves.size()-1)), 7, 0, 4, 0));
                     }
                 }else{
-                    if((pieces[7][0].castling)&&(pieces[7][1] == null)&&(pieces[7][2] == null)){
+                    if((pieces[7][0] != null)&&(pieces[7][0].castling)&&(pieces[7][1] == null)&&(pieces[7][2] == null)){
                         moves.add(makeMove(cloneBoard(this), x, y, 1, 7));
                         moves.set(moves.size()-1, makeMove(cloneBoard(moves.get(moves.size()-1)), 0, 7, 2, 7));
                         //set castling to false for that move.
-                    }else if((pieces[7][7].castling)&&(pieces[7][4] == null)&&(pieces[7][5] == null)&&(pieces[7][6] == null)){
+                    }else if((pieces[7][7] != null)&&(pieces[7][7].castling)&&(pieces[7][4] == null)&&(pieces[7][5] == null)&&(pieces[7][6] == null)){
                         moves.add(makeMove(cloneBoard(this), x, y, 5, 7)); //check the numbers
                         moves.set(moves.size()-1, makeMove(cloneBoard(moves.get(moves.size()-1)), 7, 7, 4, 7));
                     }
@@ -305,6 +300,8 @@ public class Board {
             return null;
         }else{
             Piece returnPiece = new Piece(piece.pieceType, piece.colour);
+            returnPiece.castling = piece.castling;
+            returnPiece.moveTwo = piece.moveTwo;
             return returnPiece;
         }
     }
@@ -452,8 +449,8 @@ public class Board {
         EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount = new EnumMap<>(Colour.class);
         
         for(Colour i : Colour.values()){
+            pieceCount.put(i, new EnumMap<>(PieceType.class));
             for(PieceType j : PieceType.values()){
-                pieceCount.put(i, new EnumMap<>(PieceType.class));
                 pieceCount.get(i).put(j, 0);
             }
         }
@@ -462,7 +459,7 @@ public class Board {
             for(int j = 0; j < 8; j++){
                 if(pieces[i][j] != null){
                     int currentValue = pieceCount.get(pieces[i][j].colour).get(pieces[i][j].pieceType);
-                    pieceCount.get(pieces[i][j].colour).put(pieces[i][j].pieceType, currentValue++);
+                    pieceCount.get(pieces[i][j].colour).put(pieces[i][j].pieceType, currentValue+1);
                 }
             }
         }

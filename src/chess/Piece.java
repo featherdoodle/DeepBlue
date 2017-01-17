@@ -23,9 +23,10 @@ public class Piece {
         if(pieceType == PieceType.PAWN){
             moveTwo = true;
         }
-        if(pieceType == PieceType.KING){
+        if((pieceType == PieceType.KING)||(pieceType == PieceType.ROOK)){
             castling = true;
         }
+        
     }
     
     public static enum PieceType{
