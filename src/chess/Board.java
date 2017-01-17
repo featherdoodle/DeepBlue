@@ -8,6 +8,8 @@ package chess;
 import chess.Piece.Colour;
 import chess.Piece.PieceType;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumMap;
 
 /**
  *
@@ -110,35 +112,34 @@ public class Board {
     
     public ArrayList<Board> getPieceMoves(int x, int y){
         //CASTLING FOR WHITE AND EN PASSANT
-        //issue with moveTwo, always false.. initialization?
         ArrayList<Board> moves = new ArrayList<>();
         
         if(pieces[y][x].pieceType == PieceType.PAWN){
             if(pieces[y][x].colour == Colour.WHITE){
                 if((checkBounds(x, y-1)&&(pieces[y-1][x] == null))){
                     moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y-1));//i kinda feel like this is wrong
-                    moves.get(moves.size()-1).pieces[y-1][x].moveTwo = false;
                     if((y-1) == 0){
-                        moves.get(moves.size()-1).pieces[y-1][x].pieceType = PieceType.QUEEN;
-                        //it needs to decide what piece to become
-                        //loop enum and add move for each :)
+                        //moves.get(moves.size()-1).pieces[y-1][x].pieceType = PieceType.QUEEN;
+                        for(PieceType i : PieceType.values()){
+                            moves.get(moves.size()-1).pieces[y-1][x].pieceType = i;
+                            //when this happens, the user needs to be asked what they want to change the pawn to
+                        }
                     }
                 }if((checkBounds(x, y-2)&&(pieces[y-2][x] == null)&&(pieces[y][x].moveTwo))){
                     moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y-2));
                     moves.get(moves.size()-1).pieces[y-2][x].moveTwo = false;
                 }if((checkBounds(x-1, y-1))&&(pieces[y-1][x-1] != null)&&(pieces[y-1][x-1].colour == Colour.BLACK)){ //this is a capture
                     moves.add(makeMove(cloneBoard(this), x, y, x-1, y-1));
-                    moves.get(moves.size()-1).pieces[y-1][x-1].moveTwo = false;
                     if((y-1) == 0){
                         moves.get(moves.size()-1).pieces[y-1][x-1].pieceType = PieceType.QUEEN;
                     }
                 }if((checkBounds(x+1, y-1))&&(pieces[y-1][x+1] != null)&&(pieces[y-1][x+1].colour == Colour.BLACK)){ //this is a capture
                     moves.add(makeMove(cloneBoard(this), x, y, x+1, y-1));
-                    moves.get(moves.size()-1).pieces[y-1][x+1].moveTwo = false;
                     if((y-1) == 0){
                         moves.get(moves.size()-1).pieces[y-1][x+1].pieceType = PieceType.QUEEN;
                     }
                 }
+                /////////////////EN PASSANT/////////////////
                 
             }else if(pieces[y][x].colour == Colour.BLACK){
                 
@@ -146,20 +147,17 @@ public class Board {
                     moves.add(makeMove(cloneBoard(this), x, y, x, y+1));
                     if((y+1) == 7){
                         moves.get(moves.size()-1).pieces[y+1][x].pieceType = PieceType.QUEEN;
-                        moves.get(moves.size()-1).pieces[y+1][x].moveTwo = false;
                     }
                 }if((checkBounds(x, y+2))&&(pieces[y+2][x] == null)&&(pieces[y][x].moveTwo)){
                     moves.add(makeMove(cloneBoard(this), x, y, x, y+2));
                     moves.get(moves.size()-1).pieces[y+2][x].moveTwo = false;
                 }if((checkBounds(x-1, y+1))&&(pieces[y+1][x-1] != null)&&(pieces[y+1][x-1].colour == Colour.WHITE)){ //this is a capture
                     moves.add(makeMove(cloneBoard(this), x, y, x-1, y+1));
-                    moves.get(moves.size()-1).pieces[y+1][x-1].moveTwo = false;
                     if((y+1) == 7){
                         moves.get(moves.size()-1).pieces[y+1][x-1].pieceType = PieceType.QUEEN;
                     }
                 }if((checkBounds(x+1, y+1))&&(pieces[y+1][x+1] != null)&&(pieces[y+1][x+1].colour == Colour.WHITE)){ //this is a capture
                     moves.add(makeMove(cloneBoard(this), x, y, x+1, y+1));
-                    moves.get(moves.size()-1).pieces[y+1][x+1].moveTwo = false;
                     if((y+1) == 7){
                         moves.get(moves.size()-1).pieces[y+1][x+1].pieceType = PieceType.QUEEN;
                     }
@@ -171,7 +169,6 @@ public class Board {
             
             //clone the boards in the array list and add them
         }else if(pieces[y][x].pieceType == PieceType.KNIGHT){
-            //knight is simple, but those if statements are long :o simplify?
             for(int i = -2; i <= 2; i+=4){
                 for(int j = -1; j <= 1; j+=2){
                     if(checkBounds(x+i, y+j)){
@@ -202,14 +199,25 @@ public class Board {
                     }
                 }
             }
-            if((pieces[y][x].castling)&&(pieces[y][x].castling)){
+            if(pieces[y][x].castling){
                 if(pieces[y][x].colour == Colour.BLACK){
-                    if((pieces[1][0] == null)&&(pieces[2][0] == null)){
+                    if((pieces[0][0].castling)&&(pieces[0][1] == null)&&(pieces[0][2] == null)){
                         moves.add(makeMove(cloneBoard(this), x, y, 1, 0));
                         moves.set(moves.size()-1, makeMove(cloneBoard(moves.get(moves.size()-1)), 0, 0, 2, 0));
+                        //set castling to false for that move.
+                    }else if((pieces[0][7].castling)&&(pieces[0][4] == null)&&(pieces[0][5] == null)&&(pieces[0][6] == null)){
+                        moves.add(makeMove(cloneBoard(this), x, y, 5, 0)); //check the numbers
+                        moves.set(moves.size()-1, makeMove(cloneBoard(moves.get(moves.size()-1)), 7, 0, 4, 0));
                     }
                 }else{
-                    
+                    if((pieces[7][0].castling)&&(pieces[7][1] == null)&&(pieces[7][2] == null)){
+                        moves.add(makeMove(cloneBoard(this), x, y, 1, 7));
+                        moves.set(moves.size()-1, makeMove(cloneBoard(moves.get(moves.size()-1)), 0, 7, 2, 7));
+                        //set castling to false for that move.
+                    }else if((pieces[7][7].castling)&&(pieces[7][4] == null)&&(pieces[7][5] == null)&&(pieces[7][6] == null)){
+                        moves.add(makeMove(cloneBoard(this), x, y, 5, 7)); //check the numbers
+                        moves.set(moves.size()-1, makeMove(cloneBoard(moves.get(moves.size()-1)), 7, 7, 4, 7));
+                    }
                 }
             }
         }
@@ -297,8 +305,6 @@ public class Board {
             return null;
         }else{
             Piece returnPiece = new Piece(piece.pieceType, piece.colour);
-            returnPiece.castling = piece.castling;
-            returnPiece.moveTwo = piece.moveTwo;
             return returnPiece;
         }
     }
@@ -343,31 +349,37 @@ public class Board {
     }
     
     public int getBoardValue(){
-        int value = 0;//not 0 :P
+        int value = 0;
+        int numberPieces = 64;
+        //int emptySquares = 0;
         boolean whiteKing = false;
         boolean blackKing = false;
+        EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount = getPieceCount();//watch references
+        
+        if(pieceCount.get(Colour.WHITE).get(PieceType.KING) == 0){
+            return -100000;
+        }if(pieceCount.get(Colour.BLACK).get(PieceType.KING) == 0){
+            return 100000;
+        }
         
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                if(pieces[i][j] != null){
-                    if(pieces[i][j].pieceType == PieceType.KING){
-                        if(pieces[i][j].colour == Colour.WHITE){
-                            whiteKing = true;
-                        }else{
-                            blackKing = true;
-                        }
-                    }else{
-                        value += getPieceValue(pieces[i][j]);
-                    }
+                if((pieces[i][j] != null)&&(pieces[i][j].pieceType != PieceType.KING)){
+                    value += getPieceValue(pieces[i][j]);
+                }else{
+                    numberPieces--;
                 }
             }
         }
         
-        if(!whiteKing){
-            value = -100000;
-        }else if(!blackKing){
-            value = +100000;
+        if(numberPieces <= 26){ // 6 pieces taken?
+            value += getMidSquaresValue();
+        }else if(numberPieces >= 6){//between 6 pieces taken, and 6 pieces left
+            
+        }else{
+            value += getEndgameValue(numberPieces, pieceCount);
         }
+        
         
         return value;
         /*
@@ -384,6 +396,78 @@ public class Board {
             - Q | R
         - single minor piece cannot checkmate
         */
+    }
+    
+    public int getEndgameValue(int numberPieces, EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount){
+        //i know two of them are kings already
+        int value = 0;
+        
+        if(numberPieces == 2){
+            return 0; //its gotta be a draw
+        }else if(numberPieces == 3){
+            for(Colour i : Colour.values()){
+                if(pieceCount.get(i).get(PieceType.BISHOP) > 0){
+                    return 0;
+                }else if(pieceCount.get(i).get(PieceType.KNIGHT) > 0){
+                    return 0;
+                }else if(pieceCount.get(i).get(PieceType.QUEEN) > 0){
+                    return 3;//idk
+                }
+            }
+        }
+        return value;
+    }
+    
+    public double getMidSquaresValue(){
+        double value = 0;
+        
+        for(int i = 0; i < 2; i++){
+            for(int j = 0; j < 4; j++){
+                if((pieces[2+i][2+j] != null)&&(pieces[2+i][2+j].pieceType == PieceType.PAWN)&&(pieces[2+i][2+j].colour == Colour.BLACK)){
+                    value -= 0.07;
+                }if((pieces[4+i][2+j] != null)&&(pieces[4+i][2+j].pieceType == PieceType.PAWN)&&(pieces[4+i][2+j].colour == Colour.WHITE)){
+                    value += 0.07;
+                }
+            }
+        }
+        for(int x = 3; x <= 4; x++){
+            for(int y = 0; y <= 4; y++){
+                for(int i = -2; i <= 2; i+=4){
+                    for(int j = -1; j <= 1; j+=2){
+                        if((pieces[y+j][x+i] != null)&&(pieces[y+j][x+i].pieceType == PieceType.KNIGHT)&&(pieces[y+j][x+i].colour == Colour.BLACK)){
+                            value -= 0.07;
+                        }
+                        if((pieces[y+j][x+i] != null)&&(pieces[y+j][x+i].pieceType == PieceType.KNIGHT)&&(pieces[y+j][x+i].colour == Colour.WHITE)){
+                            value += 0.07;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return value; // :(
+    }
+    
+    public EnumMap<Colour, EnumMap<PieceType, Integer>> getPieceCount(){
+        EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount = new EnumMap<>(Colour.class);
+        
+        for(Colour i : Colour.values()){
+            for(PieceType j : PieceType.values()){
+                pieceCount.put(i, new EnumMap<>(PieceType.class));
+                pieceCount.get(i).put(j, 0);
+            }
+        }
+        
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(pieces[i][j] != null){
+                    int currentValue = pieceCount.get(pieces[i][j].colour).get(pieces[i][j].pieceType);
+                    pieceCount.get(pieces[i][j].colour).put(pieces[i][j].pieceType, currentValue++);
+                }
+            }
+        }
+        
+        return pieceCount;
     }
     
     public static int getPieceValue(Piece piece){
@@ -432,6 +516,7 @@ public class Board {
         }else{
             //should do piece count and then determine if the pieces left are able to checkmate?
             //check tie, and then unfinished
+            //that will be in the endgameValue method
         }
     }
     
