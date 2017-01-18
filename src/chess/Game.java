@@ -22,34 +22,50 @@ public class Game {
     public void menu(){
         
         Scanner scan = new Scanner(System.in);
-        System.out.println("1. P v P\n2. P v AI\n3. AI v AI");
-        int choice = scan.nextInt();
         
-        if(choice == 1){
-            playerOne = new Human(Colour.WHITE);
-            playerTwo = new Human(Colour.BLACK);
-        }else if(choice == 2){
-            System.out.println("Human playing as black or white?");
-            scan.nextLine();
-            String colourChoice = scan.nextLine();
-            System.out.println("Select the difficulty of the AI (1, 2 or 3)");
-            int difficulty = scan.nextInt();
-            if(colourChoice.equalsIgnoreCase("white")){
+        System.out.println("1. Play Game\n2. Instructions\n3. Exit");
+        int decision = scan.nextInt();
+        
+        if(decision == 1){
+            System.out.println("1. P v P\n2. P v AI\n3. AI v AI");
+            int choice = scan.nextInt();
+
+            if(choice == 1){
                 playerOne = new Human(Colour.WHITE);
-                playerTwo = new AI(Colour.BLACK, difficulty);
-            }else{//i guess error checking here
-                playerOne = new AI(Colour.WHITE, difficulty);
                 playerTwo = new Human(Colour.BLACK);
+            }else if(choice == 2){
+                System.out.println("Human playing as black or white?");
+                scan.nextLine();
+                String colourChoice = scan.nextLine();
+                System.out.println("Select the difficulty of the AI (1, 2 or 3)");
+                int difficulty = scan.nextInt();
+                if(colourChoice.equalsIgnoreCase("white")){
+                    playerOne = new Human(Colour.WHITE);
+                    playerTwo = new AI(Colour.BLACK, difficulty);
+                }else{//i guess error checking here
+                    playerOne = new AI(Colour.WHITE, difficulty);
+                    playerTwo = new Human(Colour.BLACK);
+                }
+            }else if(choice == 3){
+                System.out.println("Select the difficulty of the first AI (1, 2 or 3)");
+                long difficulty1 = scan.nextInt();
+                System.out.println("Select the difficulty of the second AI (1, 2 or 3)");
+                long difficulty2 = scan.nextInt();
+                playerOne = new AI(Colour.WHITE, difficulty1);
+                playerTwo = new AI(Colour.BLACK, difficulty2);
+
             }
-        }else if(choice == 3){
-            System.out.println("Select the difficulty of the first AI (1, 2 or 3)");
-            long difficulty1 = scan.nextInt();
-            System.out.println("Select the difficulty of the second AI (1, 2 or 3)");
-            long difficulty2 = scan.nextInt();
-            playerOne = new AI(Colour.WHITE, difficulty1);
-            playerTwo = new AI(Colour.BLACK, difficulty2);
+        }else if(decision == 2){
+            printInstructions();
+        }else{
             
         }
+        
+        
+    }
+    
+    public void printInstructions(){
+        
     }
     
     public void step(){
