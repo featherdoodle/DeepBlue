@@ -281,6 +281,9 @@ public class Board {
     }
     
     public Board cloneBoard(Board board){
+        if(board == null){
+            return null;
+        }
         Board returnBoard = new Board();
         
         for(int i = 0; i < 8; i++){
@@ -494,7 +497,7 @@ public class Board {
         if(object instanceof Board){
             for(int i = 0; i < 8; i++){
                 for(int j = 0; j < 8; j++){
-                    if(pieces[i][j] != ((Board)object).pieces[i][j]){//is that proper use of this
+                    if(!pieces[i][j].equals(((Board)object).pieces[i][j])){//is that proper use of this
                         return false;
                     }
                 }

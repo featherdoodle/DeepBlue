@@ -44,4 +44,16 @@ public class Piece {
         }
     }
     
+    @Override
+    public boolean equals(Object object){
+        if(object instanceof Piece){
+            if((((Piece)object).pieceType == pieceType)&&(((Piece)object).colour == colour)){
+                if((((Piece)object).moveTwo == moveTwo)&&(((Piece)object).castling == true)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
 }

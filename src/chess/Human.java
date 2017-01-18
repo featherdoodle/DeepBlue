@@ -26,7 +26,7 @@ public class Human extends Player{
         int x1, y1, x2, y2; 
         
         System.out.print("Piece? (x, y): ");
-        //fix bettwe
+
         x1 = scan.nextInt();
         y1 = scan.nextInt();
         
@@ -37,15 +37,8 @@ public class Human extends Player{
         
         //Board destinationBoard = board;
         Board destinationBoard = new Board();
-        //destinationBoard = board;
+        destinationBoard = destinationBoard.cloneBoard(board);//new Board();
         
-        for(int i = 0; i < 8; i++){
-            for(int j = 0; j < 8; j++){
-                
-                destinationBoard.pieces[i][j] = board.pieces[i][j];
-                
-            }
-        }
         
         destinationBoard.pieces[y2][x2] = destinationBoard.pieces[y1][x1];
         destinationBoard.pieces[y1][x1] = null;
