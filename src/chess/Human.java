@@ -42,6 +42,7 @@ public class Human extends Player{
         
         destinationBoard.pieces[y2][x2] = destinationBoard.pieces[y1][x1];
         destinationBoard.pieces[y1][x1] = null;
+        destinationBoard.pieces[y2][x2].moveTwo = false;
         //um check board as parameter
         
         boolean contains = false;

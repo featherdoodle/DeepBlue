@@ -15,6 +15,17 @@ import java.util.EnumMap;
  * @author Owner
  */
 public class Board {
+    
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
+    
     //CHECK ABOUT PARAMETERS
     //MAKE BOARD EQUALS AND CONTAIN METHODS
     public Piece[][] pieces = new Piece[8][8];
@@ -58,7 +69,8 @@ public class Board {
     
     public void printBoard(){
         
-        System.out.println(" |0|1|2|3|4|5|6|7");
+        
+        System.out.println(ANSI_RESET + " |0|1|2|3|4|5|6|7");
         for(int i = 0; i < 8; i++){
             System.out.print(i);
             System.out.print("|");
@@ -72,32 +84,32 @@ public class Board {
                     Colour colour = pieces[i][j].colour;
                     
                     if((pieceType == PieceType.PAWN)&&(colour == Colour.WHITE)){
-                        System.out.print("♙");
+                        System.out.print(ANSI_PURPLE + "♙");
                     }else if((pieceType == PieceType.ROOK)&&(colour == Colour.WHITE)){
-                        System.out.print("♖");
+                        System.out.print(ANSI_PURPLE + "♖");
                     }else if((pieceType == PieceType.KNIGHT)&&(colour == Colour.WHITE)){
-                        System.out.print("♘");
+                        System.out.print(ANSI_PURPLE + "♘");
                     }else if((pieceType == PieceType.BISHOP)&&(colour == Colour.WHITE)){
-                        System.out.print("♗");
+                        System.out.print(ANSI_PURPLE + "♗");
                     }else if((pieceType == PieceType.QUEEN)&&(colour == Colour.WHITE)){
-                        System.out.print("♕");
+                        System.out.print(ANSI_PURPLE + "♕");
                     }else if((pieceType == PieceType.KING)&&(colour == Colour.WHITE)){
-                        System.out.print("♔");
+                        System.out.print(ANSI_PURPLE + "♔");
                     }else if((pieceType == PieceType.PAWN)&&(colour == Colour.BLACK)){
-                        System.out.print("♟");
+                        System.out.print(ANSI_GREEN + "♟");
                     }else if((pieceType == PieceType.ROOK)&&(colour == Colour.BLACK)){
-                        System.out.print("♜");
+                        System.out.print(ANSI_GREEN + "♜");
                     }else if((pieceType == PieceType.KNIGHT)&&(colour == Colour.BLACK)){
-                        System.out.print("♞");
+                        System.out.print(ANSI_GREEN + "♞");
                     }else if((pieceType == PieceType.BISHOP)&&(colour == Colour.BLACK)){
-                        System.out.print("♝");
+                        System.out.print(ANSI_GREEN + "♝");
                     }else if((pieceType == PieceType.QUEEN)&&(colour == Colour.BLACK)){
-                        System.out.print("♛");
+                        System.out.print(ANSI_GREEN + "♛");
                     }else if((pieceType == PieceType.KING)&&(colour == Colour.BLACK)){
-                        System.out.print("♚");
+                        System.out.print(ANSI_GREEN + "♚");
                     }
                 }
-                System.out.print("|");
+                System.out.print(ANSI_RESET + "|");
                 
             }
             System.out.println();
@@ -110,55 +122,7 @@ public class Board {
         ArrayList<Board> moves = new ArrayList<>();
         
         if(pieces[y][x].pieceType == PieceType.PAWN){
-            if(pieces[y][x].colour == Colour.WHITE){
-                if((checkBounds(x, y-1)&&(pieces[y-1][x] == null))){
-                    moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y-1));//i kinda feel like this is wrong
-                    if((y-1) == 0){
-                        //moves.get(moves.size()-1).pieces[y-1][x].pieceType = PieceType.QUEEN;
-                        for(PieceType i : PieceType.values()){
-                            moves.get(moves.size()-1).pieces[y-1][x].pieceType = i;
-                            //when this happens, the user needs to be asked what they want to change the pawn to
-                        }
-                    }
-                }if((checkBounds(x, y-2)&&(pieces[y-2][x] == null)&&(pieces[y][x].moveTwo))){
-                    moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y-2));
-                    moves.get(moves.size()-1).pieces[y-2][x].moveTwo = false;
-                }if((checkBounds(x-1, y-1))&&(pieces[y-1][x-1] != null)&&(pieces[y-1][x-1].colour == Colour.BLACK)){ //this is a capture
-                    moves.add(makeMove(cloneBoard(this), x, y, x-1, y-1));
-                    if((y-1) == 0){
-                        moves.get(moves.size()-1).pieces[y-1][x-1].pieceType = PieceType.QUEEN;
-                    }
-                }if((checkBounds(x+1, y-1))&&(pieces[y-1][x+1] != null)&&(pieces[y-1][x+1].colour == Colour.BLACK)){ //this is a capture
-                    moves.add(makeMove(cloneBoard(this), x, y, x+1, y-1));
-                    if((y-1) == 0){
-                        moves.get(moves.size()-1).pieces[y-1][x+1].pieceType = PieceType.QUEEN;
-                    }
-                }
-                /////////////////EN PASSANT/////////////////
-                
-            }else if(pieces[y][x].colour == Colour.BLACK){
-                
-                if((checkBounds(x, y+1))&&(pieces[y+1][x] == null)){
-                    moves.add(makeMove(cloneBoard(this), x, y, x, y+1));
-                    if((y+1) == 7){
-                        moves.get(moves.size()-1).pieces[y+1][x].pieceType = PieceType.QUEEN;
-                    }
-                }if((checkBounds(x, y+2))&&(pieces[y+2][x] == null)&&(pieces[y][x].moveTwo)){
-                    moves.add(makeMove(cloneBoard(this), x, y, x, y+2));
-                    moves.get(moves.size()-1).pieces[y+2][x].moveTwo = false;
-                }if((checkBounds(x-1, y+1))&&(pieces[y+1][x-1] != null)&&(pieces[y+1][x-1].colour == Colour.WHITE)){ //this is a capture
-                    moves.add(makeMove(cloneBoard(this), x, y, x-1, y+1));
-                    if((y+1) == 7){
-                        moves.get(moves.size()-1).pieces[y+1][x-1].pieceType = PieceType.QUEEN;
-                    }
-                }if((checkBounds(x+1, y+1))&&(pieces[y+1][x+1] != null)&&(pieces[y+1][x+1].colour == Colour.WHITE)){ //this is a capture
-                    moves.add(makeMove(cloneBoard(this), x, y, x+1, y+1));
-                    if((y+1) == 7){
-                        moves.get(moves.size()-1).pieces[y+1][x+1].pieceType = PieceType.QUEEN;
-                    }
-                }
-                
-            }
+            moves = getPawnMoves(moves, x, y);
         }else if(pieces[y][x].pieceType == PieceType.ROOK){
             moves = getRookMoves(moves, x, y);
             
@@ -217,6 +181,94 @@ public class Board {
             }
         }
         //return null if the list is empty
+        return moves;
+    }
+    
+    public ArrayList<Board> getPawnMoves(ArrayList<Board> moves, int x, int y){
+        int direction;
+        if(pieces[y][x].colour == Colour.WHITE){
+            direction = -1;
+        }else{
+            direction = 1;
+        }
+        
+        if((checkBounds(x, y+direction)&&(pieces[y+direction][x] == null))){
+                moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+direction));//i kinda feel like this is wrong
+                moves.get(moves.size()-1).pieces[y+direction][x].moveTwo = false;
+                if((y+direction) == 0){
+                    //moves.get(moves.size()-1).pieces[y-1][x].pieceType = PieceType.QUEEN;
+                    for(PieceType i : PieceType.values()){
+                        moves.get(moves.size()-1).pieces[y+direction][x].pieceType = i;
+                        //when this happens, the user needs to be asked what they want to change the pawn to
+                    }
+                }
+            }if((checkBounds(x, y+(direction*2))&&(pieces[y+(direction*2)][x] == null)&&(pieces[y][x].moveTwo))){
+                moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+(direction*2)));
+                moves.get(moves.size()-1).pieces[y+(direction*2)][x].moveTwo = false;
+            }if((checkBounds(x-1, y+direction))&&(pieces[y+direction][x-1] != null)&&(pieces[y+direction][x-1].colour != pieces[x][y].colour)){ //this is a capture
+                moves.add(makeMove(cloneBoard(this), x, y, x-1, y+direction));
+                if((y+direction) == 0){
+                    moves.get(moves.size()-1).pieces[y+direction][x-1].pieceType = PieceType.QUEEN;
+                }
+            }if((checkBounds(x+1, y+direction))&&(pieces[y+direction][x+1] != null)&&(pieces[y+direction][x+1].colour != pieces[x][y].colour)){ //this is a capture
+                moves.add(makeMove(cloneBoard(this), x, y, x+1, y+direction));
+                if((y+direction) == 0){
+                    moves.get(moves.size()-1).pieces[y+direction][x+1].pieceType = PieceType.QUEEN;
+                }
+            }
+        
+        /*
+        if(pieces[y][x].colour == Colour.WHITE){
+            if((checkBounds(x, y-1)&&(pieces[y-1][x] == null))){
+                moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y-1));//i kinda feel like this is wrong
+                moves.get(moves.size()-1).pieces[y-1][x].moveTwo = false;
+                if((y-1) == 0){
+                    //moves.get(moves.size()-1).pieces[y-1][x].pieceType = PieceType.QUEEN;
+                    for(PieceType i : PieceType.values()){
+                        moves.get(moves.size()-1).pieces[y-1][x].pieceType = i;
+                        //when this happens, the user needs to be asked what they want to change the pawn to
+                    }
+                }
+            }if((checkBounds(x, y-2)&&(pieces[y-2][x] == null)&&(pieces[y][x].moveTwo))){
+                moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y-2));
+                moves.get(moves.size()-1).pieces[y-2][x].moveTwo = false;
+            }if((checkBounds(x-1, y-1))&&(pieces[y-1][x-1] != null)&&(pieces[y-1][x-1].colour == Colour.BLACK)){ //this is a capture
+                moves.add(makeMove(cloneBoard(this), x, y, x-1, y-1));
+                if((y-1) == 0){
+                    moves.get(moves.size()-1).pieces[y-1][x-1].pieceType = PieceType.QUEEN;
+                }
+            }if((checkBounds(x+1, y-1))&&(pieces[y-1][x+1] != null)&&(pieces[y-1][x+1].colour == Colour.BLACK)){ //this is a capture
+                moves.add(makeMove(cloneBoard(this), x, y, x+1, y-1));
+                if((y-1) == 0){
+                    moves.get(moves.size()-1).pieces[y-1][x+1].pieceType = PieceType.QUEEN;
+                }
+            }
+            /////////////////EN PASSANT/////////////////
+
+        }else if(pieces[y][x].colour == Colour.BLACK){
+
+            if((checkBounds(x, y+1))&&(pieces[y+1][x] == null)){
+                moves.add(makeMove(cloneBoard(this), x, y, x, y+1));
+                moves.get(moves.size()-1).pieces[y+1][x].moveTwo = false;
+                if((y+1) == 7){
+                    moves.get(moves.size()-1).pieces[y+1][x].pieceType = PieceType.QUEEN;
+                }
+            }if((checkBounds(x, y+2))&&(pieces[y+2][x] == null)&&(pieces[y][x].moveTwo)){
+                moves.add(makeMove(cloneBoard(this), x, y, x, y+2));
+                moves.get(moves.size()-1).pieces[y+2][x].moveTwo = false;
+            }if((checkBounds(x-1, y+1))&&(pieces[y+1][x-1] != null)&&(pieces[y+1][x-1].colour == Colour.WHITE)){ //this is a capture
+                moves.add(makeMove(cloneBoard(this), x, y, x-1, y+1));
+                if((y+1) == 7){
+                    moves.get(moves.size()-1).pieces[y+1][x-1].pieceType = PieceType.QUEEN;
+                }
+            }if((checkBounds(x+1, y+1))&&(pieces[y+1][x+1] != null)&&(pieces[y+1][x+1].colour == Colour.WHITE)){ //this is a capture
+                moves.add(makeMove(cloneBoard(this), x, y, x+1, y+1));
+                if((y+1) == 7){
+                    moves.get(moves.size()-1).pieces[y+1][x+1].pieceType = PieceType.QUEEN;
+                }
+            }
+
+        }*/
         return moves;
     }
     
@@ -307,16 +359,6 @@ public class Board {
             returnPiece.moveTwo = piece.moveTwo;
             return returnPiece;
         }
-    }
-    
-    public ArrayList<Board> cloneBoardList(ArrayList<Board> boards){
-        ArrayList<Board> returnList = new ArrayList<Board>();
-        
-        for(int i = 0; i < boards.size(); i++){
-            returnList.add(cloneBoard(boards.get(i)));
-        }
-        
-        return returnList;
     }
     
     public ArrayList<Board> refinePieceMoves(int x, int y){
@@ -412,6 +454,8 @@ public class Board {
                     return 0;
                 }else if(pieceCount.get(i).get(PieceType.QUEEN) > 0){
                     return 3;//idk
+                }else if(pieceCount.get(i).get(PieceType.ROOK) > 0){
+                    return 1;
                 }
             }
         }
@@ -431,7 +475,7 @@ public class Board {
             }
         }
         for(int x = 3; x <= 4; x++){
-            for(int y = 0; y <= 4; y++){
+            for(int y = 3; y <= 4; y++){
                 for(int i = -2; i <= 2; i+=4){
                     for(int j = -1; j <= 1; j+=2){
                         if((pieces[y+j][x+i] != null)&&(pieces[y+j][x+i].pieceType == PieceType.KNIGHT)&&(pieces[y+j][x+i].colour == Colour.BLACK)){
@@ -497,7 +541,14 @@ public class Board {
         if(object instanceof Board){
             for(int i = 0; i < 8; i++){
                 for(int j = 0; j < 8; j++){
-                    if(!pieces[i][j].equals(((Board)object).pieces[i][j])){//is that proper use of this
+                    //super bad null checking. maybe throw the exception instead
+                    if((pieces[i][j] == null)&&(((Board)object).pieces[i][j] != null)){
+                        return false;
+                    }else if((pieces[i][j] != null)&&(((Board)object).pieces[i][j] == null)){
+                        return false;
+                    }else if((pieces[i][j] == null)&&(((Board)object).pieces[i][j] == null)){
+                        
+                    }else if(!pieces[i][j].equals(((Board)object).pieces[i][j])){
                         return false;
                     }
                 }
