@@ -12,16 +12,15 @@ package chess;
 public class Piece {
     
     Colour colour; //-1 is black, 1 is white
-    boolean moveTwo = false; //this is the ability to do it. false if it has already occurred
+    PawnMove pawnMove = PawnMove.FALSE;
     boolean castling = false;
-    //enpassant is the name of the capture
     PieceType pieceType;
     
     public Piece(PieceType _pieceType, Colour _colour){
         colour = _colour;
         pieceType = _pieceType;
         if(pieceType == PieceType.PAWN){
-            moveTwo = true;
+            pawnMove = PawnMove.TRUE;
         }
         if((pieceType == PieceType.KING)||(pieceType == PieceType.ROOK)){
             castling = true;
@@ -30,7 +29,11 @@ public class Piece {
     }
     
     public static enum PieceType{
-        PAWN, ROOK, BISHOP, KNIGHT, QUEEN, KING
+        PAWN, ROOK, BISHOP, KNIGHT, QUEEN, KING;
+    }
+    
+    public static enum PawnMove{
+        TRUE, FALSE, LAST_MOVE_TWO;
     }
     
     public static enum Colour{
@@ -48,7 +51,7 @@ public class Piece {
     public boolean equals(Object object){
         if(object instanceof Piece){
             if((((Piece)object).pieceType == pieceType)&&(((Piece)object).colour == colour)){
-                if((((Piece)object).moveTwo == moveTwo)&&(((Piece)object).castling == castling)){
+                if((((Piece)object).pawnMove == pawnMove)&&(((Piece)object).castling == castling)){
                     return true;
                 }
             }

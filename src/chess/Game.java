@@ -89,6 +89,7 @@ public class Game {
                 System.out.println();
                 turn = true;
             }
+            //seems like a bad spot to do it, but i need to reset the pawn last_move_two
             board.updateWinnerState();
         }
         
