@@ -70,7 +70,6 @@ public class Board {
     
     public void printBoard(){
         
-        
         System.out.println(ANSI_RESET + " |0|1|2|3|4|5|6|7");
         for(int i = 0; i < 8; i++){
             System.out.print(i);
@@ -182,7 +181,7 @@ public class Board {
             }
         }
         
-        //return null if the list is empty
+        //returns null if the list is empty
         return moves;
     }
     
@@ -207,22 +206,31 @@ public class Board {
             }if((checkBounds(x, y+(direction*2))&&(pieces[y+(direction*2)][x] == null)&&(pieces[y][x].pawnMove == PawnMove.TRUE))){
                 moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+(direction*2)));
                 moves.get(moves.size()-1).pieces[y+(direction*2)][x].pawnMove = PawnMove.LAST_MOVE_TWO;
-            }if(checkBounds(x-1, y+direction)){ //this is a capture
-                if((pieces[y+direction][x-1] != null)&&(pieces[x][y] != null)&&(pieces[y+direction][x-1].colour != pieces[x][y].colour)){
-                    moves.add(makeMove(cloneBoard(this), x, y, x-1, y+direction));
-                }else if((pieces[y+(2*direction)][x-1].pawnMove == PawnMove.LAST_MOVE_TWO)&&(pieces[x][y] != null)&&(pieces[y+(2*direction)][x-1].colour != pieces[x][y].colour)){
-                    moves.add(makeMove(cloneBoard(this), x, y, x-1, y+direction));
-                    moves.get(moves.size()-1).pieces[y+(2*direction)][x-1] = null;
-                }
-                if((y+direction) == 0){
-                    moves.get(moves.size()-1).pieces[y+direction][x-1].pieceType = PieceType.QUEEN;
-                }
-            }if((checkBounds(x+1, y+direction))&&(pieces[y+direction][x+1] != null)&&(pieces[x][y] != null)&&(pieces[y+direction][x+1].colour != pieces[x][y].colour)){ //this is a capture
-                moves.add(makeMove(cloneBoard(this), x, y, x+1, y+direction));
-                if((y+direction) == 0){
-                    moves.get(moves.size()-1).pieces[y+direction][x+1].pieceType = PieceType.QUEEN;
-                }
             }
+            
+            for(int i = -1; i <= 1; i+=2){
+                 //this is a capture
+                if((checkBounds(x+i, y+direction))&&(pieces[y+direction][x+i] != null)&&(pieces[x][y] != null)&&(pieces[y+direction][x+i].colour != pieces[x][y].colour)){
+                    moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
+                    if((y+direction) == 0){
+                        for(PieceType j : PieceType.values()){ //small repetition
+                            moves.get(moves.size()-1).pieces[y+direction][x].pieceType = j;
+                            //when this happens, the user needs to be asked what they want to change the pawn to
+                        }
+                    }
+                }else if((checkBounds(x+i, y+(2*direction)))&&(pieces[y+(2*direction)][x+i] != null)&&(pieces[y+(2*direction)][x+i].pawnMove == PawnMove.LAST_MOVE_TWO)&&(pieces[x][y] != null)&&(pieces[y+(2*direction)][x+i].colour != pieces[x][y].colour)){
+                    moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
+                    moves.get(moves.size()-1).pieces[y+(2*direction)][x+i] = null;
+                    if((y+direction) == 0){
+                        for(PieceType j : PieceType.values()){ //small repetition
+                            moves.get(moves.size()-1).pieces[y+direction][x].pieceType = j;
+                            //when this happens, the user needs to be asked what they want to change the pawn to
+                        }
+                    }
+                }
+                
+            }
+            
          
         return moves;
     }

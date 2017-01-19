@@ -52,10 +52,9 @@ public class Human extends Player{
         }if(destinationBoard.pieces[y2][x2].castling){
             destinationBoard.pieces[y2][x2].castling = false;
         }
-        //um check board as parameter
         
         boolean contains = false;
-        //check here to make sure the piece is valid
+        
         ArrayList<Board> allMoves = board.refinePieceMoves(x1, y1);
         for(int i = 0; i < allMoves.size(); i++){
             if(allMoves.get(i).equals(destinationBoard)){

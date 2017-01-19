@@ -7,6 +7,7 @@ package chess;
 
 import chess.Board.WinnerState;
 import chess.Piece.Colour;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -14,56 +15,74 @@ import java.util.Scanner;
  * @author Owner
  */
 public class Game {
-    boolean turn = true;
+    boolean turn = true; //true if it is player one's turn, false if it is player two's
     Board board = new Board();
     Player playerOne, playerTwo;
     
     
     public void menu(){
         
-        Scanner scan = new Scanner(System.in);
+        Scanner scan = new Scanner(System.in); 
         
         System.out.println("1. Play Game\n2. Instructions\n3. Options\n4. Exit");
-        int decision = scan.nextInt();
         
-        if(decision == 1){
+        int firstChoice = getChoice(1, 4); 
+        
+        if(firstChoice == 1){
             System.out.println("1. P v P\n2. P v AI\n3. AI v AI");
-            int choice = scan.nextInt();
+            int secondChoice = getChoice(1, 3);
 
-            if(choice == 1){
+            if(secondChoice == 1){
                 playerOne = new Human(Colour.WHITE);
                 playerTwo = new Human(Colour.BLACK);
-            }else if(choice == 2){
+            }else if(secondChoice == 2){
                 System.out.println("Human playing as black or white?");
                 scan.nextLine();
                 String colourChoice = scan.nextLine();
                 System.out.println("Select the difficulty of the AI (1, 2 or 3)");
-                int difficulty = scan.nextInt();
+                long difficulty = getChoice(1, 3);
                 if(colourChoice.equalsIgnoreCase("white")){
                     playerOne = new Human(Colour.WHITE);
-                    playerTwo = new AI(Colour.BLACK, difficulty);
+                    playerTwo = new AI(Colour.BLACK, difficulty*10000);
                 }else{//i guess error checking here
-                    playerOne = new AI(Colour.WHITE, difficulty);
+                    playerOne = new AI(Colour.WHITE, difficulty*10000);
                     playerTwo = new Human(Colour.BLACK);
                 }
-            }else if(choice == 3){
+            }else if(secondChoice == 3){
                 System.out.println("Select the difficulty of the first AI (1, 2 or 3)");
-                long difficulty1 = scan.nextInt();
+                long difficulty1 = getChoice(1, 3);
                 System.out.println("Select the difficulty of the second AI (1, 2 or 3)");
-                long difficulty2 = scan.nextInt();
-                playerOne = new AI(Colour.WHITE, difficulty1);
-                playerTwo = new AI(Colour.BLACK, difficulty2);
+                long difficulty2 = getChoice(1, 3);
+                playerOne = new AI(Colour.WHITE, difficulty1*10000);
+                playerTwo = new AI(Colour.BLACK, difficulty2*10000);
 
             }
-        }else if(decision == 2){
+        }else if(firstChoice == 2){
             printInstructions();
-        }else if(decision == 3){
-            
+        }else if(firstChoice == 3){
+            //colours
+            //back to menu
         }else{
             System.exit(0);
         }
         
         
+    }
+    
+    public int getChoice(int min, int max){
+        for(;;){
+            Scanner scan = new Scanner(System.in);
+            try{
+                int choice = scan.nextInt();
+                if((choice >= min)&&(choice <= max)){
+                    return choice;
+                }else{
+                    System.out.println("Please enter a valid number");
+                }
+            }catch(InputMismatchException e){
+                System.out.println("Please enter a valid number");
+            }
+        }
     }
     
     public void printInstructions(){
