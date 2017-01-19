@@ -23,7 +23,7 @@ public class Game {
         
         Scanner scan = new Scanner(System.in);
         
-        System.out.println("1. Play Game\n2. Instructions\n3. Exit");
+        System.out.println("1. Play Game\n2. Instructions\n3. Options\n4. Exit");
         int decision = scan.nextInt();
         
         if(decision == 1){
@@ -57,8 +57,10 @@ public class Game {
             }
         }else if(decision == 2){
             printInstructions();
-        }else{
+        }else if(decision == 3){
             
+        }else{
+            System.exit(0);
         }
         
         
