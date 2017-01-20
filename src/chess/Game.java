@@ -19,58 +19,67 @@ public class Game {
     Board board = new Board();
     Player playerOne, playerTwo;
     
-    
     public void menu(){
         
         Scanner scan = new Scanner(System.in); 
         
         System.out.println("1. Play Game\n2. Instructions\n3. Options\n4. Exit");
         
-        int firstChoice = getChoice(1, 4); 
+        int firstChoice = getChoice(1, 5); //valid input checking
         
         if(firstChoice == 1){
             System.out.println("1. P v P\n2. P v AI\n3. AI v AI");
             int secondChoice = getChoice(1, 3);
 
             if(secondChoice == 1){
-                playerOne = new Human(Colour.WHITE);
+                playerOne = new Human(Colour.WHITE); //both players are human, opposite colours
                 playerTwo = new Human(Colour.BLACK);
-            }else if(secondChoice == 2){
+            }else if(secondChoice == 2){ //when one player is human, one ai
                 System.out.println("Human playing as black or white?");
                 scan.nextLine();
                 String colourChoice = scan.nextLine();
                 System.out.println("Select the difficulty of the AI (1, 2 or 3)");
-                long difficulty = getChoice(1, 3);
+                long difficulty = getChoice(1, 3); 
                 if(colourChoice.equalsIgnoreCase("white")){
                     playerOne = new Human(Colour.WHITE);
-                    playerTwo = new AI(Colour.BLACK, difficulty*10000);
-                }else{//i guess error checking here
-                    playerOne = new AI(Colour.WHITE, difficulty*10000);
+                    playerTwo = new AI(Colour.BLACK, difficulty*1000); //adjusting the difficulty based on input
+                }else{
+                    playerOne = new AI(Colour.WHITE, difficulty*1000);
                     playerTwo = new Human(Colour.BLACK);
                 }
-            }else if(secondChoice == 3){
+            }else if(secondChoice == 3){//two ais
                 System.out.println("Select the difficulty of the first AI (1, 2 or 3)");
                 long difficulty1 = getChoice(1, 3);
                 System.out.println("Select the difficulty of the second AI (1, 2 or 3)");
                 long difficulty2 = getChoice(1, 3);
-                playerOne = new AI(Colour.WHITE, difficulty1*10000);
-                playerTwo = new AI(Colour.BLACK, difficulty2*10000);
+                playerOne = new AI(Colour.WHITE, difficulty1*1000);
+                playerTwo = new AI(Colour.BLACK, difficulty2*1000);
 
             }
         }else if(firstChoice == 2){
             printInstructions();
-        }else if(firstChoice == 3){
-            //colours
-            //back to menu
-        }else{
+        }else if(firstChoice == 3){ //options: changing colours
+            System.out.println("1. Choose Colours\n2. Back to Menu");
+            int thirdChoice = getChoice(1, 2);
+            if(thirdChoice == 1){
+                System.out.println("");
+            }
+        }else if(firstChoice == 5){
+            playerOne = new AI(Colour.WHITE, 10000);
+            playerTwo = new AI(Colour.BLACK, 10000);
+        }else{ //quitting
             System.exit(0);
         }
         
-        
     }
-    
+    /**
+     * Method that continues until the user inputs a number within the desired range
+     * @param min
+     * @param max
+     * @return 
+     */
     public int getChoice(int min, int max){
-        for(;;){
+        for(;;){ //infinate loop
             Scanner scan = new Scanner(System.in);
             try{
                 int choice = scan.nextInt();
@@ -85,10 +94,12 @@ public class Game {
         }
     }
     
-    public void printInstructions(){
-        
+    public void printInstructions(){ //method to print instructions
+        System.out.print("Instructions");
     }
-    
+    /**
+     * Switches between turns, running the actual game. Continues until the game is finished.
+     */
     public void step(){
         board.setupBoard();
         board.printBoard();
@@ -122,6 +133,5 @@ public class Game {
             System.out.println("Tie");
         }
     }
-    
     
 }

@@ -27,10 +27,10 @@ public class Board {
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
     
-    //CHECK ABOUT PARAMETERS
-    //MAKE BOARD EQUALS AND CONTAIN METHODS
+    public String P1Colour = ANSI_PURPLE;
+    public String P2Colour = ANSI_GREEN;
+    
     public Piece[][] pieces = new Piece[8][8];
-    //if im flipping the board, i need a boolean turn, or access to game's turn
     
     public WinnerState winnerState = WinnerState.UNFINISHED;
     
@@ -39,7 +39,7 @@ public class Board {
     }
     
     public void setupBoard(){
-        //black
+        //initializing black pieces
         pieces[0][0] = new Piece(PieceType.ROOK, Colour.BLACK);
         pieces[0][1] = new Piece(PieceType.KNIGHT, Colour.BLACK);
         pieces[0][2] = new Piece(PieceType.BISHOP, Colour.BLACK);
@@ -52,7 +52,7 @@ public class Board {
         for(int i = 0; i < 8; i++){
             pieces[1][i] = new Piece(PieceType.PAWN, Colour.BLACK);
         }
-        
+        //initializing white pieces
         pieces[7][0] = new Piece(PieceType.ROOK, Colour.WHITE);
         pieces[7][1] = new Piece(PieceType.KNIGHT, Colour.WHITE);
         pieces[7][2] = new Piece(PieceType.BISHOP, Colour.WHITE);
@@ -84,29 +84,29 @@ public class Board {
                     Colour colour = pieces[i][j].colour;
                     
                     if((pieceType == PieceType.PAWN)&&(colour == Colour.WHITE)){
-                        System.out.print(ANSI_PURPLE + "♙");
+                        System.out.print(P1Colour + "♙");
                     }else if((pieceType == PieceType.ROOK)&&(colour == Colour.WHITE)){
-                        System.out.print(ANSI_PURPLE + "♖");
+                        System.out.print(P1Colour + "♖");
                     }else if((pieceType == PieceType.KNIGHT)&&(colour == Colour.WHITE)){
-                        System.out.print(ANSI_PURPLE + "♘");
+                        System.out.print(P1Colour + "♘");
                     }else if((pieceType == PieceType.BISHOP)&&(colour == Colour.WHITE)){
-                        System.out.print(ANSI_PURPLE + "♗");
+                        System.out.print(P1Colour + "♗");
                     }else if((pieceType == PieceType.QUEEN)&&(colour == Colour.WHITE)){
-                        System.out.print(ANSI_PURPLE + "♕");
+                        System.out.print(P1Colour + "♕");
                     }else if((pieceType == PieceType.KING)&&(colour == Colour.WHITE)){
-                        System.out.print(ANSI_PURPLE + "♔");
+                        System.out.print(P1Colour + "♔");
                     }else if((pieceType == PieceType.PAWN)&&(colour == Colour.BLACK)){
-                        System.out.print(ANSI_GREEN + "♟");
+                        System.out.print(P2Colour + "♟");
                     }else if((pieceType == PieceType.ROOK)&&(colour == Colour.BLACK)){
-                        System.out.print(ANSI_GREEN + "♜");
+                        System.out.print(P2Colour + "♜");
                     }else if((pieceType == PieceType.KNIGHT)&&(colour == Colour.BLACK)){
-                        System.out.print(ANSI_GREEN + "♞");
+                        System.out.print(P2Colour + "♞");
                     }else if((pieceType == PieceType.BISHOP)&&(colour == Colour.BLACK)){
-                        System.out.print(ANSI_GREEN + "♝");
+                        System.out.print(P2Colour + "♝");
                     }else if((pieceType == PieceType.QUEEN)&&(colour == Colour.BLACK)){
-                        System.out.print(ANSI_GREEN + "♛");
+                        System.out.print(P2Colour + "♛");
                     }else if((pieceType == PieceType.KING)&&(colour == Colour.BLACK)){
-                        System.out.print(ANSI_GREEN + "♚");
+                        System.out.print(P2Colour + "♚");
                     }
                 }
                 System.out.print(ANSI_RESET + "|");
@@ -117,6 +117,12 @@ public class Board {
         
     }
     
+    /**
+     * Finding all the possible moves that a specific piece can make.
+     * @param x
+     * @param y
+     * @return 
+     */
     public ArrayList<Board> getPieceMoves(int x, int y){
         //CASTLING FOR WHITE AND EN PASSANT
         ArrayList<Board> moves = new ArrayList<>();
@@ -208,20 +214,21 @@ public class Board {
                 moves.get(moves.size()-1).pieces[y+(direction*2)][x].pawnMove = PawnMove.LAST_MOVE_TWO;
             }
             
-            for(int i = -1; i <= 1; i+=2){
+            for(int i = -1; i <= 1; i+=2){//HOW DID A FOR LOOP GIVE A NULL POINTER
                  //this is a capture
                 if((checkBounds(x+i, y+direction))&&(pieces[y+direction][x+i] != null)&&(pieces[x][y] != null)&&(pieces[y+direction][x+i].colour != pieces[x][y].colour)){
                     moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
-                    if((y+direction) == 0){
+                    if(((y+direction) == 0)||(y+direction == 7)){
                         for(PieceType j : PieceType.values()){ //small repetition
                             moves.get(moves.size()-1).pieces[y+direction][x].pieceType = j;
+                            //need to add multiple moves, one for each piece type... oops
                             //when this happens, the user needs to be asked what they want to change the pawn to
                         }
                     }
                 }else if((checkBounds(x+i, y+(2*direction)))&&(pieces[y+(2*direction)][x+i] != null)&&(pieces[y+(2*direction)][x+i].pawnMove == PawnMove.LAST_MOVE_TWO)&&(pieces[x][y] != null)&&(pieces[y+(2*direction)][x+i].colour != pieces[x][y].colour)){
                     moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
                     moves.get(moves.size()-1).pieces[y+(2*direction)][x+i] = null;
-                    if((y+direction) == 0){
+                    if(((y+direction) == 0)||(y+direction == 7)){
                         for(PieceType j : PieceType.values()){ //small repetition
                             moves.get(moves.size()-1).pieces[y+direction][x].pieceType = j;
                             //when this happens, the user needs to be asked what they want to change the pawn to
@@ -356,9 +363,6 @@ public class Board {
     public int getBoardValue(){
         int value = 0;
         int numberPieces = 64;
-        //int emptySquares = 0;
-        boolean whiteKing = false;
-        boolean blackKing = false;
         EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount = getPieceCount();//watch references
         
         if(pieceCount.get(Colour.WHITE).get(PieceType.KING) == 0){
@@ -372,7 +376,7 @@ public class Board {
                 if((pieces[i][j] != null)&&(pieces[i][j].pieceType != PieceType.KING)){
                     value += getPieceValue(pieces[i][j]);
                 }else{
-                    numberPieces--;
+                    numberPieces--; //subracting 1 for every null value
                 }
             }
         }
@@ -387,20 +391,7 @@ public class Board {
         
         
         return value;
-        /*
-        seperate for begin, mid, end game
-        begin game :: mid squares
-        mid game :: ??
-        end game :: diff pieces that are able to checkmate
-            - Q
-            - R
-            - 2B
-            - B, N
-            - 2 N
-            - 2N | P
-            - Q | R
-        - single minor piece cannot checkmate
-        */
+        
     }
     
     public int getEndgameValue(int numberPieces, EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount){
@@ -421,6 +412,8 @@ public class Board {
                     return 1;
                 }
             }
+        }else if(numberPieces == 4){
+            
         }
         return value;
     }
