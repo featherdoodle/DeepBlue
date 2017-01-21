@@ -209,7 +209,7 @@ public class Board {
                     }
                 }else{
                     moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+direction));//i kinda feel like this is wrong
-                moves.get(moves.size()-1).pieces[y+direction][x].pawnMoveState = PawnMove.MOVE_ONE;
+                    moves.get(moves.size()-1).pieces[y+direction][x].pawnMoveState = PawnMove.MOVE_ONE;
                 }
                 
                 /*if((y+direction) == 0){
@@ -241,7 +241,7 @@ public class Board {
                     }
                 }else if((checkBounds(x+i, y+direction))&&(pieces[y+direction][x+i] == null)){
                     if((checkBounds(x+i, y-direction))&&(pieces[y-direction][x+i] != null)&&(pieces[y-direction][x+i].pawnMoveState == PawnMove.LAST_MOVE_TWO)){
-                        if((pieces[y][x] != null)&&(pieces[y-direction][x+i].colour != pieces[x][y].colour)){
+                        if((pieces[y][x] != null)&&(pieces[y-direction][x+i].colour != pieces[y][x].colour)){
                             moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
                             moves.get(moves.size()-1).pieces[y-direction][x+i] = null;
                         }
