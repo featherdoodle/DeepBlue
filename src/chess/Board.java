@@ -196,7 +196,7 @@ public class Board {
         
         direction = pieces[y][x].colour == Colour.WHITE ? -1 : 1;
         
-        if((checkBounds(x, y+direction)&&(pieces[y+direction][x] == null))){
+        /*if((checkBounds(x, y+direction)&&(pieces[y+direction][x] == null))){
                 
                 if(((y+direction) == 0)||(y+direction == 7)){
                     for(PieceType j : PieceType.values()){ //small repetition
@@ -218,15 +218,23 @@ public class Board {
                         moves.get(moves.size()-1).pieces[y+direction][x].pieceType = i;
                         //when this happens, the user needs to be asked what they want to change the pawn to
                     }
-                }*/
-            }if((checkBounds(x, y+(direction*2))&&(pieces[y+(direction*2)][x] == null)&&(pieces[y][x].pawnMoveState == PawnMove.MOVE_ONE))){
+                }
+        }*/
+            /*if((checkBounds(x, y+(direction*2))&&(pieces[y+(direction*2)][x] == null)&&(pieces[y][x].pawnMoveState == PawnMove.MOVE_ONE))){
                 moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+(direction*2)));
                 moves.get(moves.size()-1).pieces[y+(direction*2)][x].pawnMoveState = PawnMove.LAST_MOVE_TWO;
-            }
+            }*/
             
-            for(int i = -1; i <= 1; i+=2){
-                 //this is a capture
-                if((checkBounds(x+i, y+direction))&&(pieces[y+direction][x+i] != null)&&(pieces[x][y] != null)&&(pieces[y+direction][x+i].colour != pieces[x][y].colour)){
+            for(int i = -1; i <= 1; i++){
+                boolean squareAvailable;
+                
+                if(i == 0){
+                    squareAvailable = ((checkBounds(x+i, y+direction))&&(pieces[y+direction][x+i] == null));
+                }else{
+                    squareAvailable = ((checkBounds(x+i, y+direction))&&(pieces[y+direction][x+i] != null)&&(pieces[y+direction][x+i].colour != pieces[x][y].colour)/*&&(pieces[x][y] != null)*/);
+                }
+                
+                if(squareAvailable){
                     if(((y+direction) == 0)||(y+direction == 7)){
                         for(PieceType j : PieceType.values()){ //small repetition
                             if((j != PieceType.PAWN)&&(j != PieceType.KING)){
@@ -238,8 +246,12 @@ public class Board {
                         }
                     }else{
                         moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
+                        if((checkBounds(x, y+(direction*2))&&(pieces[y+(direction*2)][x] == null)&&(pieces[y][x].pawnMoveState == PawnMove.MOVE_ONE))){
+                            moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+(direction*2)));
+                            moves.get(moves.size()-1).pieces[y+(direction*2)][x].pawnMoveState = PawnMove.LAST_MOVE_TWO;
+                        }
                     }
-                }else if((checkBounds(x+i, y+direction))&&(pieces[y+direction][x+i] == null)){
+                }else if(squareAvailable){
                     if((checkBounds(x+i, y-direction))&&(pieces[y-direction][x+i] != null)&&(pieces[y-direction][x+i].pawnMoveState == PawnMove.LAST_MOVE_TWO)){
                         if((pieces[y][x] != null)&&(pieces[y-direction][x+i].colour != pieces[y][x].colour)){
                             moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
