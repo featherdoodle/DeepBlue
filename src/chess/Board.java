@@ -202,13 +202,23 @@ public class Board {
         if((checkBounds(x, y+direction)&&(pieces[y+direction][x] == null))){
                 moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+direction));//i kinda feel like this is wrong
                 moves.get(moves.size()-1).pieces[y+direction][x].pawnMove = PawnMove.TRUE;
-                if((y+direction) == 0){
+                
+                if(((y+direction) == 0)||(y+direction == 7)){
+                    for(PieceType j : PieceType.values()){ //small repetition
+                        moves.add(makeMove(cloneBoard(this), x, y, x, y+direction));
+                        moves.get(moves.size()-1).pieces[y+direction][x].pieceType = j;
+                        //need to add multiple moves, one for each piece type... oops
+                        //when this happens, the user needs to be asked what they want to change the pawn to
+                    }
+                }
+                
+                /*if((y+direction) == 0){
                     //moves.get(moves.size()-1).pieces[y-1][x].pieceType = PieceType.QUEEN;
                     for(PieceType i : PieceType.values()){
                         moves.get(moves.size()-1).pieces[y+direction][x].pieceType = i;
                         //when this happens, the user needs to be asked what they want to change the pawn to
                     }
-                }
+                }*/
             }if((checkBounds(x, y+(direction*2))&&(pieces[y+(direction*2)][x] == null)&&(pieces[y][x].pawnMove == PawnMove.TRUE))){
                 moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+(direction*2)));
                 moves.get(moves.size()-1).pieces[y+(direction*2)][x].pawnMove = PawnMove.LAST_MOVE_TWO;
@@ -217,23 +227,25 @@ public class Board {
             for(int i = -1; i <= 1; i+=2){//HOW DID A FOR LOOP GIVE A NULL POINTER
                  //this is a capture
                 if((checkBounds(x+i, y+direction))&&(pieces[y+direction][x+i] != null)&&(pieces[x][y] != null)&&(pieces[y+direction][x+i].colour != pieces[x][y].colour)){
-                    moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
                     if(((y+direction) == 0)||(y+direction == 7)){
                         for(PieceType j : PieceType.values()){ //small repetition
-                            moves.get(moves.size()-1).pieces[y+direction][x].pieceType = j;
+                            moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
+                            moves.get(moves.size()-1).pieces[y+direction][x+i].pieceType = j;
                             //need to add multiple moves, one for each piece type... oops
                             //when this happens, the user needs to be asked what they want to change the pawn to
                         }
+                    }else{
+                        moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
                     }
                 }else if((checkBounds(x+i, y+(2*direction)))&&(pieces[y+(2*direction)][x+i] != null)&&(pieces[y+(2*direction)][x+i].pawnMove == PawnMove.LAST_MOVE_TWO)&&(pieces[x][y] != null)&&(pieces[y+(2*direction)][x+i].colour != pieces[x][y].colour)){
                     moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
                     moves.get(moves.size()-1).pieces[y+(2*direction)][x+i] = null;
-                    if(((y+direction) == 0)||(y+direction == 7)){
+                    /*if(((y+direction) == 0)||(y+direction == 7)){
                         for(PieceType j : PieceType.values()){ //small repetition
                             moves.get(moves.size()-1).pieces[y+direction][x].pieceType = j;
                             //when this happens, the user needs to be asked what they want to change the pawn to
                         }
-                    }
+                    }*/
                 }
                 
             }
