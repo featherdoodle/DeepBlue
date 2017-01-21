@@ -205,10 +205,12 @@ public class Board {
                 
                 if(((y+direction) == 0)||(y+direction == 7)){
                     for(PieceType j : PieceType.values()){ //small repetition
-                        moves.add(makeMove(cloneBoard(this), x, y, x, y+direction));
-                        moves.get(moves.size()-1).pieces[y+direction][x].pieceType = j;
-                        //need to add multiple moves, one for each piece type... oops
-                        //when this happens, the user needs to be asked what they want to change the pawn to
+                        if((j != PieceType.PAWN)&&(j != PieceType.KING)){
+                            moves.add(makeMove(cloneBoard(this), x, y, x, y+direction));
+                            moves.get(moves.size()-1).pieces[y+direction][x].pieceType = j;
+                            //need to add multiple moves, one for each piece type... oops
+                            //when this happens, the user needs to be asked what they want to change the pawn to
+                        }
                     }
                 }
                 
@@ -224,15 +226,17 @@ public class Board {
                 moves.get(moves.size()-1).pieces[y+(direction*2)][x].pawnMove = PawnMove.LAST_MOVE_TWO;
             }
             
-            for(int i = -1; i <= 1; i+=2){//HOW DID A FOR LOOP GIVE A NULL POINTER
+            for(int i = -1; i <= 1; i+=2){
                  //this is a capture
                 if((checkBounds(x+i, y+direction))&&(pieces[y+direction][x+i] != null)&&(pieces[x][y] != null)&&(pieces[y+direction][x+i].colour != pieces[x][y].colour)){
                     if(((y+direction) == 0)||(y+direction == 7)){
                         for(PieceType j : PieceType.values()){ //small repetition
-                            moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
-                            moves.get(moves.size()-1).pieces[y+direction][x+i].pieceType = j;
-                            //need to add multiple moves, one for each piece type... oops
-                            //when this happens, the user needs to be asked what they want to change the pawn to
+                            if((j != PieceType.PAWN)&&(j != PieceType.KING)){
+                                moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
+                                moves.get(moves.size()-1).pieces[y+direction][x+i].pieceType = j;
+                                //need to add multiple moves, one for each piece type... oops
+                                //when this happens, the user needs to be asked what they want to change the pawn to
+                            }
                         }
                     }else{
                         moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
