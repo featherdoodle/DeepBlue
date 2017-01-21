@@ -193,15 +193,10 @@ public class Board {
     
     public ArrayList<Board> getPawnMoves(ArrayList<Board> moves, int x, int y){
         int direction;
-        if(pieces[y][x].colour == Colour.WHITE){
-            direction = -1;
-        }else{
-            direction = 1;
-        }
+        
+        direction = pieces[y][x].colour == Colour.WHITE ? -1 : 1;
         
         if((checkBounds(x, y+direction)&&(pieces[y+direction][x] == null))){
-                moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+direction));//i kinda feel like this is wrong
-                moves.get(moves.size()-1).pieces[y+direction][x].pawnMove = PawnMove.TRUE;
                 
                 if(((y+direction) == 0)||(y+direction == 7)){
                     for(PieceType j : PieceType.values()){ //small repetition
@@ -212,6 +207,9 @@ public class Board {
                             //when this happens, the user needs to be asked what they want to change the pawn to
                         }
                     }
+                }else{
+                    moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+direction));//i kinda feel like this is wrong
+                moves.get(moves.size()-1).pieces[y+direction][x].pawnMoveState = PawnMove.MOVE_ONE;
                 }
                 
                 /*if((y+direction) == 0){
@@ -221,9 +219,9 @@ public class Board {
                         //when this happens, the user needs to be asked what they want to change the pawn to
                     }
                 }*/
-            }if((checkBounds(x, y+(direction*2))&&(pieces[y+(direction*2)][x] == null)&&(pieces[y][x].pawnMove == PawnMove.TRUE))){
+            }if((checkBounds(x, y+(direction*2))&&(pieces[y+(direction*2)][x] == null)&&(pieces[y][x].pawnMoveState == PawnMove.MOVE_ONE))){
                 moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+(direction*2)));
-                moves.get(moves.size()-1).pieces[y+(direction*2)][x].pawnMove = PawnMove.LAST_MOVE_TWO;
+                moves.get(moves.size()-1).pieces[y+(direction*2)][x].pawnMoveState = PawnMove.LAST_MOVE_TWO;
             }
             
             for(int i = -1; i <= 1; i+=2){
@@ -241,15 +239,14 @@ public class Board {
                     }else{
                         moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
                     }
-                }else if((checkBounds(x+i, y+(2*direction)))&&(pieces[y+(2*direction)][x+i] != null)&&(pieces[y+(2*direction)][x+i].pawnMove == PawnMove.LAST_MOVE_TWO)&&(pieces[x][y] != null)&&(pieces[y+(2*direction)][x+i].colour != pieces[x][y].colour)){
-                    moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
-                    moves.get(moves.size()-1).pieces[y+(2*direction)][x+i] = null;
-                    /*if(((y+direction) == 0)||(y+direction == 7)){
-                        for(PieceType j : PieceType.values()){ //small repetition
-                            moves.get(moves.size()-1).pieces[y+direction][x].pieceType = j;
-                            //when this happens, the user needs to be asked what they want to change the pawn to
+                }else if((checkBounds(x+i, y+direction))&&(pieces[y+direction][x+i] == null)){
+                    if((checkBounds(x+i, y-direction))&&(pieces[y-direction][x+i] != null)&&(pieces[y-direction][x+i].pawnMoveState == PawnMove.LAST_MOVE_TWO)){
+                        if((pieces[y][x] != null)&&(pieces[y-direction][x+i].colour != pieces[x][y].colour)){
+                            moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
+                            moves.get(moves.size()-1).pieces[y-direction][x+i] = null;
                         }
-                    }*/
+                    }
+                    
                 }
                 
             }
@@ -342,7 +339,7 @@ public class Board {
         }else{
             Piece returnPiece = new Piece(piece.pieceType, piece.colour);
             returnPiece.castling = piece.castling;
-            returnPiece.pawnMove = piece.pawnMove;
+            returnPiece.pawnMoveState = piece.pawnMoveState;
             return returnPiece;
         }
     }

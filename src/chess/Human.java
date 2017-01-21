@@ -43,11 +43,11 @@ public class Human extends Player{
         
         destinationBoard.pieces[y2][x2] = destinationBoard.pieces[y1][x1];
         destinationBoard.pieces[y1][x1] = null;
-        if(destinationBoard.pieces[y2][x2].pawnMove == PawnMove.TRUE){
+        if(destinationBoard.pieces[y2][x2].pawnMoveState == PawnMove.MOVE_ONE){
             if(Math.abs(y2-y1) == 2){
-                destinationBoard.pieces[y2][x2].pawnMove = PawnMove.LAST_MOVE_TWO;
+                destinationBoard.pieces[y2][x2].pawnMoveState = PawnMove.LAST_MOVE_TWO;
             }else{
-                destinationBoard.pieces[y2][x2].pawnMove = PawnMove.FALSE;
+                destinationBoard.pieces[y2][x2].pawnMoveState = PawnMove.MOVE_TWO;
             }
         }if(destinationBoard.pieces[y2][x2].castling){
             destinationBoard.pieces[y2][x2].castling = false;

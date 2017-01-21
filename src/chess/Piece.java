@@ -11,8 +11,8 @@ package chess;
  */
 public class Piece {
     
-    Colour colour; //-1 is black, 1 is white
-    PawnMove pawnMove = PawnMove.FALSE;
+    Colour colour; 
+    PawnMove pawnMoveState = PawnMove.MOVE_TWO;
     boolean castling = false;
     PieceType pieceType;
     
@@ -20,7 +20,7 @@ public class Piece {
         colour = _colour;
         pieceType = _pieceType;
         if(pieceType == PieceType.PAWN){
-            pawnMove = PawnMove.TRUE;
+            pawnMoveState = PawnMove.MOVE_ONE;
         }
         if((pieceType == PieceType.KING)||(pieceType == PieceType.ROOK)){
             castling = true;
@@ -33,7 +33,7 @@ public class Piece {
     }
     
     public static enum PawnMove{
-        TRUE, FALSE, LAST_MOVE_TWO;
+        MOVE_ONE, MOVE_TWO, LAST_MOVE_TWO;
     }
     
     public static enum Colour{
@@ -51,7 +51,7 @@ public class Piece {
     public boolean equals(Object object){
         if(object instanceof Piece){
             if((((Piece)object).pieceType == pieceType)&&(((Piece)object).colour == colour)){
-                if((((Piece)object).pawnMove == pawnMove)&&(((Piece)object).castling == castling)){
+                if((((Piece)object).pawnMoveState == pawnMoveState)&&(((Piece)object).castling == castling)){
                     return true;
                 }
             }
