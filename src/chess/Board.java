@@ -208,7 +208,7 @@ public class Board {
                     capture = true;
                 }
                 
-                if(squareAvailable(x+i, y+direction, capture, colour)){
+                if(squareAvailable(x+i, y+direction, 0, capture, false, colour)){
                     if(((y+direction) == 0)||(y+direction == 7)){
                         for(PieceType j : PieceType.values()){ //small repetition
                             if((j != PieceType.PAWN)&&(j != PieceType.KING)){
@@ -218,34 +218,40 @@ public class Board {
                                 //when this happens, the user needs to be asked what they want to change the pawn to
                             }
                         }
-                    }
-                }if(squareAvailable(x+i, y-direction, capture, colour)){
-                    if((checkBounds(x+i, y-direction))&&(pieces[y-direction][x+i] != null)&&(pieces[y-direction][x+i].pawnMoveState == PawnMove.LAST_MOVE_TWO)){
-                        if((pieces[y][x] != null)&&(pieces[y-direction][x+i].colour != pieces[y][x].colour)){
-                            moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
-                            moves.get(moves.size()-1).pieces[y-direction][x+i] = null;
-                        }
-                    }
-                }if(squareAvailable(x+i, y+(2*direction), capture, colour)){
+                    }else{
                         moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
-                        if((checkBounds(x, y+(direction*2))&&(pieces[y+(direction*2)][x] == null)&&(pieces[y][x].pawnMoveState == PawnMove.MOVE_ONE))){
-                            moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+(direction*2)));
-                            moves.get(moves.size()-1).pieces[y+(direction*2)][x].pawnMoveState = PawnMove.LAST_MOVE_TWO;
-                        }
                     }
-                
+                }if(squareAvailable(x+i, y+direction, direction, capture, true, colour)){
+                    moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
+                    moves.get(moves.size()-1).pieces[y-direction][x+i] = null;
+                }if(squareAvailable(x+i, y+(2*direction), 0, capture, false, colour)){
+                    moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
+                    if((checkBounds(x, y+(direction*2))&&(pieces[y+(direction*2)][x] == null)&&(pieces[y][x].pawnMoveState == PawnMove.MOVE_ONE))){
+                        moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+(direction*2)));
+                        moves.get(moves.size()-1).pieces[y+(direction*2)][x].pawnMoveState = PawnMove.LAST_MOVE_TWO;
+                    }
+                }
             }
             
          
         return moves;
     }
     
-    public boolean squareAvailable(int x, int y, boolean capture, Colour colour){
-        if(!capture){
-            return ((checkBounds(x, y))&&(pieces[y][x] == null));
+    public boolean squareAvailable(int x, int y, int direction, boolean capture, boolean enpassant, Colour colour){
+        boolean available = false;
+        
+        if(!capture){ 
+            available = ((checkBounds(x, y))&&(pieces[y][x] == null));
+        }else if(!enpassant){
+            available = ((checkBounds(x, y))&&(pieces[y][x] != null)&&(pieces[x][y] != null)&&(pieces[y][x].colour != colour));
         }else{
-            return ((checkBounds(x, y))&&(pieces[y][x] != null)&&(pieces[x][y] != null)&&(pieces[y][x].colour != colour));
+            if((checkBounds(x, y))&&(pieces[y][x] == null)){
+                if((checkBounds(x, y-direction))&&(pieces[y-direction][x] != null)&&(pieces[y-direction][x].pawnMoveState == PawnMove.LAST_MOVE_TWO)&&(colour != pieces[y-direction][x].colour)){
+                    available = true;
+                }
+            }
         }
+        return available;
     }
     
     public ArrayList<Board> getRookMoves(ArrayList<Board> moves, int x, int y){
