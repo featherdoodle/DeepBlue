@@ -6,7 +6,7 @@
 package chess;
 
 import chess.Piece.Colour;
-import chess.Piece.PawnMove;
+import chess.Piece.PawnMoveState;
 import chess.Piece.PieceType;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -214,8 +214,7 @@ public class Board {
                             if((j != PieceType.PAWN)&&(j != PieceType.KING)){
                                 moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
                                 moves.get(moves.size()-1).pieces[y+direction][x+i].pieceType = j;
-                                //need to add multiple moves, one for each piece type... oops
-                                //when this happens, the user needs to be asked what they want to change the pawn to
+                                moves.get(moves.size()-1).pieces[y+direction][x+i].pawnMoveState = null;
                             }
                         }
                     }else{
@@ -223,13 +222,10 @@ public class Board {
                     }
                 }if(squareAvailable(x+i, y+direction, direction, capture, true, colour)){
                     moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
-                    moves.get(moves.size()-1).pieces[y-direction][x+i] = null;
-                }if(squareAvailable(x+i, y+(2*direction), 0, capture, false, colour)){
-                    moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
-                    if((checkBounds(x, y+(direction*2))&&(pieces[y+(direction*2)][x] == null)&&(pieces[y][x].pawnMoveState == PawnMove.MOVE_ONE))){
-                        moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+(direction*2)));
-                        moves.get(moves.size()-1).pieces[y+(direction*2)][x].pawnMoveState = PawnMove.LAST_MOVE_TWO;
-                    }
+                    moves.get(moves.size()-1).pieces[y][x+i] = null;
+                }if(squareAvailable(x+i, y+(2*direction), 0, capture, false, colour)){                    
+                    moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+(direction*2)));
+                    moves.get(moves.size()-1).pieces[y+(direction*2)][x].pawnMoveState = PawnMoveState.LAST_MOVE_TWO;
                 }
             }
             
@@ -246,7 +242,7 @@ public class Board {
             available = ((checkBounds(x, y))&&(pieces[y][x] != null)&&(pieces[x][y] != null)&&(pieces[y][x].colour != colour));
         }else{
             if((checkBounds(x, y))&&(pieces[y][x] == null)){
-                if((checkBounds(x, y-direction))&&(pieces[y-direction][x] != null)&&(pieces[y-direction][x].pawnMoveState == PawnMove.LAST_MOVE_TWO)&&(colour != pieces[y-direction][x].colour)){
+                if((checkBounds(x, y-direction))&&(pieces[y-direction][x] != null)&&(pieces[y-direction][x].pawnMoveState == PawnMoveState.LAST_MOVE_TWO)&&(colour != pieces[y-direction][x].colour)){
                     available = true;
                 }
             }
@@ -311,6 +307,14 @@ public class Board {
         returnBoard.pieces[y2][x2] = returnBoard.pieces[y1][x1];
         returnBoard.pieces[y1][x1] = null;
 
+        for(int i = 0; i < 8; i++){
+            if((returnBoard.pieces[3][i] != null)&&(returnBoard.pieces[3][i].pieceType == PieceType.PAWN)){
+                returnBoard.pieces[3][i].pawnMoveState = PawnMoveState.MOVE_ONE;
+            }if((returnBoard.pieces[4][i] != null)&&(returnBoard.pieces[4][i].pieceType == PieceType.PAWN)){
+                returnBoard.pieces[4][i].pawnMoveState = PawnMoveState.MOVE_ONE;
+            }
+        }
+        
         return returnBoard;
     }
     

@@ -6,7 +6,7 @@
 package chess;
 
 import chess.Piece.Colour;
-import chess.Piece.PawnMove;
+import chess.Piece.PawnMoveState;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -43,11 +43,11 @@ public class Human extends Player{
         
         destinationBoard.pieces[y2][x2] = destinationBoard.pieces[y1][x1];
         destinationBoard.pieces[y1][x1] = null;
-        if(destinationBoard.pieces[y2][x2].pawnMoveState == PawnMove.MOVE_ONE){
+        if(destinationBoard.pieces[y2][x2].pawnMoveState == PawnMoveState.MOVE_ONE){
             if(Math.abs(y2-y1) == 2){
-                destinationBoard.pieces[y2][x2].pawnMoveState = PawnMove.LAST_MOVE_TWO;
+                destinationBoard.pieces[y2][x2].pawnMoveState = PawnMoveState.LAST_MOVE_TWO;
             }else{
-                destinationBoard.pieces[y2][x2].pawnMoveState = PawnMove.MOVE_TWO;
+                destinationBoard.pieces[y2][x2].pawnMoveState = PawnMoveState.MOVE_TWO;
             }
         }if(destinationBoard.pieces[y2][x2].castling){
             destinationBoard.pieces[y2][x2].castling = false;

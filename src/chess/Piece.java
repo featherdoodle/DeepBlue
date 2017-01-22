@@ -12,7 +12,7 @@ package chess;
 public class Piece {
     
     Colour colour; 
-    PawnMove pawnMoveState = PawnMove.MOVE_TWO;
+    PawnMoveState pawnMoveState = null;
     boolean castling = false;
     PieceType pieceType;
     
@@ -20,7 +20,7 @@ public class Piece {
         colour = _colour;
         pieceType = _pieceType;
         if(pieceType == PieceType.PAWN){
-            pawnMoveState = PawnMove.MOVE_ONE;
+            pawnMoveState = PawnMoveState.MOVE_TWO;
         }
         if((pieceType == PieceType.KING)||(pieceType == PieceType.ROOK)){
             castling = true;
@@ -32,7 +32,7 @@ public class Piece {
         PAWN, ROOK, BISHOP, KNIGHT, QUEEN, KING;
     }
     
-    public static enum PawnMove{
+    public static enum PawnMoveState{
         MOVE_ONE, MOVE_TWO, LAST_MOVE_TWO;
     }
     
