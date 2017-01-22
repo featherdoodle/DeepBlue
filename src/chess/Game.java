@@ -65,8 +65,8 @@ public class Game {
                 System.out.println("");
             }
         }else if(firstChoice == 5){
-            playerOne = new AI(Colour.WHITE, 1000);
-            playerTwo = new AI(Colour.BLACK, 1000);
+            playerOne = new AI(Colour.WHITE, 10000);
+            playerTwo = new AI(Colour.BLACK, 10000);
         }else{ //quitting
             System.exit(0);
         }

@@ -104,7 +104,7 @@ public class AI extends Player{
                 if((board.pieces[y][x] != null)&&(board.pieces[y][x].colour == checkColour)){
                     ArrayList<Board> moves = new ArrayList<>();
                     moves = board.getPieceMoves(x, y);
-                    for(int m = 0; m < moves.size(); m++){ //size();
+                    for(int m = 0; m < moves.size(); m++){
                         allMoves.add(moves.get(m));
                     }
                 }
