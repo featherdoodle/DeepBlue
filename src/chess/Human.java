@@ -7,6 +7,7 @@ package chess;
 
 import chess.Piece.Colour;
 import chess.Piece.PawnMoveState;
+import chess.Piece.PieceType;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -22,37 +23,48 @@ public class Human extends Player{
     
     @Override
     public Board move(Board board){
-        Scanner scan = new Scanner(System.in);
         
         int x1, y1, x2, y2; 
+        
+        Scanner scan = new Scanner(System.in);
         
         System.out.print("Piece? (x, y): ");
 
         x1 = scan.nextInt();
         y1 = scan.nextInt();
         
+        //x1 = Game.getChoice(0, 8);
+        //y1 = Game.getChoice(0, 8);
+        
         System.out.print("Destination? (x, y): ");
         
         x2 = scan.nextInt();
         y2 = scan.nextInt();
+        //x2 = Game.getChoice(0, 8);
+        //y2 = Game.getChoice(0, 8);
         
-        //Board destinationBoard = board;
         Board destinationBoard = new Board();
         destinationBoard = destinationBoard.cloneBoard(board);//new Board();
         
         
+        //destinationBoard = destinationBoard.makeMove(board, x1, y1, x2, y2);
+        
         destinationBoard.pieces[y2][x2] = destinationBoard.pieces[y1][x1];
         destinationBoard.pieces[y1][x1] = null;
-        if(destinationBoard.pieces[y2][x2].pawnMoveState == PawnMoveState.MOVE_ONE){
-            if(Math.abs(y2-y1) == 2){
-                destinationBoard.pieces[y2][x2].pawnMoveState = PawnMoveState.LAST_MOVE_TWO;
-            }else{
-                destinationBoard.pieces[y2][x2].pawnMoveState = PawnMoveState.MOVE_TWO;
-            }
-        }if(destinationBoard.pieces[y2][x2].castling){
-            destinationBoard.pieces[y2][x2].castling = false;
-        }
         
+        if(destinationBoard.pieces[y2][x2] != null){
+            if(destinationBoard.pieces[y2][x2].pieceType == PieceType.PAWN){
+                if(destinationBoard.pieces[y2][x2].pawnMoveState == PawnMoveState.MOVE_TWO){
+                    if(Math.abs(y2-y1) == 2){
+                        destinationBoard.pieces[y2][x2].pawnMoveState = PawnMoveState.LAST_MOVE_TWO;
+                    }else{
+                        destinationBoard.pieces[y2][x2].pawnMoveState = PawnMoveState.MOVE_ONE;
+                    }
+                }
+            }if(destinationBoard.pieces[y2][x2].castling){
+                destinationBoard.pieces[y2][x2].castling = false;
+            }
+        }
         boolean contains = false;
         
         ArrayList<Board> allMoves = board.refinePieceMoves(x1, y1);
@@ -61,6 +73,15 @@ public class Human extends Player{
                 contains = true;
             }
         }
+        
+        for(int i = 0; i < 8; i++){
+            if((destinationBoard.pieces[3][i] != null)&&(destinationBoard.pieces[3][i].pieceType == PieceType.PAWN)){
+                destinationBoard.pieces[3][i].pawnMoveState = PawnMoveState.MOVE_ONE;
+            }if((destinationBoard.pieces[4][i] != null)&&(destinationBoard.pieces[4][i].pieceType == PieceType.PAWN)){
+                destinationBoard.pieces[4][i].pawnMoveState = PawnMoveState.MOVE_ONE;
+            }
+        }
+        
         if(contains){
             return destinationBoard;
         }else{

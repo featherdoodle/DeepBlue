@@ -70,7 +70,7 @@ public class Board {
     
     public void printBoard(){
         
-        System.out.println(ANSI_RESET + " |0|1|2|3|4|5|6|7");
+        System.out.println(ANSI_RESET + " \u30000\u30001\u30002\u30003\u30004\u30005\u30006\u30007");
         for(int i = 0; i < 8; i++){
             System.out.print(i);
             System.out.print("|");
@@ -219,10 +219,12 @@ public class Board {
                         }
                     }else{
                         moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
+                        moves.get(moves.size()-1).pieces[y+direction][x+i].pawnMoveState = PawnMoveState.MOVE_ONE;
                     }
                 }if(squareAvailable(x+i, y+direction, direction, capture, true, colour)){
                     moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
                     moves.get(moves.size()-1).pieces[y][x+i] = null;
+                    moves.get(moves.size()-1).pieces[y+direction][x+i].pawnMoveState = PawnMoveState.MOVE_ONE;
                 }if(squareAvailable(x+i, y+(2*direction), 0, capture, false, colour)){                    
                     moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+(direction*2)));
                     moves.get(moves.size()-1).pieces[y+(direction*2)][x].pawnMoveState = PawnMoveState.LAST_MOVE_TWO;

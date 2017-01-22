@@ -23,9 +23,9 @@ public class Game {
         
         Scanner scan = new Scanner(System.in); 
         
-        System.out.println("1. Play Game\n2. Instructions\n3. Options\n4. Exit");
+        System.out.println("1. Play Game\n2. Instructions\n3. Exit");
         
-        int firstChoice = getChoice(1, 5); //valid input checking
+        int firstChoice = getChoice(1, 4); //valid input checking
         
         if(firstChoice == 1){
             System.out.println("1. P v P\n2. P v AI\n3. AI v AI");
@@ -58,13 +58,7 @@ public class Game {
             }
         }else if(firstChoice == 2){
             printInstructions();
-        }else if(firstChoice == 3){ //options: changing colours
-            System.out.println("1. Choose Colours\n2. Back to Menu");
-            int thirdChoice = getChoice(1, 2);
-            if(thirdChoice == 1){
-                System.out.println("");
-            }
-        }else if(firstChoice == 5){
+        }else if(firstChoice == 4){
             playerOne = new AI(Colour.WHITE, 1000);
             playerTwo = new AI(Colour.BLACK, 1000);
         }else{ //quitting
@@ -78,7 +72,7 @@ public class Game {
      * @param max
      * @return 
      */
-    public int getChoice(int min, int max){
+    public static int getChoice(int min, int max){
         for(;;){ //infinate loop
             Scanner scan = new Scanner(System.in);
             try{
