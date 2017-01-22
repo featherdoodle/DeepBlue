@@ -231,7 +231,7 @@ public class Board {
                 if(i == 0){
                     squareAvailable = ((checkBounds(x+i, y+direction))&&(pieces[y+direction][x+i] == null));
                 }else{
-                    squareAvailable = ((checkBounds(x+i, y+direction))&&(pieces[y+direction][x+i] != null)&&(pieces[y+direction][x+i].colour != pieces[x][y].colour)/*&&(pieces[x][y] != null)*/);
+                    squareAvailable = ((checkBounds(x+i, y+direction))&&(pieces[y+direction][x+i] != null)&&(pieces[x][y] != null)&&(pieces[y+direction][x+i].colour != pieces[x][y].colour)/*&&(pieces[x][y] != null)*/);
                 }
                 
                 if(squareAvailable){
