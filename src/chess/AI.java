@@ -58,14 +58,14 @@ public class AI extends Player{
         if(colour == Colour.WHITE){ //if they are white, they want high values
             if(bestValue == -100000){
                 //moves.get(0).winnerState = WinnerState.PLAYER_TWO_WINS;
-                return null; //TODO: don't return null! maybe return null
+                return board; //TODO: don't return null! maybe return null
             }
             return moves.get(bestIndices.get(random.nextInt(bestIndices.size()))); 
             //if the values are equal, the move is chosen randomly
         }else{ //if they are black, they want low values
             if(worstValue == 100000){
                 //moves.get(0).winnerState = WinnerState.PLAYER_ONE_WINS;
-                return null; //TODO: don't return null! maybe return null
+                return board; //TODO: don't return null! maybe return null
             }
             return moves.get(worstIndices.get(random.nextInt(worstIndices.size())));
             //again, choosing randomly if the values are equal

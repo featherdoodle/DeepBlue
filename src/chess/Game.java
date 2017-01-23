@@ -111,20 +111,30 @@ public class Game {
         while(board.winnerState == WinnerState.UNFINISHED){
             while(turn){
                 //TODO: make tempboard and check if it is null-- keep board same, diff winnerstate
-                board = board.cloneBoard(playerOne.move(board));
-                if(board == null){
+                if(board == playerOne.move(board)){
                     board.winnerState = WinnerState.PLAYER_TWO_WINS;
                     break;
+                }else{
+                    board = board.cloneBoard(playerOne.move(board));
                 }
+                /*if(board == null){
+                    board.winnerState = WinnerState.PLAYER_TWO_WINS;
+                    break;
+                }*/
                 board.printBoard();
                 System.out.println();
                 turn = false;
             }while(!turn){
-                board = board.cloneBoard(playerTwo.move(board));
-                if(board == null){
+                if(board == playerTwo.move(board)){
                     board.winnerState = WinnerState.PLAYER_ONE_WINS;
                     break;
+                }else{
+                    board = board.cloneBoard(playerTwo.move(board));
                 }
+                /*if(board == null){
+                    board.winnerState = WinnerState.PLAYER_ONE_WINS;
+                    break;
+                }*/
                 board.printBoard();
                 System.out.println();
                 turn = true;

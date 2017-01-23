@@ -68,6 +68,11 @@ public class Human extends Player{
         boolean contains = false;
         
         ArrayList<Board> allMoves = board.refinePieceMoves(x1, y1);
+        
+        if(allMoves.isEmpty()){
+            return board;
+        }
+        
         for(int i = 0; i < allMoves.size(); i++){
             if(allMoves.get(i).equals(destinationBoard)){
                 contains = true;
@@ -85,7 +90,8 @@ public class Human extends Player{
         if(contains){
             return destinationBoard;
         }else{
-            return null;
+            System.out.println("Enter a valid move");
+            return move(board);
         }
     }
 }
