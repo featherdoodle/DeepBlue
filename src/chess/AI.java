@@ -5,6 +5,7 @@
  */
 package chess;
 
+import chess.Board.WinnerState;
 import chess.Piece.Colour;
 import java.util.ArrayList;
 import java.util.Random;
@@ -31,33 +32,41 @@ public class AI extends Player{
         for(int i = 0; i < moves.size(); i++){
             values[i] = getMoveValue(moves.get(i), /*Colour.swap(colour)*/colour, difficulty);//getting the value of the move to add to the second list
         }
-        
-        int bestValue = values[0]; //initializing the values to the first value in the list
+        //finding the best and worst values and indices
+        int bestValue = values[0]; //TODO: Array out of bounds when game ends
         int worstValue = values[0];
         ArrayList<Integer> bestIndices = new ArrayList<>();
-        bestIndices.add(0); //initializing the best and worst indices to the first index.
+        bestIndices.add(0); 
         ArrayList<Integer> worstIndices = new ArrayList<>();
         worstIndices.add(0);
-        for(int i = 1; i < moves.size(); i++){ //iterating through each of the moves
+        for(int i = 1; i < moves.size(); i++){ 
             if(values[i] > bestValue){
                 bestValue = values[i];
                 bestIndices.clear();
-                bestIndices.add(i); //clearing the list and adding the new best index
+                bestIndices.add(i); 
             }else if(values[i] == bestValue){
-                bestIndices.add(i); //if the indices are the same, adding an index to the list
+                bestIndices.add(i); 
             }
-            if(values[i] < worstValue){ //same for the worst indices
+            if(values[i] < worstValue){ 
                 worstValue = values[i];
                 worstIndices.clear();
                 worstIndices.add(i);
             }else if(values[i] == worstValue){
                 worstIndices.add(i);
             }
-        }
+        }//TODO: return empty array?
         if(colour == Colour.WHITE){ //if they are white, they want high values
+            if(bestValue == -100000){
+                //moves.get(0).winnerState = WinnerState.PLAYER_TWO_WINS;
+                return null; //TODO: don't return null! maybe return null
+            }
             return moves.get(bestIndices.get(random.nextInt(bestIndices.size()))); 
             //if the values are equal, the move is chosen randomly
         }else{ //if they are black, they want low values
+            if(worstValue == 100000){
+                //moves.get(0).winnerState = WinnerState.PLAYER_ONE_WINS;
+                return null; //TODO: don't return null! maybe return null
+            }
             return moves.get(worstIndices.get(random.nextInt(worstIndices.size())));
             //again, choosing randomly if the values are equal
         }
@@ -65,8 +74,7 @@ public class AI extends Player{
     
     /**
      * Looking through future moves to see what the future boards will look like
-     * @param board
-     * @param checkColour
+     * @param checkColour 
      * @param depth
      * @return 
      */
@@ -76,7 +84,7 @@ public class AI extends Player{
             return board.getBoardValue();
         }else{
             checkColour = Colour.swap(checkColour); //check colour
-            ArrayList<Board> moves = getAllMoves(board, checkColour);//if movrd is empty
+            ArrayList<Board> moves = getAllMoves(board, checkColour);//if moves is empty
             
             int count = moves.size();
             
@@ -89,6 +97,7 @@ public class AI extends Player{
                         bestValue = value;
                     }
                 }
+                
                 return bestValue;
             }else{
                 return board.getBoardValue();
@@ -112,7 +121,14 @@ public class AI extends Player{
         }
         return allMoves;
     }
-    
+    /**
+     * Returns the better value based on the colour of the piece. Black wants lower
+     * numbers, white wants higher numbers.
+     * @param pieceColour
+     * @param a
+     * @param b
+     * @return 
+     */
     private int getMinMax(Colour pieceColour, int a, int b){
         
         if(pieceColour == Colour.WHITE){

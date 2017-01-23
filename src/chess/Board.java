@@ -124,7 +124,7 @@ public class Board {
      * @return 
      */
     public ArrayList<Board> getPieceMoves(int x, int y){
-        //CASTLING FOR WHITE AND EN PASSANT
+        
         ArrayList<Board> moves = new ArrayList<>();
         
         if(pieces[y][x].pieceType == PieceType.PAWN){
@@ -155,7 +155,6 @@ public class Board {
         }else if(pieces[y][x].pieceType == PieceType.KING){
             for(int i = -1; i <= 1; i++){
                 for(int j = -1; j <= 1; j++){
-                    //this will try the current position, but that won't work
                     if(checkBounds(x+i, y+j)){
                         if((pieces[y+j][x+i] == null)||(pieces[y][x].colour != pieces[y+j][x+i].colour)){
                             moves.add(makeMove(cloneBoard(this), x, y, x+i, y+j));
@@ -187,8 +186,7 @@ public class Board {
             }
         }
         
-        //returns null if the list is empty
-        //TODO: return empty array
+        //TODO: return empty array?
         return moves;
     }
     
@@ -199,7 +197,6 @@ public class Board {
         direction = colour == Colour.WHITE ? -1 : 1;
             
             for(int i = -1; i <= 1; i++){
-                //boolean squareAvailable;
                 boolean capture;
                 
                 if(i == 0){
@@ -221,7 +218,7 @@ public class Board {
                         moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
                         moves.get(moves.size()-1).pieces[y+direction][x+i].pawnMoveState = PawnMoveState.MOVE_ONE;
                     }
-                }if(squareAvailable(x+i, y+direction, direction, capture, true, colour)){
+                }if((capture)&&(squareAvailable(x+i, y+direction, direction, capture, true, colour))){
                     moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
                     moves.get(moves.size()-1).pieces[y][x+i] = null;
                     moves.get(moves.size()-1).pieces[y+direction][x+i].pawnMoveState = PawnMoveState.MOVE_ONE;
@@ -539,9 +536,7 @@ public class Board {
         }else if(getBoardValue() <= -100000){
             winnerState = WinnerState.PLAYER_TWO_WINS;
         }else{
-            //should do piece count and then determine if the pieces left are able to checkmate?
             //check tie, and then unfinished
-            //that will be in the endgameValue method
         }
     }
     

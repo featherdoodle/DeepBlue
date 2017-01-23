@@ -89,7 +89,16 @@ public class Game {
     }
     
     public void printInstructions(){ //method to print instructions
-        System.out.print("Instructions");
+        System.out.print("Instructions\nChess is a two player game with 6 different"
+                + "types of pieces. The goal of the game is to put the other player"
+                + "in checkmate. This is when their king is current being threatened"
+                + "and is unable to move without being under attack by an enemy piece."
+                + "Each piece has different capabilities. PAWN: Can only move forward"
+                + "(towards the enemy's side of the board) by one square at a time. "
+                + "On the first turn, pawns are able to move two squares forward. "
+                + "Pawns capture pieces by moving diagonally one square. KNIGHT: "
+                + "The only piece that can jump overtop of other pieces. Moves in an"
+                + "L shape (moves ");
     }
     /**
      * Switches between turns, running the actual game. Continues until the game is finished.
@@ -101,21 +110,25 @@ public class Game {
         
         while(board.winnerState == WinnerState.UNFINISHED){
             while(turn){
-                /*if(playerOne.move(board) == null){
-                    System.out.println("Invalid");
-                }else{*/
-                    board = board.cloneBoard(playerOne.move(board));
-                    board.printBoard();
-                    System.out.println();
-                    turn = false;
-                //}
+                //TODO: make tempboard and check if it is null-- keep board same, diff winnerstate
+                board = board.cloneBoard(playerOne.move(board));
+                if(board == null){
+                    board.winnerState = WinnerState.PLAYER_TWO_WINS;
+                    break;
+                }
+                board.printBoard();
+                System.out.println();
+                turn = false;
             }while(!turn){
                 board = board.cloneBoard(playerTwo.move(board));
+                if(board == null){
+                    board.winnerState = WinnerState.PLAYER_ONE_WINS;
+                    break;
+                }
                 board.printBoard();
                 System.out.println();
                 turn = true;
             }
-            //seems like a bad spot to do it, but i need to reset the pawn last_move_two
             board.updateWinnerState();
         }
         
