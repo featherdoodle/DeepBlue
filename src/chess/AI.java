@@ -26,15 +26,15 @@ public class AI extends Player{
     @Override
     public Board move(Board board){
         Random random = new Random();
-        ArrayList<Board> moves = getAllMoves(board, colour); //list that contains all the possible moves
-        int[] values = new int[moves.size()]; 
+        ArrayList<Board> moves = board.getAllMoves(colour); //list that contains all the possible moves
+        double[] values = new double[moves.size()]; 
         //list that contains the board values for each possible move. the indices match up with the previous list
         for(int i = 0; i < moves.size(); i++){
             values[i] = getMoveValue(moves.get(i), /*Colour.swap(colour)*/colour, difficulty);//getting the value of the move to add to the second list
         }
         //finding the best and worst values and indices
-        int bestValue = values[0]; //TODO: Array out of bounds when game ends
-        int worstValue = values[0];
+        double bestValue = values[0]; //TODO: Array out of bounds when game ends
+        double worstValue = values[0];
         ArrayList<Integer> bestIndices = new ArrayList<>();
         bestIndices.add(0); 
         ArrayList<Integer> worstIndices = new ArrayList<>();
@@ -78,21 +78,21 @@ public class AI extends Player{
      * @param depth
      * @return 
      */
-    private int getMoveValue(Board board, Colour checkColour, long depth){
+    private double getMoveValue(Board board, Colour checkColour, long depth){
         
         if(depth <= 1){
             return board.getBoardValue();
         }else{
             checkColour = Colour.swap(checkColour); //check colour
-            ArrayList<Board> moves = getAllMoves(board, checkColour);//if moves is empty
+            ArrayList<Board> moves = board.getAllMoves(checkColour);//if moves is empty
             
             int count = moves.size();
             
             if(!moves.isEmpty()){
-                int bestValue = getMoveValue(moves.get(0), checkColour, depth/count); 
+                double bestValue = getMoveValue(moves.get(0), checkColour, depth/count); 
                 //depth is based on count, so when there are less moves, it looks less in the future
                 for(int i = 1; i < moves.size(); i++){ 
-                    int value = getMoveValue(moves.get(i), checkColour, depth/count);
+                    double value = getMoveValue(moves.get(i), checkColour, depth/count);
                     if(getMinMax(checkColour, bestValue, value) == value){
                         bestValue = value;
                     }
@@ -105,22 +105,6 @@ public class AI extends Player{
         }
     }
     
-    private ArrayList<Board> getAllMoves(Board board, Colour checkColour){
-        ArrayList<Board> allMoves = new ArrayList<>();
-        for(int x = 0; x < 8; x++){
-            for(int y = 0; y < 8; y++){
-                //added null check
-                if((board.pieces[y][x] != null)&&(board.pieces[y][x].colour == checkColour)){
-                    ArrayList<Board> moves = new ArrayList<>();
-                    moves = board.getPieceMoves(x, y);
-                    for(int m = 0; m < moves.size(); m++){
-                        allMoves.add(moves.get(m));
-                    }
-                }
-            }
-        }
-        return allMoves;
-    }
     /**
      * Returns the better value based on the colour of the piece. Black wants lower
      * numbers, white wants higher numbers.
@@ -129,7 +113,7 @@ public class AI extends Player{
      * @param b
      * @return 
      */
-    private int getMinMax(Colour pieceColour, int a, int b){
+    private double getMinMax(Colour pieceColour, double a, double b){
         
         if(pieceColour == Colour.WHITE){
             return Math.max(a, b);

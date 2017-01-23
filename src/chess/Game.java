@@ -36,7 +36,7 @@ public class Game {
                 playerTwo = new Human(Colour.BLACK);
             }else if(secondChoice == 2){ //when one player is human, one ai
                 System.out.println("Human playing as black or white?");
-                scan.nextLine();
+                //scan.nextLine();
                 String colourChoice = scan.nextLine();
                 System.out.println("Select the difficulty of the AI (1, 2 or 3)");
                 long difficulty = getChoice(1, 3); 
@@ -108,33 +108,28 @@ public class Game {
         board.printBoard();
         System.out.println();
         
+        Board tempBoard;
+        
         while(board.winnerState == WinnerState.UNFINISHED){
             while(turn){
-                //TODO: make tempboard and check if it is null-- keep board same, diff winnerstate
-                if(board == playerOne.move(board)){
+                tempBoard = board.cloneBoard(playerOne.move(board));
+                if(board.equals(tempBoard)){
                     board.winnerState = WinnerState.PLAYER_TWO_WINS;
                     break;
                 }else{
-                    board = board.cloneBoard(playerOne.move(board));
+                    board = board.cloneBoard(tempBoard);
                 }
-                /*if(board == null){
-                    board.winnerState = WinnerState.PLAYER_TWO_WINS;
-                    break;
-                }*/
                 board.printBoard();
                 System.out.println();
                 turn = false;
             }while(!turn){
-                if(board == playerTwo.move(board)){
+                tempBoard = board.cloneBoard(playerTwo.move(board));
+                if(board.equals(tempBoard)){
                     board.winnerState = WinnerState.PLAYER_ONE_WINS;
                     break;
                 }else{
-                    board = board.cloneBoard(playerTwo.move(board));
+                    board = board.cloneBoard(tempBoard);
                 }
-                /*if(board == null){
-                    board.winnerState = WinnerState.PLAYER_ONE_WINS;
-                    break;
-                }*/
                 board.printBoard();
                 System.out.println();
                 turn = true;

@@ -44,10 +44,7 @@ public class Human extends Player{
         //y2 = Game.getChoice(0, 8);
         
         Board destinationBoard = new Board();
-        destinationBoard = destinationBoard.cloneBoard(board);//new Board();
-        
-        
-        //destinationBoard = destinationBoard.makeMove(board, x1, y1, x2, y2);
+        destinationBoard = destinationBoard.cloneBoard(board);
         
         destinationBoard.pieces[y2][x2] = destinationBoard.pieces[y1][x1];
         destinationBoard.pieces[y1][x1] = null;

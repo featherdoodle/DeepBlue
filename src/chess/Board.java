@@ -156,9 +156,11 @@ public class Board {
             for(int i = -1; i <= 1; i++){
                 for(int j = -1; j <= 1; j++){
                     if(checkBounds(x+i, y+j)){
-                        if((pieces[y+j][x+i] == null)||(pieces[y][x].colour != pieces[y+j][x+i].colour)){
-                            moves.add(makeMove(cloneBoard(this), x, y, x+i, y+j));
-                            moves.get(moves.size()-1).pieces[y+j][x+i].castling = false;
+                        if((i != 0)&&(j != 0)){
+                            if((pieces[y+j][x+i] == null)||(pieces[y][x].colour != pieces[y+j][x+i].colour)){
+                                moves.add(makeMove(cloneBoard(this), x, y, x+i, y+j));
+                                moves.get(moves.size()-1).pieces[y+j][x+i].castling = false;
+                            }
                         }
                     }
                 }
@@ -217,14 +219,14 @@ public class Board {
                     }else{
                         moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
                         moves.get(moves.size()-1).pieces[y+direction][x+i].pawnMoveState = PawnMoveState.MOVE_ONE;
+                    }if(squareAvailable(x+i, y+(2*direction), 0, capture, false, colour)){
+                        moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+(direction*2)));
+                        moves.get(moves.size()-1).pieces[y+(direction*2)][x].pawnMoveState = PawnMoveState.LAST_MOVE_TWO;
                     }
                 }if((capture)&&(squareAvailable(x+i, y+direction, direction, capture, true, colour))){
                     moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
                     moves.get(moves.size()-1).pieces[y][x+i] = null;
                     moves.get(moves.size()-1).pieces[y+direction][x+i].pawnMoveState = PawnMoveState.MOVE_ONE;
-                }if(squareAvailable(x+i, y+(2*direction), 0, capture, false, colour)){                    
-                    moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+(direction*2)));
-                    moves.get(moves.size()-1).pieces[y+(direction*2)][x].pawnMoveState = PawnMoveState.LAST_MOVE_TWO;
                 }
             }
             
@@ -250,7 +252,6 @@ public class Board {
     }
     
     public ArrayList<Board> getRookMoves(ArrayList<Board> moves, int x, int y){
-        //maybe take in the current array so it can be replaced instead for loops above
         
         int[] i = {-1, 1, 0, 0};
         int[] j = {0, 0, -1, 1};
@@ -293,7 +294,6 @@ public class Board {
                     }else{
                         empty = false;
                     }
-
                     n++;
                 }
             }
@@ -313,8 +313,24 @@ public class Board {
                 returnBoard.pieces[4][i].pawnMoveState = PawnMoveState.MOVE_ONE;
             }
         }
-        
         return returnBoard;
+    }
+    
+    public ArrayList<Board> getAllMoves(Colour checkColour){
+        ArrayList<Board> allMoves = new ArrayList<>();
+        for(int x = 0; x < 8; x++){
+            for(int y = 0; y < 8; y++){
+                //added null check
+                if((pieces[y][x] != null)&&(pieces[y][x].colour == checkColour)){
+                    ArrayList<Board> moves = new ArrayList<>();
+                    moves = getPieceMoves(x, y);
+                    for(int m = 0; m < moves.size(); m++){
+                        allMoves.add(moves.get(m));
+                    }
+                }
+            }
+        }
+        return allMoves;
     }
     
     public Board cloneBoard(Board board){
@@ -349,7 +365,7 @@ public class Board {
     public ArrayList<Board> refinePieceMoves(int x, int y){
         Colour colour = pieces[y][x].colour;
         
-        ArrayList<Board> moves = getPieceMoves(x, y);
+        ArrayList<Board> moves = getAllMoves(colour);
         ArrayList<Board> refinedMoves = new ArrayList<>();
         
         for(int i = 0; i < moves.size(); i++){
@@ -375,8 +391,8 @@ public class Board {
         return true;
     }
     
-    public int getBoardValue(){
-        int value = 0;
+    public double getBoardValue(){
+        double value = 0;
         int numberPieces = 64;
         EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount = getPieceCount();//watch references
         
@@ -409,9 +425,9 @@ public class Board {
         
     }
     
-    public int getEndgameValue(int numberPieces, EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount){
+    public double getEndgameValue(int numberPieces, EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount){
         //i know two of them are kings already
-        int value = 0;
+        double value = 0;
         
         if(numberPieces == 2){
             return 0; //its gotta be a draw
