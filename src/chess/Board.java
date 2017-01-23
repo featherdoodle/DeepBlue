@@ -56,8 +56,8 @@ public class Board {
         pieces[7][0] = new Piece(PieceType.ROOK, Colour.WHITE);
         pieces[7][1] = new Piece(PieceType.KNIGHT, Colour.WHITE);
         pieces[7][2] = new Piece(PieceType.BISHOP, Colour.WHITE);
-        pieces[7][3] = new Piece(PieceType.QUEEN, Colour.WHITE);
-        pieces[7][4] = new Piece(PieceType.KING, Colour.WHITE);
+        pieces[7][3] = new Piece(PieceType.KING, Colour.WHITE);
+        pieces[7][4] = new Piece(PieceType.QUEEN, Colour.WHITE);
         pieces[7][5] = new Piece(PieceType.BISHOP, Colour.WHITE);
         pieces[7][6] = new Piece(PieceType.KNIGHT, Colour.WHITE);
         pieces[7][7] = new Piece(PieceType.ROOK, Colour.WHITE);
@@ -165,15 +165,15 @@ public class Board {
                     }
                 }
             }
-            if(pieces[y][x].castling){//rook castling
+            if(pieces[y][x].castling){
                 if(pieces[y][x].colour == Colour.BLACK){
-                    if((pieces[0][0] != null)&&(pieces[0][0].castling)&&(pieces[0][1] == null)&&(pieces[0][2] == null)){
-                        moves.add(makeMove(cloneBoard(this), x, y, 1, 0));
-                        moves.set(moves.size()-1, makeMove(cloneBoard(moves.get(moves.size()-1)), 0, 0, 2, 0));
+                    if((pieces[0][0] != null)&&(pieces[0][0].castling)&&(pieces[0][1] == null)&&(pieces[0][2] == null)&&(pieces[0][3] == null)){
+                        moves.add(makeMove(cloneBoard(this), x, y, 2, 0));
+                        moves.set(moves.size()-1, makeMove(cloneBoard(moves.get(moves.size()-1)), 0, 0, 3, 0));
                         //set castling to false for that move.
-                    }else if((pieces[0][7] != null)&&(pieces[0][7].castling)&&(pieces[0][4] == null)&&(pieces[0][5] == null)&&(pieces[0][6] == null)){
-                        moves.add(makeMove(cloneBoard(this), x, y, 5, 0)); //check the numbers
-                        moves.set(moves.size()-1, makeMove(cloneBoard(moves.get(moves.size()-1)), 7, 0, 4, 0));
+                    }else if((pieces[0][7] != null)&&(pieces[0][7].castling)&&(pieces[0][5] == null)&&(pieces[0][6] == null)){
+                        moves.add(makeMove(cloneBoard(this), x, y, 6, 0)); //check the numbers
+                        moves.set(moves.size()-1, makeMove(cloneBoard(moves.get(moves.size()-1)), 7, 0, 5, 0));
                     }
                 }else{
                     if((pieces[7][0] != null)&&(pieces[7][0].castling)&&(pieces[7][1] == null)&&(pieces[7][2] == null)){
@@ -188,6 +188,7 @@ public class Board {
             }
         }
         
+        //1 7 2 5 0 1 0 2 1 6 1 5 7 1 7 2 2 7 0 5 6 1 6 2 (3 7 1 7)
         //TODO: return empty array?
         return moves;
     }
