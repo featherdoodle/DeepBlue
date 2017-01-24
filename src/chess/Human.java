@@ -49,14 +49,22 @@ public class Human extends Player{
         destinationBoard.pieces[y2][x2] = destinationBoard.pieces[y1][x1];
         destinationBoard.pieces[y1][x1] = null;
         
+        for(int i = 0; i < 8; i++){
+            if((destinationBoard.pieces[3][i] != null)&&(destinationBoard.pieces[3][i].pieceType == PieceType.PAWN)){
+                destinationBoard.pieces[3][i].pawnMoveState = PawnMoveState.MOVE_ONE;
+            }if((destinationBoard.pieces[4][i] != null)&&(destinationBoard.pieces[4][i].pieceType == PieceType.PAWN)){
+                destinationBoard.pieces[4][i].pawnMoveState = PawnMoveState.MOVE_ONE;
+            }
+        }
+        
+        //TODO: seperate into methods. if they move the king two squares, move 
+        //the rook too. also, Humans can move enemy pieces
         if(destinationBoard.pieces[y2][x2] != null){
             if(destinationBoard.pieces[y2][x2].pieceType == PieceType.PAWN){
-                if(destinationBoard.pieces[y2][x2].pawnMoveState == PawnMoveState.MOVE_TWO){
-                    if(Math.abs(y2-y1) == 2){
-                        destinationBoard.pieces[y2][x2].pawnMoveState = PawnMoveState.LAST_MOVE_TWO;
-                    }else{
-                        destinationBoard.pieces[y2][x2].pawnMoveState = PawnMoveState.MOVE_ONE;
-                    }
+                if(Math.abs(y2-y1) == 2){
+                    destinationBoard.pieces[y2][x2].pawnMoveState = PawnMoveState.LAST_MOVE_TWO;
+                }else{
+                    destinationBoard.pieces[y2][x2].pawnMoveState = PawnMoveState.MOVE_ONE;
                 }
             }if(destinationBoard.pieces[y2][x2].castling){
                 destinationBoard.pieces[y2][x2].castling = false;
@@ -73,14 +81,6 @@ public class Human extends Player{
         for(int i = 0; i < allMoves.size(); i++){
             if(allMoves.get(i).equals(destinationBoard)){
                 contains = true;
-            }
-        }
-        
-        for(int i = 0; i < 8; i++){
-            if((destinationBoard.pieces[3][i] != null)&&(destinationBoard.pieces[3][i].pieceType == PieceType.PAWN)){
-                destinationBoard.pieces[3][i].pawnMoveState = PawnMoveState.MOVE_ONE;
-            }if((destinationBoard.pieces[4][i] != null)&&(destinationBoard.pieces[4][i].pieceType == PieceType.PAWN)){
-                destinationBoard.pieces[4][i].pawnMoveState = PawnMoveState.MOVE_ONE;
             }
         }
         

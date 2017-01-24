@@ -15,6 +15,7 @@ import java.util.Scanner;
  * @author Owner
  */
 public class Game {
+    
     boolean turn = true; //true if it is player one's turn, false if it is player two's
     Board board = new Board();
     Player playerOne, playerTwo;
@@ -137,12 +138,19 @@ public class Game {
             board.updateWinnerState();
         }
         
-        if(board.winnerState == WinnerState.PLAYER_ONE_WINS){
-            System.out.println("Player 1 Wins");
-        }else if(board.winnerState == WinnerState.PLAYER_TWO_WINS){
-            System.out.println("Player 2 Wins");
-        }else if(board.winnerState == WinnerState.TIE){
-            System.out.println("Tie");
+        if(board.winnerState != WinnerState.UNFINISHED){
+            if(board.winnerState == WinnerState.PLAYER_ONE_WINS){
+                System.out.println("Player 1 Wins");
+            }else if(board.winnerState == WinnerState.PLAYER_TWO_WINS){
+                System.out.println("Player 2 Wins");
+            }else if(board.winnerState == WinnerState.STALEMATE){
+                System.out.println("Tie");
+            }
+            Scanner scan = new Scanner(System.in);
+            System.out.println("Press (and enter) any button to return to the menu");
+            if(scan.nextLine() != null){
+                menu();
+            }
         }
     }
     
