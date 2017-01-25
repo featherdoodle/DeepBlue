@@ -72,7 +72,7 @@ public class Human extends Player{
         }
         boolean contains = false;
         
-        ArrayList<Board> allMoves = board.refinePieceMoves(x1, y1);
+        ArrayList<Board> allMoves = board.refinePieceMoves(colour);
         
         if(allMoves.isEmpty()){
             return board;

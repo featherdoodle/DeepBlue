@@ -28,6 +28,8 @@ public class Board {
     public String P1Colour = ANSI_PURPLE;
     public String P2Colour = ANSI_GREEN;
 
+    boolean turn;
+    
     public Piece[][] pieces = new Piece[8][8];
 
     public WinnerState winnerState = WinnerState.UNFINISHED;
@@ -69,7 +71,7 @@ public class Board {
         for (int i = 0; i < 8; i++) {
             pieces[6][i] = new Piece(PieceType.PAWN, Colour.WHITE);
         }
-
+        turn = true;
     }
 
     /**
@@ -410,8 +412,8 @@ public class Board {
         }
     }
 
-    public ArrayList<Board> refinePieceMoves(int x, int y) {
-        Colour colour = pieces[y][x].colour;
+    public ArrayList<Board> refinePieceMoves(Colour colour) {
+        //Colour colour = pieces[y][x].colour;
 
         ArrayList<Board> moves = getAllMoves(colour);
         ArrayList<Board> refinedMoves = new ArrayList<>();
@@ -467,9 +469,13 @@ public class Board {
         } else if (numberPieces >= 6) {//between 6 pieces taken, and 6 pieces left
 
         } else {
-            value += getEndgameValue(numberPieces, pieceCount);
+            double endgame = getEndgameValue(numberPieces, pieceCount);
+            /*if(endgame == 0){
+                return 0;
+            }else{*/
+                value += getEndgameValue(numberPieces, pieceCount);
+            //}
         }
-
         return value;
 
     }
@@ -551,7 +557,6 @@ public class Board {
     }
 
     public static int getPieceValue(Piece piece) {
-
         int value = 0;
 
         if (piece.pieceType == PieceType.PAWN) {
@@ -600,8 +605,24 @@ public class Board {
             winnerState = WinnerState.PLAYER_ONE_WINS;
         } else if (getBoardValue() <= -100000) {
             winnerState = WinnerState.PLAYER_TWO_WINS;
-        } else {
-            //TODO: check tie, and then unfinished
+        } else{
+            ArrayList<Board> moves;
+            if(turn){
+                moves = getAllMoves(Colour.WHITE);
+            }else{
+                moves = getAllMoves(Colour.BLACK);
+            }
+            double value = moves.get(0).getBoardValue();
+            boolean stalemate = true;
+            for(int i = 1; i < moves.size(); i++){
+                if((moves.get(i).getBoardValue() != value)||(Math.abs(value) != 100000)){
+                    stalemate = false;
+                }
+            }
+            if(stalemate){
+                winnerState = WinnerState.STALEMATE;
+            }
+            //TODO: check tie
         }
     }
 

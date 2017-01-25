@@ -16,7 +16,7 @@ import java.util.Scanner;
  */
 public class Game {
     
-    boolean turn = true; //true if it is player one's turn, false if it is player two's
+    //boolean turn = true; //true if it is player one's turn, false if it is player two's
     Board board = new Board();
     Player playerOne, playerTwo;
     
@@ -112,7 +112,7 @@ public class Game {
         Board tempBoard;
         
         while(board.winnerState == WinnerState.UNFINISHED){
-            while(turn){
+            while(board.turn){
                 tempBoard = board.cloneBoard(playerOne.move(board));
                 if(board.equals(tempBoard)){
                     board.winnerState = WinnerState.PLAYER_TWO_WINS;
@@ -122,8 +122,8 @@ public class Game {
                 }
                 board.printBoard();
                 System.out.println();
-                turn = false;
-            }while(!turn){
+                board.turn = false;
+            }while(!board.turn){
                 tempBoard = board.cloneBoard(playerTwo.move(board));
                 if(board.equals(tempBoard)){
                     board.winnerState = WinnerState.PLAYER_ONE_WINS;
@@ -133,7 +133,7 @@ public class Game {
                 }
                 board.printBoard();
                 System.out.println();
-                turn = true;
+                board.turn = true;
             }
             board.updateWinnerState();
         }
@@ -144,10 +144,10 @@ public class Game {
             }else if(board.winnerState == WinnerState.PLAYER_TWO_WINS){
                 System.out.println("Player 2 Wins");
             }else if(board.winnerState == WinnerState.STALEMATE){
-                System.out.println("Tie");
+                System.out.println("Stalemate");
             }
             Scanner scan = new Scanner(System.in);
-            System.out.println("Press (and enter) any button to return to the menu");
+            System.out.println("Press enter to return to the menu");
             if(scan.nextLine() != null){
                 menu();
             }
