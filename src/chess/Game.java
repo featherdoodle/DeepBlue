@@ -37,13 +37,12 @@ public class Game {
                 playerTwo = new Human(Colour.BLACK);
             }else if(secondChoice == 2){ //when one player is human, one ai
                 System.out.println("Human playing as black or white?");
-                //scan.nextLine();
-                String colourChoice = scan.nextLine();
+                boolean colourChoice = getColour();
                 System.out.println("Select the difficulty of the AI (1, 2 or 3)");
                 long difficulty = getChoice(1, 3); 
-                if(colourChoice.equalsIgnoreCase("white")){
+                if(colourChoice){
                     playerOne = new Human(Colour.WHITE);
-                    playerTwo = new AI(Colour.BLACK, difficulty*1000); //adjusting the difficulty based on input
+                    playerTwo = new AI(Colour.BLACK, difficulty*1000); //TODO: put good values here
                 }else{
                     playerOne = new AI(Colour.WHITE, difficulty*1000);
                     playerTwo = new Human(Colour.BLACK);
@@ -60,8 +59,8 @@ public class Game {
         }else if(firstChoice == 2){
             printInstructions();
         }else if(firstChoice == 4){
-            playerOne = new AI(Colour.WHITE, 1000);
-            playerTwo = new AI(Colour.BLACK, 1000);
+            playerOne = new AI(Colour.WHITE, 100);
+            playerTwo = new AI(Colour.BLACK, 100);
         }else{ //quitting
             System.exit(0);
         }
@@ -85,6 +84,24 @@ public class Game {
                 }
             }catch(InputMismatchException e){
                 System.out.println("Please enter a valid number");
+            }
+        }
+    }
+    
+    public static boolean getColour(){
+        for(;;){ //infinate loop
+            Scanner scan = new Scanner(System.in);
+            try{
+                String choice = scan.nextLine();
+                if(choice.equalsIgnoreCase("white")){
+                    return true;
+                }else if(choice.equalsIgnoreCase("black")){
+                    return false;
+                }else{
+                    System.out.println("Please enter a valid choice (black or white)");
+                }
+            }catch(InputMismatchException e){
+                System.out.println("Please enter a valid choice (black or white)");
             }
         }
     }
@@ -153,5 +170,7 @@ public class Game {
             }
         }
     }
+    
+    //TODO: add save & load
     
 }

@@ -23,7 +23,7 @@ public class Human extends Player{
     
     @Override
     public Board move(Board board){
-        
+        //TODO: method for user input?
         int x1, y1, x2, y2; 
         
         Scanner scan = new Scanner(System.in);
@@ -66,7 +66,26 @@ public class Human extends Player{
                 }else{
                     destinationBoard.pieces[y2][x2].pawnMoveState = PawnMoveState.MOVE_ONE;
                 }
-            }if(destinationBoard.pieces[y2][x2].castling){
+            }if(destinationBoard.pieces[y2][x2].pieceType == PieceType.KING){
+                if(Math.abs(x2-x1) == 2){
+                    if((x2 == 2)&&(y2 == 0)){
+                        destinationBoard.pieces[0][3] = destinationBoard.pieces[0][0];
+                        destinationBoard.pieces[0][0] = null;
+                        destinationBoard.pieces[0][3].castling = false;
+                    }else if((x2 == 6)&&(y2 == 0)){
+                        destinationBoard.pieces[0][5] = destinationBoard.pieces[0][7];
+                        destinationBoard.pieces[0][7] = null;
+                        destinationBoard.pieces[0][5].castling = false;
+                    }else if((x2 == 1)&&(y2 == 7)){
+                        destinationBoard.pieces[7][2] = destinationBoard.pieces[7][0];
+                        destinationBoard.pieces[7][0] = null;
+                        destinationBoard.pieces[7][2].castling = false;
+                    }else if((x2 == 5)&&(y2 == 7)){
+                        destinationBoard.pieces[7][4] = destinationBoard.pieces[7][7];
+                        destinationBoard.pieces[7][7] = null;
+                        destinationBoard.pieces[7][4].castling = false;
+                    }
+                }
                 destinationBoard.pieces[y2][x2].castling = false;
             }
         }

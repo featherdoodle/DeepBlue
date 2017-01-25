@@ -194,7 +194,6 @@ public class Board {
                 }
             }
         }
-
         //TODO: return empty array?
         return moves;
     }
