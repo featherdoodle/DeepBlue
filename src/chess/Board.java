@@ -177,19 +177,26 @@ public class Board {
                     if ((pieces[0][0] != null) && (pieces[0][0].castling) && (pieces[0][1] == null) && (pieces[0][2] == null) && (pieces[0][3] == null)) {
                         moves.add(makeMove(cloneBoard(this), x, y, 2, 0));
                         moves.set(moves.size() - 1, makeMove(cloneBoard(moves.get(moves.size() - 1)), 0, 0, 3, 0));
+                        moves.get(moves.size()-1).pieces[0][2].castling = false;
+                        moves.get(moves.size()-1).pieces[0][3].castling = false;
                         //set castling to false for that move.
                     } else if ((pieces[0][7] != null) && (pieces[0][7].castling) && (pieces[0][5] == null) && (pieces[0][6] == null)) {
                         moves.add(makeMove(cloneBoard(this), x, y, 6, 0)); //check the numbers
                         moves.set(moves.size() - 1, makeMove(cloneBoard(moves.get(moves.size() - 1)), 7, 0, 5, 0));
+                        moves.get(moves.size()-1).pieces[0][6].castling = false;
+                        moves.get(moves.size()-1).pieces[0][5].castling = false;
                     }
                 } else {
                     if ((pieces[7][0] != null) && (pieces[7][0].castling) && (pieces[7][1] == null) && (pieces[7][2] == null)) {
                         moves.add(makeMove(cloneBoard(this), x, y, 1, 7));
                         moves.set(moves.size() - 1, makeMove(cloneBoard(moves.get(moves.size() - 1)), 0, 7, 2, 7));
-                        //set castling to false for that move.
+                        moves.get(moves.size()-1).pieces[7][1].castling = false;
+                        moves.get(moves.size()-1).pieces[7][2].castling = false;
                     } else if ((pieces[7][7] != null) && (pieces[7][7].castling) && (pieces[7][4] == null) && (pieces[7][5] == null) && (pieces[7][6] == null)) {
                         moves.add(makeMove(cloneBoard(this), x, y, 5, 7)); //check the numbers
                         moves.set(moves.size() - 1, makeMove(cloneBoard(moves.get(moves.size() - 1)), 7, 7, 4, 7));
+                        moves.get(moves.size()-1).pieces[7][5].castling = false;
+                        moves.get(moves.size()-1).pieces[7][4].castling = false;
                     }
                 }
             }
