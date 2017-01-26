@@ -28,7 +28,7 @@ public class Human extends Player{
         
         Scanner scan = new Scanner(System.in);
         
-        System.out.print("Piece? (x, y): ");
+        System.out.print("Piece? (x y): ");
 
         x1 = scan.nextInt();
         y1 = scan.nextInt();
@@ -36,7 +36,7 @@ public class Human extends Player{
         //x1 = Game.getChoice(0, 8);
         //y1 = Game.getChoice(0, 8);
         
-        System.out.print("Destination? (x, y): ");
+        System.out.print("Destination? (x y): ");
         
         x2 = scan.nextInt();
         y2 = scan.nextInt();
@@ -63,8 +63,6 @@ public class Human extends Player{
             }
         }
         
-        //TODO: seperate into methods. if they move the king two squares, move 
-        //the rook too. also, Humans can move enemy pieces
         if(destinationBoard.pieces[y2][x2] != null){
             if(destinationBoard.pieces[y2][x2].pieceType == PieceType.PAWN){
                 if(Math.abs(y2-y1) == 2){
@@ -118,6 +116,18 @@ public class Human extends Player{
             System.out.println("Enter a valid move");
             return move(board);
         }
+    }
+    
+    public int[] getInput(){
+        int[] coordinates = new int[2];
+        Scanner scan = new Scanner(System.in);
+        coordinates[0] = scan.nextInt();
+            if (scan.hasNextInt()){
+                coordinates[1] = scan.nextInt();
+            }else{
+                scan.nextLine();   
+            }
+        return coordinates;
     }
     
     @Override

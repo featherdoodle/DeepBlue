@@ -403,6 +403,7 @@ public class Board {
         }
 
         returnBoard.winnerState = board.winnerState;
+        returnBoard.turn = board.turn;
 
         return returnBoard;
 
