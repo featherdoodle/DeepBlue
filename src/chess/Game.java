@@ -5,9 +5,7 @@
  */
 package chess;
 
-import chess.Board.WinnerState;
 import java.io.Serializable;
-import java.util.Scanner;
 
 /**
  *

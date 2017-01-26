@@ -148,8 +148,8 @@ public class Human extends Player{
                         destinationBoard.pieces[7][4].castling = false;
                     }
                 }
-                destinationBoard.pieces[y2][x2].castling = false;
             }
+            destinationBoard.pieces[y2][x2].castling = false;
         }
         boolean contains = false;
         
