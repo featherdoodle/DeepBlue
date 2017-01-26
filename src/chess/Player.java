@@ -20,5 +20,6 @@ public abstract class Player {
     }
     
     public abstract Board move(Board board);
-    
+    @Override
+    public abstract String toString();
 }

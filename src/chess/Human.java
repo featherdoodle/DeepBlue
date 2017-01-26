@@ -123,7 +123,7 @@ public class Human extends Player{
     @Override
     public String toString(){
         String output = "";
-        output += colour;
+        output += "Human " + colour;
         return output;
     }
     

@@ -126,7 +126,7 @@ public class AI extends Player{
     @Override
     public String toString(){
         String output = "";
-        output += colour + " " + difficulty;
+        output += "AI " + colour + " " + difficulty;
         return output;
     }
     

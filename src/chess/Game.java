@@ -13,10 +13,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -142,6 +139,8 @@ public class Game {
         board.printBoard();
         System.out.println();
         
+        saveGame(3);
+        
         Board tempBoard;
         
         while(board.winnerState == WinnerState.UNFINISHED){
@@ -187,7 +186,7 @@ public class Game {
         }
     }
     
-    public void saveGame(int gameNumber){
+    public void saveGame(File file, int gameNumber){
 
         int increments = 5;
         
@@ -196,11 +195,11 @@ public class Game {
         
         //String line32 = Files.readAllLines(Paths.get("file.txt")).get(32);
         
-        File file = new File("savedgames.txt");
+        //File file = new File("savedgames.txt");
         BufferedWriter writer;
         BufferedReader reader;
         
-        String gameText = ("AGH" + playerOne + "\n" + playerTwo + "\n" + board.toString());
+        String gameText = (playerOne + "\n" + playerTwo + "\n" + board.toString());
         
         try{
             
@@ -208,10 +207,55 @@ public class Game {
             reader = new BufferedReader(new FileReader(file));
             
             for(int i = 0; i <= line; i++){
-                writer.write(reader.read());
+                writer.write(reader.readLine());
             }
             writer.write(gameText);
             writer.close();
+            reader.close();
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+    }
+    
+    public Game loadGame(File file, int gameNumber){
+        
+        Game game = new Game();
+        
+        int increments = 5;
+        
+        int line;
+        line = (gameNumber-1)*increments;
+        
+        //File file = new File("savedgames.txt");
+        BufferedReader reader;
+        
+        try{
+            
+            reader = new BufferedReader(new FileReader(file));
+            
+            for(int i = 0; i <= line; i++){
+                reader.readLine();
+            }
+            
+            for(int i = 0; i < 2; i++){
+                String[] lineOne = (reader.readLine()).split(" ");
+                if(lineOne[0].equals("Human")){
+                    if(lineOne[1].equals("WHITE")){
+                        playerOne = new Human(Colour.WHITE);
+                    }else{
+                        playerOne = new Human(Colour.BLACK);
+                    }
+                }else{
+                    if(lineOne[1].equals("WHITE")){
+                        playerOne = new AI(Colour.WHITE, Integer.parseInt(lineOne[2]));
+                    }else{
+                        playerOne = new AI(Colour.BLACK, Integer.parseInt(lineOne[2]));
+                    }
+                }
+            }
+            
+            
+            
         } catch ( IOException e ) {
             e.printStackTrace();
         }
