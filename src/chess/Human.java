@@ -28,20 +28,49 @@ public class Human extends Player{
         
         Scanner scan = new Scanner(System.in);
         
-        System.out.print("Piece? (x y): ");
-
-        x1 = scan.nextInt();
-        y1 = scan.nextInt();
+        while(true){
+            System.out.print("Piece? (x y): ");
+            String input = scan.nextLine();
+            Scanner inputScanner = new Scanner(input);
         
-        //x1 = Game.getChoice(0, 8);
-        //y1 = Game.getChoice(0, 8);
+            if(input.equalsIgnoreCase("q")){
+                Main.quitGame();
+            }else{
+                try{
+                    x1 = inputScanner.nextInt();
+                    y1 = inputScanner.nextInt();
+                    if((x1 >= 0)&&(x1 < 8)){
+                        if((y1 >= 0)&&(y1 < 8)){
+                            break;
+                        }
+                    }
+                }catch(Exception e){
+                    System.out.println("Invalid input, you silly.");
+                }
+            }
+        }
         
-        System.out.print("Destination? (x y): ");
+        while(true){
+            System.out.print("Destination? (x y): ");
+            String input = scan.nextLine();
+            Scanner inputScanner = new Scanner(input);
         
-        x2 = scan.nextInt();
-        y2 = scan.nextInt();
-        //x2 = Game.getChoice(0, 8);
-        //y2 = Game.getChoice(0, 8);
+            if(input.equalsIgnoreCase("q")){
+                Main.quitGame();
+            }else{
+                try{
+                    x2 = inputScanner.nextInt();
+                    y2 = inputScanner.nextInt();
+                    if((x2 >= 0)&&(x2 < 8)){
+                        if((y2 >= 0)&&(y2 < 8)){
+                            break;
+                        }
+                    }
+                }catch(Exception e){
+                    System.out.println("Invalid input, you silly.");
+                }
+            }
+        }
         
         Board destinationBoard = new Board();
         destinationBoard = destinationBoard.cloneBoard(board);

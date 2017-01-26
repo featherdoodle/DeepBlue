@@ -22,16 +22,17 @@ import java.util.logging.Logger;
  */
 public class Main {
 
+    static Game game = new Game();
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) { 
-        Game game = new Game();
         menu(game);
         //"savedgames.ser"
     }
     
-    public static void menu(Game game){//TODO: doesn't loop properly //where is step called
+    public static void menu(Game game){
         
         System.out.println("1. Play Game\n2. Instructions\n3. Load Game\n4. Exit");
         
@@ -64,11 +65,22 @@ public class Main {
                 game.playerOne = new AI(Piece.Colour.WHITE, Math.pow(10, difficulty1+2));
                 game.playerTwo = new AI(Piece.Colour.BLACK, Math.pow(10, difficulty2+2));
             }
+            game.board.setupBoard();
             runGame(game);
         }else if(firstChoice == 2){
             printInstructions(game);
         }else if(firstChoice == 3){
-            System.out.println("");
+            System.out.println("What game would you like to load?");
+            while(true){
+                String gameNumber = Integer.toString(getChoice(1, 5));
+                gameNumber += ".ser";
+                if(loadGame(gameNumber) != null){
+                    game = loadGame(gameNumber);
+                    runGame(game);
+                }else{
+                    menu(new Game());
+                }
+            }
         }else if(firstChoice == 5){
             game.playerOne = new AI(Piece.Colour.WHITE, 1000);
             game.playerTwo = new AI(Piece.Colour.BLACK, 1000);
@@ -78,7 +90,6 @@ public class Main {
     }
     
     public static void runGame(Game game){
-        game.board.setupBoard();
         game.board.printBoard();
         System.out.println();
         
@@ -179,8 +190,11 @@ public class Main {
         menu(game);
     }
     
-    public static void saveGame(Game game, String filename){
+    public static void saveGame(){
 
+        System.out.println("Which data slot would you like to store it under? (1-5)");
+        String filename = getChoice(1, 5) + ".ser";
+        
         try{
             // Serialize data object to a file
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
@@ -191,6 +205,7 @@ public class Main {
             e.printStackTrace();
         }
         
+        System.exit(0);
     }
     
     public static Game loadGame(String filename){
@@ -210,6 +225,27 @@ public class Main {
         return game;
     }
     
-    //TODO: add save & load
+    public static void quitGame(){
+        
+        System.out.println("Would you like to save?");
+        
+        for(;;){ //infinate loop
+            Scanner scan = new Scanner(System.in);
+            try{
+                String choice = scan.nextLine();
+                if(choice.equalsIgnoreCase("yes")){
+                    saveGame();
+                }else if(choice.equalsIgnoreCase("no")){
+                    System.exit(0);
+                }else{
+                    System.out.println("Please enter a valid choice (yes or no)");
+                }
+            }catch(InputMismatchException e){
+                System.out.println("Please enter a valid choice (yes or no)");
+            }
+        }
+        
+    }
+    
     
 }

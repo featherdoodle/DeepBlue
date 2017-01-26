@@ -6,12 +6,13 @@
 package chess;
 
 import chess.Piece.Colour;
+import java.io.Serializable;
 
 /**
  *
  * @author Owner
  */
-public abstract class Player {
+public abstract class Player implements Serializable{
     
     final Colour colour;
     

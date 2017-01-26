@@ -13,7 +13,7 @@ import java.util.Random;
  *
  * @author Owner
  */
-public class AI extends Player{
+public class AI extends Player {
     
     public final double difficulty; //the variable that determines how many moves in the future the ai looks
     

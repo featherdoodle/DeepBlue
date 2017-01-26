@@ -8,6 +8,7 @@ package chess;
 import chess.Piece.Colour;
 import chess.Piece.PawnMoveState;
 import chess.Piece.PieceType;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -16,7 +17,7 @@ import java.util.EnumMap;
  *
  * @author Owner
  */
-public class Board {
+public class Board implements Serializable{
 
     //variables used to change text colours
     public static final String ANSI_RESET = "\u001B[0m";

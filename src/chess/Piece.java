@@ -5,11 +5,13 @@
  */
 package chess;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Owner
  */
-public class Piece {
+public class Piece implements Serializable{
     
     Colour colour; 
     PawnMoveState pawnMoveState = null;
