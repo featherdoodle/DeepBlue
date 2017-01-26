@@ -59,8 +59,8 @@ public class Game {
         }else if(firstChoice == 2){
             printInstructions();
         }else if(firstChoice == 4){
-            playerOne = new AI(Colour.WHITE, 100);
-            playerTwo = new AI(Colour.BLACK, 100);
+            playerOne = new AI(Colour.WHITE, 1000);
+            playerTwo = new AI(Colour.BLACK, 1000);
         }else{ //quitting
             System.exit(0);
         }

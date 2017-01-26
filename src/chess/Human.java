@@ -46,6 +46,12 @@ public class Human extends Player{
         Board destinationBoard = new Board();
         destinationBoard = destinationBoard.cloneBoard(board);
         
+        boolean enpassant = false;
+        
+        if((destinationBoard.pieces[y2][x2] == null)&&(destinationBoard.pieces[y1][x2] != null)&&(destinationBoard.pieces[y1][x2].colour != destinationBoard.pieces[y1][x1].colour)){
+            enpassant = true;
+        }
+        
         destinationBoard.pieces[y2][x2] = destinationBoard.pieces[y1][x1];
         destinationBoard.pieces[y1][x1] = null;
         
@@ -65,6 +71,9 @@ public class Human extends Player{
                     destinationBoard.pieces[y2][x2].pawnMoveState = PawnMoveState.LAST_MOVE_TWO;
                 }else{
                     destinationBoard.pieces[y2][x2].pawnMoveState = PawnMoveState.MOVE_ONE;
+                }
+                if(enpassant){
+                    destinationBoard.pieces[y1][x2] = null;
                 }
             }if(destinationBoard.pieces[y2][x2].pieceType == PieceType.KING){
                 if(Math.abs(x2-x1) == 2){
