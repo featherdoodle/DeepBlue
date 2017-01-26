@@ -1,8 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
+
 package chess;
 
 import chess.Piece.Colour;
@@ -22,13 +19,21 @@ public class Human extends Player{
         super(_colour);
     }
     
+    /**
+     * Completes a move for a human player. Takes in user input to determine
+     * which move they would like to make, checks the validity of the move, and
+     * then makes the move.
+     * pre: takes in the current board
+     * post: returns the board with the move applied
+     */
     @Override
     public Board move(Board board){
-        //TODO: method for user input?
+        
         int x1, y1, x2, y2; 
         
         Scanner scan = new Scanner(System.in);
         
+        //finding the piece to move
         while(true){
             System.out.print("Piece? (x y): ");
             String input = scan.nextLine();
@@ -51,6 +56,7 @@ public class Human extends Player{
             }
         }
         
+        //finding the square they want to move to
         while(true){
             System.out.print("Destination? (x y): ");
             String input = scan.nextLine();
@@ -76,14 +82,14 @@ public class Human extends Player{
         Board destinationBoard = Board.cloneBoard(board);
         
         boolean enpassant = false;
-        
+        //checking if enpassant would be possible
         if((destinationBoard.pieces[y2][x2] == null)&&(destinationBoard.pieces[y1][x2] != null)&&(destinationBoard.pieces[y1][x2].colour != destinationBoard.pieces[y1][x1].colour)){
             enpassant = true;
         }
-        
+        //making the move on the board
         destinationBoard.pieces[y2][x2] = destinationBoard.pieces[y1][x1];
         destinationBoard.pieces[y1][x1] = null;
-        
+        //updating pawn move states on the board
         for(int i = 0; i < 8; i++){
             if((destinationBoard.pieces[3][i] != null)&&(destinationBoard.pieces[3][i].pieceType == PieceType.PAWN)){
                 destinationBoard.pieces[3][i].pawnMoveState = PawnMoveState.MOVE_ONE;
@@ -91,7 +97,7 @@ public class Human extends Player{
                 destinationBoard.pieces[4][i].pawnMoveState = PawnMoveState.MOVE_ONE;
             }
         }
-        
+        //updating the pawn move states of the specific piece
         if(destinationBoard.pieces[y2][x2] != null){
             if(destinationBoard.pieces[y2][x2].pieceType == PieceType.PAWN){
                 if(Math.abs(y2-y1) == 2){
@@ -104,8 +110,7 @@ public class Human extends Player{
                 }if((y2 == 0)||(y2 == 7)){
                     System.out.println("What type of piece would you like the pawn to become?");
         
-                    for(;;){ //infinate loop
-                        //Scanner scan = new Scanner(System.in);
+                    for(;;){ //determining what the pawn at the end of the board should become
                         try{
                             String choice = scan.nextLine();
                             if(choice.equalsIgnoreCase("knight")){
@@ -128,6 +133,7 @@ public class Human extends Player{
                         }
                     }
                 }
+                //updating castling information
             }if(destinationBoard.pieces[y2][x2].pieceType == PieceType.KING){
                 if(Math.abs(x2-x1) == 2){
                     if((x2 == 2)&&(y2 == 0)){
@@ -154,7 +160,7 @@ public class Human extends Player{
         boolean contains = false;
         
         ArrayList<Board> allMoves = board.getAllMoves(colour);
-        
+        //checking all the moves and comparing them to the player's move board
         for(int i = 0; i < allMoves.size(); i++){
             if(allMoves.get(i).equals(destinationBoard)){
                 contains = true;
@@ -167,18 +173,6 @@ public class Human extends Player{
             System.out.println("Enter a valid move");
             return move(board);
         }
-    }
-    
-    public int[] getInput(){
-        int[] coordinates = new int[2];
-        Scanner scan = new Scanner(System.in);
-        coordinates[0] = scan.nextInt();
-            if (scan.hasNextInt()){
-                coordinates[1] = scan.nextInt();
-            }else{
-                scan.nextLine();   
-            }
-        return coordinates;
     }
     
     @Override

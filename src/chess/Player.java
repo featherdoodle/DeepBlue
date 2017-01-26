@@ -1,8 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
+
 package chess;
 
 import chess.Piece.Colour;
@@ -12,6 +9,7 @@ import java.io.Serializable;
  *
  * @author Owner
  */
+//abstract class that extends over Human and AI
 public abstract class Player implements Serializable{
     
     final Colour colour;
@@ -21,6 +19,7 @@ public abstract class Player implements Serializable{
     }
     
     public abstract Board move(Board board);
+    
     @Override
     public abstract String toString();
 }

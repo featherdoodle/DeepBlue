@@ -1,8 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
+
 package chess;
 
 import java.io.Serializable;
@@ -18,6 +15,11 @@ public class Piece implements Serializable{
     boolean castling = false;
     PieceType pieceType;
     
+    /**
+     * Initializes the variables in piece.
+     * pre: none
+     * post: new Piece created
+     */
     public Piece(PieceType _pieceType, Colour _colour){
         colour = _colour;
         pieceType = _pieceType;
@@ -34,6 +36,8 @@ public class Piece implements Serializable{
         PAWN, ROOK, BISHOP, KNIGHT, QUEEN, KING;
     }
     
+    /*if a pawn can move two squares forward, one square, or if its last move was
+    two squares forward (used for enpassant)*/
     public static enum PawnMoveState{
         MOVE_ONE, MOVE_TWO, LAST_MOVE_TWO;
     }
