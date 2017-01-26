@@ -37,29 +37,29 @@ public class Board implements Serializable{
      */
     public void setupBoard() {
         //initializing black pieces
-        pieces[0][0] = new Piece(PieceType.ROOK, Colour.BLACK);
+        //pieces[0][0] = new Piece(PieceType.ROOK, Colour.BLACK);
         /*pieces[0][1] = new Piece(PieceType.KNIGHT, Colour.BLACK);
-        pieces[0][2] = new Piece(PieceType.BISHOP, Colour.BLACK);
-        pieces[0][3] = new Piece(PieceType.QUEEN, Colour.BLACK);*/
-        pieces[0][4] = new Piece(PieceType.KING, Colour.BLACK);
+        pieces[0][2] = new Piece(PieceType.BISHOP, Colour.BLACK);*/
+        //pieces[0][3] = new Piece(PieceType.QUEEN, Colour.BLACK);
+        pieces[7][7] = new Piece(PieceType.KING, Colour.BLACK);
         /*pieces[0][5] = new Piece(PieceType.BISHOP, Colour.BLACK);
         pieces[0][6] = new Piece(PieceType.KNIGHT, Colour.BLACK);
-        pieces[0][7] = new Piece(PieceType.ROOK, Colour.BLACK);*/
-        /*
+        pieces[0][7] = new Piece(PieceType.ROOK, Colour.BLACK);
+        
         for (int i = 0; i < 8; i++) {
             pieces[1][i] = new Piece(PieceType.PAWN, Colour.BLACK);
         }*/
-        /*initializing white pieces
-        pieces[7][0] = new Piece(PieceType.ROOK, Colour.WHITE);
-        pieces[7][1] = new Piece(PieceType.KNIGHT, Colour.WHITE);
+        //initializing white pieces
+        pieces[4][1] = new Piece(PieceType.ROOK, Colour.WHITE);
+        /*pieces[7][1] = new Piece(PieceType.KNIGHT, Colour.WHITE);
         pieces[7][2] = new Piece(PieceType.BISHOP, Colour.WHITE);*/
-        pieces[7][3] = new Piece(PieceType.KING, Colour.WHITE);
-        /*pieces[7][4] = new Piece(PieceType.QUEEN, Colour.WHITE);
-        pieces[7][5] = new Piece(PieceType.BISHOP, Colour.WHITE);
-        pieces[7][6] = new Piece(PieceType.KNIGHT, Colour.WHITE);
-        pieces[7][7] = new Piece(PieceType.ROOK, Colour.WHITE);*/
+        pieces[0][0] = new Piece(PieceType.KING, Colour.WHITE);
+        //pieces[7][5] = new Piece(PieceType.QUEEN, Colour.WHITE);
+        /*pieces[7][5] = new Piece(PieceType.BISHOP, Colour.WHITE);
+        pieces[7][6] = new Piece(PieceType.KNIGHT, Colour.WHITE);*/
+        pieces[5][0] = new Piece(PieceType.ROOK, Colour.WHITE);/*
 
-        /*for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++) {
             pieces[6][i] = new Piece(PieceType.PAWN, Colour.WHITE);
         }*/
         turn = true; //it starts as white's turn
@@ -246,8 +246,9 @@ public class Board implements Serializable{
             } else {
                 capture = true;
             }
-
+            //checking for a regular capture or for a regular move
             if (squareAvailable(x+i, y+direction, 0, capture, false, colour)) {
+                //if the pawn is at the end of the board, there are different transformations
                 if (((y+direction) == 0) || (y+direction == 7)) {
                     for (PieceType j : PieceType.values()) {
                         if ((j != PieceType.PAWN) && (j != PieceType.KING)) {
@@ -259,12 +260,12 @@ public class Board implements Serializable{
                 } else {
                     moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
                     moves.get(moves.size()-1).pieces[y+direction][x+i].pawnMoveState = PawnMoveState.MOVE_ONE;
-                }
+                }//if the pawn is moving two squares forward
                 if (squareAvailable(x+i, y+(2*direction), 0, capture, false, colour)&&(pieces[y][x].pawnMoveState == PawnMoveState.MOVE_TWO)) {
                     moves.add(moves.size(), makeMove(cloneBoard(this), x, y, x, y+(direction*2)));
                     moves.get(moves.size()-1).pieces[y+(direction*2)][x].pawnMoveState = PawnMoveState.LAST_MOVE_TWO;
                 }
-            }
+            }//checking for enpassant
             if ((capture) && (squareAvailable(x+i, y+direction, direction, capture, true, colour))) {
                 moves.add(makeMove(cloneBoard(this), x, y, x+i, y+direction));
                 moves.get(moves.size()-1).pieces[y][x + i] = null;
@@ -281,14 +282,12 @@ public class Board implements Serializable{
      * if the type of capture is enpassant, and the colour of the piece. post:
      * returns a boolean indicating if the piece is free to move to or not
      *
-     * @param direction -1 or 1 depending on the colour of the piece
+     * @param direction -1 or 1 depending on the colour of the piece (only used for enpassant)
      * @param capture boolean indicating whether the check is for a null square
      * or for a piece of opposite colour
      * @param enpassant boolean indicating whether the capture is the fancy
      * enpassant type or just regular
      */
-    //TODO: should this be applicable for not just pawns?
-    //TODO: should i just take in the colour, not the direction?
     public boolean squareAvailable(int x, int y, int direction, boolean capture, boolean enpassant, Colour colour) {
         boolean available = false;
 
@@ -298,7 +297,7 @@ public class Board implements Serializable{
             available = ((checkBounds(x, y)) && (pieces[y][x] != null) && (pieces[y][x].colour != colour));
         } else {
             if ((checkBounds(x, y)) && (pieces[y][x] == null)) {
-                if ((checkBounds(x, y - direction)) && (pieces[y - direction][x] != null) && (pieces[y - direction][x].pawnMoveState == PawnMoveState.LAST_MOVE_TWO) && (colour != pieces[y - direction][x].colour)) {
+                if ((checkBounds(x, y-direction)) && (pieces[y-direction][x] != null) && (pieces[y-direction][x].pawnMoveState == PawnMoveState.LAST_MOVE_TWO) && (colour != pieces[y-direction][x].colour)) {
                     available = true;
                 }
             }
@@ -322,12 +321,12 @@ public class Board implements Serializable{
             boolean empty = true;
             while (empty) {
 
-                if ((checkBounds(x + i[index] * n, y + j[index] * n)) && (pieces[y + j[index] * n][x + i[index] * n] == null)) {
-                    moves.add(makeMove(cloneBoard(this), x, y, x + i[index] * n, y + j[index] * n));
-                    moves.get(moves.size() - 1).pieces[y + j[index] * n][x + i[index] * n].castling = false;
-                } else if ((checkBounds(x + i[index] * n, y + j[index] * n)) && (pieces[y][x].colour != pieces[y + j[index] * n][x + i[index] * n].colour)) {
-                    moves.add(makeMove(cloneBoard(this), x, y, x + i[index] * n, y + j[index] * n));
-                    moves.get(moves.size() - 1).pieces[y + j[index] * n][x + i[index] * n].castling = false;
+                if ((checkBounds(x+i[index]*n, y+j[index]*n)) && (pieces[y+j[index]*n][x+i[index]*n] == null)) {
+                    moves.add(makeMove(cloneBoard(this), x, y, x+i[index]*n, y+j[index]*n));
+                    moves.get(moves.size()-1).pieces[y+j[index]*n][x+i[index]*n].castling = false;
+                } else if ((checkBounds(x+i[index]*n, y+j[index]*n)) && (pieces[y][x].colour != pieces[y+j[index]*n][x+i[index]*n].colour)) {
+                    moves.add(makeMove(cloneBoard(this), x, y, x+i[index]*n, y+j[index]*n));
+                    moves.get(moves.size()-1).pieces[y+j[index]*n][x+i[index]*n].castling = false;
                     empty = false;
                 } else {
                     empty = false;
@@ -352,10 +351,10 @@ public class Board implements Serializable{
                 boolean empty = true;
                 while (empty) {
 
-                    if ((checkBounds(x + i * n, y + j * n)) && (pieces[y + j * n][x + i * n] == null)) {
-                        moves.add(makeMove(cloneBoard(this), x, y, x + i * n, y + j * n));
-                    } else if ((checkBounds(x + i * n, y + j * n)) && (pieces[y][x].colour != pieces[y + j * n][x + i * n].colour)) {
-                        moves.add(makeMove(cloneBoard(this), x, y, x + i * n, y + j * n));
+                    if ((checkBounds(x+i*n, y+j*n)) && (pieces[y+j*n][x+i*n] == null)) {
+                        moves.add(makeMove(cloneBoard(this), x, y, x+i*n, y+j*n));
+                    } else if ((checkBounds(x+i*n, y+j*n)) && (pieces[y][x].colour != pieces[y+j*n][x+i*n].colour)) {
+                        moves.add(makeMove(cloneBoard(this), x, y, x+i*n, y+j*n));
                         empty = false;
                     } else {
                         empty = false;
@@ -367,6 +366,11 @@ public class Board implements Serializable{
         return moves;
     }
 
+    /**
+     * Check to see if a given piece is under attack
+     * pre: require x and y of the piece
+     * post: returns a boolean true if the piece is under attack, false otherwise
+     */
     public boolean underAttack(int x, int y){
         Colour colour = pieces[y][x].colour;
         
@@ -477,6 +481,8 @@ public class Board implements Serializable{
 
     /**
      * Iterates through the entire board and finds all possible moves for a specific colour.
+     * pre: requires the colour to check for.
+     * post: returns an ArrayList of boards containing all the possible moves.
      */
     public ArrayList<Board> getAllMoves(Colour checkColour) {
         ArrayList<Board> allMoves = new ArrayList<>();
@@ -494,6 +500,11 @@ public class Board implements Serializable{
         return allMoves;
     }
 
+    /**
+     * Copies all the variables in board from a board, and returns it.
+     * pre: requires the board to copy.
+     * post: returns a copy of the board.
+     */
     public static Board cloneBoard(Board board) {
         if (board == null) {
             return null;
@@ -512,6 +523,11 @@ public class Board implements Serializable{
 
     }
 
+    /**
+     * Makes a copy of a piece. Copies all the variables in piece.
+     * pre: requires the piece to copy
+     * post: returns the copied piece
+     */
     public static Piece clonePiece(Piece piece) {
         if (piece == null) {
             return null;
@@ -523,26 +539,11 @@ public class Board implements Serializable{
         }
     }
 
-    public ArrayList<Board> refinePieceMoves(Colour colour) {
-        //Colour colour = pieces[y][x].colour;
-
-        ArrayList<Board> moves = getAllMoves(colour);
-        ArrayList<Board> refinedMoves = new ArrayList<>();
-
-        for (int i = 0; i < moves.size(); i++) {
-            if (colour == Colour.BLACK) {
-                if (getBoardValue() < 100000) {
-                    refinedMoves.add(0, moves.get(i));
-                }
-            } else {
-                if (getBoardValue() > -100000) {
-                    refinedMoves.add(0, moves.get(i));
-                }
-            }
-        }
-        return refinedMoves;
-    }
-
+    /**
+     * Check to make sure the square is inside the board.
+     * pre: takes in the coordinates of the square
+     * post: returns a boolean of whether the piece is in bounds
+     */
     public boolean checkBounds(int x, int y) {
         if ((x < 0) || (x >= 8)) {
             return false;
@@ -553,11 +554,17 @@ public class Board implements Serializable{
         return true;
     }
 
+    /**
+     * Determining the number value of the board.
+     * pre: none
+     * post: returns a double.
+     */
     public double getBoardValue() {
         double value = 0;
-        int numberPieces = 64;
+        int numberPieces = 64; 
         EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount = getPieceCount();
 
+        //if the king is missing, the values are very high on the extremes
         if (pieceCount.get(Colour.WHITE).get(PieceType.KING) == 0) {
             return -100000;
         }
@@ -565,33 +572,53 @@ public class Board implements Serializable{
             return 100000;
         }
 
+        int[] whiteKing = new int[2];
+        int[] blackKing = new int[2];
+        
+        //iterating through the board to find 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if ((pieces[i][j] != null) && (pieces[i][j].pieceType != PieceType.KING)) {
+                if ((pieces[i][j] != null)&&(pieces[i][j].pieceType == PieceType.KING)) {
+                    if(pieces[i][j].colour == Colour.WHITE){
+                        whiteKing[0] = i;
+                        whiteKing[1] = j;
+                    }else if(pieces[i][j].colour == Colour.WHITE){
+                        blackKing[0] = i;
+                        blackKing[1] = j;
+                    }
+                } else if((pieces[i][j] != null)&&(pieces[i][j].pieceType != PieceType.KING)){
                     value += getPieceValue(pieces[i][j]);
-                } else {
-                    numberPieces--; //subracting 1 for every null value
+                }else {
+                    numberPieces--; //subracting 1 for every null value to find total number of pieces
                 }
             }
         }
 
-        if (numberPieces <= 26) { // 6 pieces taken?
+        if (numberPieces <= 26) { // 6 pieces taken
             value += getMidSquaresValue();
         } else if (numberPieces >= 6) {//between 6 pieces taken, and 6 pieces left
-
-        } else {
-            double endgame = getEndgameValue(numberPieces, pieceCount);
-                value += getEndgameValue(numberPieces, pieceCount);
+            
+        } else{
+            double endgame = getEndgameValue(numberPieces, pieceCount, whiteKing, blackKing);
+            if(endgame == 0){
+                return 0;
+            }else{
+                value += endgame;
+            }
             
         }
         return value;
-
     }
 
-    public double getEndgameValue(int numberPieces, EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount) {
+    /**
+     * Determining adjustments to the value of the board in endgame.
+     * pre: takes in the total number of pieces, and the count of the piece types on the board
+     * post: returns a double
+     */
+    public double getEndgameValue(int numberPieces, EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount, int[] whiteKing, int[] blackKing) {
         //i know two of them are kings already
         double value = 0;
-
+/*
         if (numberPieces == 2) {
             return 0; //its gotta be a draw
         } else if (numberPieces == 3) {
@@ -601,26 +628,43 @@ public class Board implements Serializable{
                 } else if (pieceCount.get(i).get(PieceType.KNIGHT) > 0) {
                     return 0;
                 } else if (pieceCount.get(i).get(PieceType.QUEEN) > 0) {
-                    return 0;
+                    value += 3;
                 } else if (pieceCount.get(i).get(PieceType.ROOK) > 0) {
-                    return 0;
+                    value += 1;
+                }
+            }
+            for(int i = 0; i < 8; i++){
+                for(int j = 0; j < 8; j++){
+                    if((pieces[i][j] != null)&&(pieces[i][j].colour == Colour.BLACK)){
+                        value += 10-(i-whiteKing[0]);
+                        value += 10-(j-whiteKing[1]);
+                    }else if((pieces[i][j] != null)&&(pieces[i][j].colour == Colour.WHITE)){
+                        value += 10-(i-blackKing[0]);
+                        value += 10-(j-blackKing[1]);
+                    }
                 }
             }
         } else if (numberPieces == 4) {
 
         }
+        */
         return value;
     }
-
+    
+    /**
+     * Determining adjustments to the value of the board in the begin game.
+     * pre: none
+     * post: returns double
+     */
     public double getMidSquaresValue() {
         double value = 0;
 
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 4; j++) {
-                if ((pieces[2 + i][2 + j] != null) && (pieces[2 + i][2 + j].pieceType == PieceType.PAWN) && (pieces[2 + i][2 + j].colour == Colour.BLACK)) {
+                if ((pieces[2+i][2+j] != null)&&(pieces[2+i][2+j].pieceType == PieceType.PAWN)&&(pieces[2+i][2+j].colour == Colour.BLACK)) {
                     value -= 0.07;
                 }
-                if ((pieces[4 + i][2 + j] != null) && (pieces[4 + i][2 + j].pieceType == PieceType.PAWN) && (pieces[4 + i][2 + j].colour == Colour.WHITE)) {
+                if ((pieces[4+i][2+j] != null)&&(pieces[4+i][2+j].pieceType == PieceType.PAWN)&&(pieces[4+i][2+j].colour == Colour.WHITE)) {
                     value += 0.07;
                 }
             }
@@ -629,10 +673,10 @@ public class Board implements Serializable{
             for (int y = 3; y <= 4; y++) {
                 for (int i = -2; i <= 2; i += 4) {
                     for (int j = -1; j <= 1; j += 2) {
-                        if ((pieces[y + j][x + i] != null) && (pieces[y + j][x + i].pieceType == PieceType.KNIGHT) && (pieces[y + j][x + i].colour == Colour.BLACK)) {
+                        if ((pieces[y+j][x+i] != null)&&(pieces[y+j][x+i].pieceType == PieceType.KNIGHT)&&(pieces[y+j][x+i].colour == Colour.BLACK)) {
                             value -= 0.07;
                         }
-                        if ((pieces[y + j][x + i] != null) && (pieces[y + j][x + i].pieceType == PieceType.KNIGHT) && (pieces[y + j][x + i].colour == Colour.WHITE)) {
+                        if ((pieces[y+j][x+i] != null)&&(pieces[y+j][x+i].pieceType == PieceType.KNIGHT)&&(pieces[y+j][x+i].colour == Colour.WHITE)) {
                             value += 0.07;
                         }
                     }
@@ -642,6 +686,11 @@ public class Board implements Serializable{
         return value;
     }
 
+    /**
+     * Determines the number of each type of piece on the board.
+     * pre: none
+     * post: a 2D enum map of colour and pieceType (and integers)
+     */
     public EnumMap<Colour, EnumMap<PieceType, Integer>> getPieceCount() {
         EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount = new EnumMap<>(Colour.class);
 
@@ -660,10 +709,14 @@ public class Board implements Serializable{
                 }
             }
         }
-
         return pieceCount;
     }
 
+    /**
+     * Gets the value of an individual piece based on pieceType
+     * pre: takes in a piece
+     * post: returns an int of the value
+     */
     public static int getPieceValue(Piece piece) {
         int value = 0;
 
@@ -713,6 +766,11 @@ public class Board implements Serializable{
         }
     }
 
+    /**
+     * Finds the winnerState of the board.
+     * pre: none
+     * post: returns the winnerState
+     */
     public WinnerState getWinnerState() {
         WinnerState winnerState = WinnerState.UNFINISHED;
         if (getBoardValue() >= 100000) {
@@ -740,5 +798,5 @@ public class Board implements Serializable{
         }
         return winnerState;
     }
-
+    
 }
