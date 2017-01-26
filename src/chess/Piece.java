@@ -59,4 +59,10 @@ public class Piece {
         return false;
     }
     
+    @Override
+    public String toString(){
+        String output = "";
+        output += colour + " " + pawnMoveState + " " + castling + " " + pieceType;
+        return output;
+    }
 }

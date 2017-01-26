@@ -9,6 +9,7 @@ import chess.Piece.Colour;
 import chess.Piece.PawnMoveState;
 import chess.Piece.PieceType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 
 /**
@@ -28,10 +29,10 @@ public class Board {
     public String P1Colour = ANSI_PURPLE;
     public String P2Colour = ANSI_GREEN;
 
-    boolean turn;
-    
     public Piece[][] pieces = new Piece[8][8];
 
+    boolean turn;
+    
     public WinnerState winnerState = WinnerState.UNFINISHED;
 
     public static enum WinnerState {
@@ -451,7 +452,7 @@ public class Board {
     public double getBoardValue() {
         double value = 0;
         int numberPieces = 64;
-        EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount = getPieceCount();//watch references
+        EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount = getPieceCount();
 
         if (pieceCount.get(Colour.WHITE).get(PieceType.KING) == 0) {
             return -100000;
@@ -630,6 +631,17 @@ public class Board {
             }
             //TODO: check tie
         }
+    }
+    
+    @Override
+    public String toString(){
+        String output = "";
+        
+        output += Arrays.deepToString(pieces) + "\n";
+        output += turn + "\n";
+        output += winnerState;
+        
+        return output;
     }
 
 }

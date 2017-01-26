@@ -7,7 +7,16 @@ package chess;
 
 import chess.Board.WinnerState;
 import chess.Piece.Colour;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -20,13 +29,11 @@ public class Game {
     Board board = new Board();
     Player playerOne, playerTwo;
     
-    public void menu(){
+    public void menu(){//TODO: doesn't loop properly //where is step called
         
-        Scanner scan = new Scanner(System.in); 
+        System.out.println("1. Play Game\n2. Instructions\n3. Load Game\n4. Exit");
         
-        System.out.println("1. Play Game\n2. Instructions\n3. Exit");
-        
-        int firstChoice = getChoice(1, 4); //valid input checking
+        int firstChoice = getChoice(1, 5); //valid input checking
         
         if(firstChoice == 1){
             System.out.println("1. P v P\n2. P v AI\n3. AI v AI");
@@ -38,27 +45,28 @@ public class Game {
             }else if(secondChoice == 2){ //when one player is human, one ai
                 System.out.println("Human playing as black or white?");
                 boolean colourChoice = getColour();
-                System.out.println("Select the difficulty of the AI (1, 2 or 3)");
+                System.out.println("Select the difficulty of the AI (1-3)");
                 long difficulty = getChoice(1, 3); 
                 if(colourChoice){
                     playerOne = new Human(Colour.WHITE);
-                    playerTwo = new AI(Colour.BLACK, difficulty*1000); //TODO: put good values here
+                    playerTwo = new AI(Colour.BLACK, Math.pow(10, difficulty+2));
                 }else{
-                    playerOne = new AI(Colour.WHITE, difficulty*1000);
+                    playerOne = new AI(Colour.WHITE, Math.pow(10, difficulty+2));
                     playerTwo = new Human(Colour.BLACK);
                 }
             }else if(secondChoice == 3){//two ais
-                System.out.println("Select the difficulty of the first AI (1, 2 or 3)");
+                System.out.println("Select the difficulty of the first AI (1-3)");
                 long difficulty1 = getChoice(1, 3);
-                System.out.println("Select the difficulty of the second AI (1, 2 or 3)");
+                System.out.println("Select the difficulty of the second AI (1-3)");
                 long difficulty2 = getChoice(1, 3);
-                playerOne = new AI(Colour.WHITE, difficulty1*1000);
-                playerTwo = new AI(Colour.BLACK, difficulty2*1000);
-
+                playerOne = new AI(Colour.WHITE, Math.pow(10, difficulty1+2));
+                playerTwo = new AI(Colour.BLACK, Math.pow(10, difficulty2+2));
             }
         }else if(firstChoice == 2){
             printInstructions();
-        }else if(firstChoice == 4){
+        }else if(firstChoice == 3){
+            //TODO:save&load
+        }else if(firstChoice == 5){
             playerOne = new AI(Colour.WHITE, 1000);
             playerTwo = new AI(Colour.BLACK, 1000);
         }else{ //quitting
@@ -107,16 +115,24 @@ public class Game {
     }
     
     public void printInstructions(){ //method to print instructions
-        System.out.print("Instructions\nChess is a two player game with 6 different"
-                + "types of pieces. The goal of the game is to put the other player"
-                + "in checkmate. This is when their king is current being threatened"
-                + "and is unable to move without being under attack by an enemy piece."
-                + "Each piece has different capabilities. PAWN: Can only move forward"
+        System.out.print("Instructions\nChess is a two player game with 6 different "
+                + "types of pieces. The goal of the game is to put the other player \n"
+                + "in checkmate. This is when their king is current being threatened "
+                + "and is unable to move without being\n under attack by an enemy piece. "
+                + "Each piece has different capabilities. PAWN: Can only move forward \n"
                 + "(towards the enemy's side of the board) by one square at a time. "
-                + "On the first turn, pawns are able to move two squares forward. "
-                + "Pawns capture pieces by moving diagonally one square. KNIGHT: "
-                + "The only piece that can jump overtop of other pieces. Moves in an"
-                + "L shape (moves ");
+                + "On the first turn, pawns are able\n to move two squares forward. "
+                + "Pawns capture pieces by moving diagonally one square. KNIGHT: \n"
+                + "The only piece that can jump over other pieces. Moves in an "
+                + "L shape (moves 2 squares in one\n direction, and then 1 square in a "
+                + "perpendicular direction. BISHOP: Moves diagonally any number of \n"
+                + "squares (until blocked by a piece). ROOK: Moves up, down, left, "
+                + "or right any number of squares\n (until blocked by a piece). QUEEN: "
+                + "Can move diagonally, up down, left, or right any number of squares \n"
+                + "(until blocked by a piece). KING: Can move one square in any direction. \n"
+                + "If you would like to save the game at any point, type 's'.\n\n");
+        
+        menu();
     }
     /**
      * Switches between turns, running the actual game. Continues until the game is finished.
@@ -168,6 +184,36 @@ public class Game {
             if(scan.nextLine() != null){
                 menu();
             }
+        }
+    }
+    
+    public void saveGame(int gameNumber){
+
+        int increments = 5;
+        
+        int line;
+        line = (gameNumber-1)*increments;
+        
+        //String line32 = Files.readAllLines(Paths.get("file.txt")).get(32);
+        
+        File file = new File("savedgames.txt");
+        BufferedWriter writer;
+        BufferedReader reader;
+        
+        String gameText = ("AGH" + playerOne + "\n" + playerTwo + "\n" + board.toString());
+        
+        try{
+            
+            writer = new BufferedWriter(new FileWriter(file));
+            reader = new BufferedReader(new FileReader(file));
+            
+            for(int i = 0; i <= line; i++){
+                writer.write(reader.read());
+            }
+            writer.write(gameText);
+            writer.close();
+        } catch ( IOException e ) {
+            e.printStackTrace();
         }
     }
     

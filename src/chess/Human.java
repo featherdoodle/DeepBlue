@@ -119,4 +119,12 @@ public class Human extends Player{
             return move(board);
         }
     }
+    
+    @Override
+    public String toString(){
+        String output = "";
+        output += colour;
+        return output;
+    }
+    
 }
