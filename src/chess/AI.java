@@ -5,6 +5,7 @@
  */
 package chess;
 
+import chess.Board.WinnerState;
 import chess.Piece.Colour;
 import java.util.ArrayList;
 import java.util.Random;
@@ -55,17 +56,11 @@ public class AI extends Player {
             }
         }
         if(colour == Colour.WHITE){ //if they are white, they want high values
-            if(bestValue == -100000){
-                //moves.get(0).winnerState = WinnerState.PLAYER_TWO_WINS;
-                return board;
-            }
+            
             return moves.get(bestIndices.get(random.nextInt(bestIndices.size()))); 
             //if the values are equal, the move is chosen randomly
         }else{ //if they are black, they want low values
-            if(worstValue == 100000){
-                //moves.get(0).winnerState = WinnerState.PLAYER_ONE_WINS;
-                return board;
-            }
+            
             return moves.get(worstIndices.get(random.nextInt(worstIndices.size())));
             //again, choosing randomly if the values are equal
         }
@@ -100,7 +95,15 @@ public class AI extends Player {
                 
                 return bestValue;
             }else{
-                return board.getBoardValue();
+                WinnerState winnerState = board.getWinnerState();
+                if(winnerState == WinnerState.PLAYER_ONE_WINS){
+                    return 100000;
+                }else if(winnerState == WinnerState.PLAYER_TWO_WINS){
+                    return -100000;
+                }else{
+                    return 0;
+                }
+                //return board.getBoardValue();
             }
         }
     }

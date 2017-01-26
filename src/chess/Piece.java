@@ -53,9 +53,12 @@ public class Piece implements Serializable{
     public boolean equals(Object object){
         if(object instanceof Piece){
             if((((Piece)object).pieceType == pieceType)&&(((Piece)object).colour == colour)){
-                if((((Piece)object).pawnMoveState == pawnMoveState)&&(((Piece)object).castling == castling)){
-                    return true;
+                if(pieceType == PieceType.PAWN){
+                    return ((Piece)object).pawnMoveState == pawnMoveState; 
+                }if((pieceType == PieceType.KING)||(pieceType == PieceType.ROOK)){
+                    return ((Piece)object).castling == castling;
                 }
+                return true;
             }
         }
         return false;

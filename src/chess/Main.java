@@ -93,13 +93,12 @@ public class Main {
         game.board.printBoard();
         System.out.println();
         
-        while(game.board.winnerState == WinnerState.UNFINISHED){
+        while(game.board.getWinnerState() == WinnerState.UNFINISHED){
             game.step();
-            game.board.updateWinnerState();
             game.board.printBoard();
             System.out.println();
         }
-        gameOver(game.board.winnerState);
+        gameOver(game.board.getWinnerState());
     }
     
     

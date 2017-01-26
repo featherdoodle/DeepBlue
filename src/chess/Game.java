@@ -34,14 +34,8 @@ public class Game implements Serializable{
             player = playerTwo;
         }
         
-        Board tempBoard;
+        board = player.move(board);
         
-        tempBoard = board.cloneBoard(player.move(board));
-        if(board.equals(tempBoard)){
-            board.winnerState = WinnerState.PLAYER_TWO_WINS;
-        }else{
-            board = tempBoard;
-        }
         
         board.turn = !board.turn;
     }

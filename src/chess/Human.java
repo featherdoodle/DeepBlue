@@ -9,6 +9,7 @@ import chess.Piece.Colour;
 import chess.Piece.PawnMoveState;
 import chess.Piece.PieceType;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -72,8 +73,7 @@ public class Human extends Player{
             }
         }
         
-        Board destinationBoard = new Board();
-        destinationBoard = destinationBoard.cloneBoard(board);
+        Board destinationBoard = Board.cloneBoard(board);
         
         boolean enpassant = false;
         
@@ -101,6 +101,32 @@ public class Human extends Player{
                 }
                 if(enpassant){
                     destinationBoard.pieces[y1][x2] = null;
+                }if((y2 == 0)||(y2 == 7)){
+                    System.out.println("What type of piece would you like the pawn to become?");
+        
+                    for(;;){ //infinate loop
+                        //Scanner scan = new Scanner(System.in);
+                        try{
+                            String choice = scan.nextLine();
+                            if(choice.equalsIgnoreCase("knight")){
+                                destinationBoard.pieces[y2][x2].pieceType = PieceType.KNIGHT;
+                                break;
+                            }else if(choice.equalsIgnoreCase("bishop")){
+                                destinationBoard.pieces[y2][x2].pieceType = PieceType.BISHOP;
+                                break;
+                            }else if(choice.equalsIgnoreCase("rook")){
+                                destinationBoard.pieces[y2][x2].pieceType = PieceType.ROOK;
+                                break;
+                            }else if(choice.equalsIgnoreCase("queen")){
+                                destinationBoard.pieces[y2][x2].pieceType = PieceType.QUEEN;
+                                break;
+                            }else{
+                                System.out.println("Please enter a valid choice (knight, bishop, rook, queen)");
+                            }
+                        }catch(InputMismatchException e){
+                            System.out.println("Please enter a valid choice (knight, bishop, rook, queen)");
+                        }
+                    }
                 }
             }if(destinationBoard.pieces[y2][x2].pieceType == PieceType.KING){
                 if(Math.abs(x2-x1) == 2){
@@ -127,11 +153,7 @@ public class Human extends Player{
         }
         boolean contains = false;
         
-        ArrayList<Board> allMoves = board.refinePieceMoves(colour);
-        
-        if(allMoves.isEmpty()){
-            return board;
-        }
+        ArrayList<Board> allMoves = board.getAllMoves(colour);
         
         for(int i = 0; i < allMoves.size(); i++){
             if(allMoves.get(i).equals(destinationBoard)){
