@@ -3,6 +3,7 @@
 package chess;
 
 import chess.Board.WinnerState;
+import chess.Piece.Colour;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -63,8 +64,8 @@ public class Main {
                 long difficulty1 = getChoice(1, 3);
                 System.out.println("Select the difficulty of the second AI (1-3)");
                 long difficulty2 = getChoice(1, 3);
-                game.playerOne = new AI(Piece.Colour.WHITE, Math.pow(10, difficulty1+3));
-                game.playerTwo = new AI(Piece.Colour.BLACK, Math.pow(10, difficulty2+3));
+                game.playerOne = new AI(Piece.Colour.WHITE, Math.pow(10, difficulty1+2));
+                game.playerTwo = new AI(Piece.Colour.BLACK, Math.pow(10, difficulty2+2));
             }
             game.board.setupBoard();
             runGame(game);
@@ -97,12 +98,14 @@ public class Main {
         System.out.println();
         
         //continues to run while the game is unfinished
-        while(game.board.getWinnerState() == WinnerState.UNFINISHED){
+        Colour colour = game.board.turn ? Colour.WHITE : Colour.BLACK;
+        while(game.board.getWinnerState(colour) == WinnerState.UNFINISHED){
+            colour = game.board.turn ? Colour.WHITE : Colour.BLACK;
             game.step();
             game.board.printBoard();
             System.out.println();
         }
-        gameOver(game.board.getWinnerState());
+        gameOver(game.board.getWinnerState(colour));
     }
     
     /**

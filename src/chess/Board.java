@@ -37,31 +37,31 @@ public class Board implements Serializable{
      */
     public void setupBoard() {
         //initializing black pieces
-        //pieces[0][0] = new Piece(PieceType.ROOK, Colour.BLACK);
-        /*pieces[0][1] = new Piece(PieceType.KNIGHT, Colour.BLACK);
-        pieces[0][2] = new Piece(PieceType.BISHOP, Colour.BLACK);*/
-        //pieces[0][3] = new Piece(PieceType.QUEEN, Colour.BLACK);
-        pieces[7][7] = new Piece(PieceType.KING, Colour.BLACK);
-        /*pieces[0][5] = new Piece(PieceType.BISHOP, Colour.BLACK);
+        pieces[0][0] = new Piece(PieceType.ROOK, Colour.BLACK);
+        pieces[0][1] = new Piece(PieceType.KNIGHT, Colour.BLACK);
+        pieces[0][2] = new Piece(PieceType.BISHOP, Colour.BLACK);
+        pieces[0][3] = new Piece(PieceType.QUEEN, Colour.BLACK);
+        pieces[0][4] = new Piece(PieceType.KING, Colour.BLACK);
+        pieces[0][5] = new Piece(PieceType.BISHOP, Colour.BLACK);
         pieces[0][6] = new Piece(PieceType.KNIGHT, Colour.BLACK);
         pieces[0][7] = new Piece(PieceType.ROOK, Colour.BLACK);
         
         for (int i = 0; i < 8; i++) {
             pieces[1][i] = new Piece(PieceType.PAWN, Colour.BLACK);
-        }*/
+        }
         //initializing white pieces
-        pieces[4][1] = new Piece(PieceType.ROOK, Colour.WHITE);
-        /*pieces[7][1] = new Piece(PieceType.KNIGHT, Colour.WHITE);
-        pieces[7][2] = new Piece(PieceType.BISHOP, Colour.WHITE);*/
-        pieces[0][0] = new Piece(PieceType.KING, Colour.WHITE);
-        //pieces[7][5] = new Piece(PieceType.QUEEN, Colour.WHITE);
-        /*pieces[7][5] = new Piece(PieceType.BISHOP, Colour.WHITE);
-        pieces[7][6] = new Piece(PieceType.KNIGHT, Colour.WHITE);*/
-        pieces[5][0] = new Piece(PieceType.ROOK, Colour.WHITE);/*
+        pieces[7][0] = new Piece(PieceType.ROOK, Colour.WHITE);
+        pieces[7][1] = new Piece(PieceType.KNIGHT, Colour.WHITE);
+        pieces[7][2] = new Piece(PieceType.BISHOP, Colour.WHITE);
+        pieces[7][3] = new Piece(PieceType.QUEEN, Colour.WHITE);
+        pieces[7][4] = new Piece(PieceType.KING, Colour.WHITE);
+        pieces[7][5] = new Piece(PieceType.BISHOP, Colour.WHITE);
+        pieces[7][6] = new Piece(PieceType.KNIGHT, Colour.WHITE);
+        pieces[7][7] = new Piece(PieceType.ROOK, Colour.WHITE);
 
         for (int i = 0; i < 8; i++) {
             pieces[6][i] = new Piece(PieceType.PAWN, Colour.WHITE);
-        }*/
+        }
         turn = true; //it starts as white's turn
     }
 
@@ -171,26 +171,26 @@ public class Board implements Serializable{
                 if (pieces[y][x].colour == Colour.BLACK) {
                     if ((pieces[0][0] != null) && (pieces[0][0].castling) && (pieces[0][1] == null) && (pieces[0][2] == null) && (pieces[0][3] == null)) {
                         moves.add(makeMove(cloneBoard(this), x, y, 2, 0));
-                        moves.set(moves.size() - 1, makeMove(cloneBoard(moves.get(moves.size() - 1)), 0, 0, 3, 0));
+                        moves.set(moves.size() - 1, makeMove(moves.get(moves.size() - 1), 0, 0, 3, 0));
                         moves.get(moves.size()-1).pieces[0][2].castling = false;
-                        moves.get(moves.size()-1).pieces[0][3].castling = false;
+                        moves.get(moves.size()-1).pieces[0][3].castling = false; 
                     } else if ((pieces[0][7] != null) && (pieces[0][7].castling) && (pieces[0][5] == null) && (pieces[0][6] == null)) {
                         moves.add(makeMove(cloneBoard(this), x, y, 6, 0)); 
-                        moves.set(moves.size() - 1, makeMove(cloneBoard(moves.get(moves.size() - 1)), 7, 0, 5, 0));
+                        moves.set(moves.size() - 1, makeMove(moves.get(moves.size() - 1), 7, 0, 5, 0));
                         moves.get(moves.size()-1).pieces[0][6].castling = false;
                         moves.get(moves.size()-1).pieces[0][5].castling = false;
                     }
                 } else {
-                    if ((pieces[7][0] != null) && (pieces[7][0].castling) && (pieces[7][1] == null) && (pieces[7][2] == null)) {
-                        moves.add(makeMove(cloneBoard(this), x, y, 1, 7));
-                        moves.set(moves.size() - 1, makeMove(cloneBoard(moves.get(moves.size() - 1)), 0, 7, 2, 7));
-                        moves.get(moves.size()-1).pieces[7][1].castling = false;
+                    if ((pieces[7][0] != null) && (pieces[7][0].castling) && (pieces[7][1] == null) && (pieces[7][2] == null) && (pieces[7][3] == null)) {
+                        moves.add(makeMove(cloneBoard(this), x, y, 2, 7));
+                        moves.set(moves.size() - 1, makeMove(moves.get(moves.size() - 1), 0, 7, 3, 7));
                         moves.get(moves.size()-1).pieces[7][2].castling = false;
-                    } else if ((pieces[7][7] != null) && (pieces[7][7].castling) && (pieces[7][4] == null) && (pieces[7][5] == null) && (pieces[7][6] == null)) {
-                        moves.add(makeMove(cloneBoard(this), x, y, 5, 7)); 
-                        moves.set(moves.size() - 1, makeMove(cloneBoard(moves.get(moves.size() - 1)), 7, 7, 4, 7));
+                        moves.get(moves.size()-1).pieces[7][3].castling = false;
+                    } else if ((pieces[7][7] != null) && (pieces[7][7].castling) && (pieces[7][5] == null) && (pieces[7][6] == null)) {
+                        moves.add(makeMove(cloneBoard(this), x, y, 6, 7)); 
+                        moves.set(moves.size() - 1, makeMove(moves.get(moves.size() - 1), 7, 7, 5, 7));
+                        moves.get(moves.size()-1).pieces[7][6].castling = false;
                         moves.get(moves.size()-1).pieces[7][5].castling = false;
-                        moves.get(moves.size()-1).pieces[7][4].castling = false;
                     }
                 }
             }
@@ -324,7 +324,7 @@ public class Board implements Serializable{
                 if ((checkBounds(x+i[index]*n, y+j[index]*n)) && (pieces[y+j[index]*n][x+i[index]*n] == null)) {
                     moves.add(makeMove(cloneBoard(this), x, y, x+i[index]*n, y+j[index]*n));
                     moves.get(moves.size()-1).pieces[y+j[index]*n][x+i[index]*n].castling = false;
-                } else if ((checkBounds(x+i[index]*n, y+j[index]*n)) && (pieces[y][x].colour != pieces[y+j[index]*n][x+i[index]*n].colour)) {
+                } else if ((checkBounds(x+i[index]*n, y+j[index]*n))&&(pieces[y][x].colour != pieces[y+j[index]*n][x+i[index]*n].colour)) {
                     moves.add(makeMove(cloneBoard(this), x, y, x+i[index]*n, y+j[index]*n));
                     moves.get(moves.size()-1).pieces[y+j[index]*n][x+i[index]*n].castling = false;
                     empty = false;
@@ -578,7 +578,7 @@ public class Board implements Serializable{
         //iterating through the board to find 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if ((pieces[i][j] != null)&&(pieces[i][j].pieceType == PieceType.KING)) {
+                /*if ((pieces[i][j] != null)&&(pieces[i][j].pieceType == PieceType.KING)) {
                     if(pieces[i][j].colour == Colour.WHITE){
                         whiteKing[0] = i;
                         whiteKing[1] = j;
@@ -586,7 +586,7 @@ public class Board implements Serializable{
                         blackKing[0] = i;
                         blackKing[1] = j;
                     }
-                } else if((pieces[i][j] != null)&&(pieces[i][j].pieceType != PieceType.KING)){
+                } else */if((pieces[i][j] != null)&&(pieces[i][j].pieceType != PieceType.KING)){
                     value += getPieceValue(pieces[i][j]);
                 }else {
                     numberPieces--; //subracting 1 for every null value to find total number of pieces
@@ -771,25 +771,23 @@ public class Board implements Serializable{
      * pre: none
      * post: returns the winnerState
      */
-    public WinnerState getWinnerState() {
+    public WinnerState getWinnerState(Colour checkColour) {
         WinnerState winnerState = WinnerState.UNFINISHED;
         if (getBoardValue() >= 100000) {
             winnerState = WinnerState.PLAYER_ONE_WINS;
         } else if (getBoardValue() <= -100000) {
             winnerState = WinnerState.PLAYER_TWO_WINS;
         } else{
-            Colour colour = turn ? Colour.WHITE : Colour.BLACK;
-            if(getAllMoves(colour).isEmpty()){
+            
+            if(getAllMoves(Colour.swap(checkColour)).isEmpty()){
                 
                 for(int i = 0; i < 8; i++){
                     for(int j = 0; j < 8; j++){
-                        if((pieces[j][i] != null)&&(pieces[j][i].pieceType == PieceType.KING)){
+                        if((pieces[j][i] != null)&&(pieces[j][i].pieceType == PieceType.KING)&&(pieces[j][i].colour != checkColour)){
                             if(underAttack(i, j)){
-                                if(colour == pieces[j][i].colour){
-                                    winnerState = colour == Colour.WHITE ? WinnerState.PLAYER_TWO_WINS : WinnerState.PLAYER_ONE_WINS;
-                                }else{
-                                    winnerState = WinnerState.STALEMATE;
-                                }
+                                winnerState = checkColour == Colour.WHITE ? WinnerState.PLAYER_ONE_WINS : WinnerState.PLAYER_TWO_WINS;
+                            }else{
+                                winnerState = WinnerState.STALEMATE;
                             }
                         }
                     }

@@ -29,6 +29,9 @@ public class AI extends Player {
     @Override
     public Board move(Board board){
         Random random = new Random();
+        
+        board = Board.cloneBoard(board);
+        
         ArrayList<Board> moves = board.getAllMoves(colour); //list that contains all the possible moves
         double[] values = new double[moves.size()]; 
         //list that contains the board values for each possible move. the indices match up with the previous list
@@ -93,11 +96,11 @@ public class AI extends Player {
                 }
                 return bestValue;
             }else{
-                WinnerState winnerState = board.getWinnerState();
+                WinnerState winnerState = board.getWinnerState(Colour.swap(checkColour));
                 if(winnerState == WinnerState.PLAYER_ONE_WINS){
-                    return 100000; //super high value if P1 wins
+                    return 100000*(depth+1); //super high value if P1 wins
                 }else if(winnerState == WinnerState.PLAYER_TWO_WINS){
-                    return -100000; //super low value if P2 wins
+                    return -100000*(depth+1); //super low value if P2 wins
                 }else{
                     return 0;
                 }
