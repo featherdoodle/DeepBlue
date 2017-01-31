@@ -683,6 +683,13 @@ public class Board implements Serializable{
         return value;
     }
     
+    /**
+     * If the only enemy piece is a king, the friendly king moves towards
+     * the enemy king. The value of the board is impacted by the distance
+     * between kings.
+     * pre: requires the colour of the friendly king, and the value of the board
+     * post: returns a double of the value
+     */
     public double getKingValue(Colour colour, double originalValue){
         double value = 0;
         
@@ -718,6 +725,12 @@ public class Board implements Serializable{
         return value;
     }
     
+    /**
+     * Determines a value based on the number of squares blocked off to
+     * a king by rooks or queens.
+     * pre: requires the colour of the friendly side
+     * post: returns the value
+     */
     public double getQuadrantValue(Colour colour){
         double value = 0;
         
