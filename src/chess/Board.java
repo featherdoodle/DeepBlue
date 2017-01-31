@@ -72,7 +72,7 @@ public class Board implements Serializable{
      * pre: none 
      * post: board is printed to the console.
      */
-    /*public void printBoard() {
+    public void printBoard() {
 
         System.out.println(ANSI_RESET + " \u30000\u30001\u30002\u30003\u30004\u30005\u30006\u30007");
         for (int i = 0; i < 8; i++) {
@@ -118,9 +118,10 @@ public class Board implements Serializable{
             System.out.println();
         }
 
-    }*/
+    }
     
-    public void printBoard(){
+    //for printing in the jar :)
+    /*public void printBoard(){
         System.out.println("  0  1  2  3  4  5  6  7");
         for(int i = 0; i < 8; i++){
             System.out.print(i);
@@ -157,7 +158,7 @@ public class Board implements Serializable{
             }
             System.out.println();
         }
-    }
+    }*/
 
     /**
      * Finding all the possible moves that a specific piece can make. 
