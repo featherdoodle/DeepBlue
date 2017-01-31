@@ -238,7 +238,7 @@ public class Main {
             game = (Game)(in.readObject());
             in.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            return null;
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
