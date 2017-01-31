@@ -31,7 +31,6 @@ public class Game implements Serializable{
         
         board = player.move(board);
         
-        
         board.turn = !board.turn;
     }
     

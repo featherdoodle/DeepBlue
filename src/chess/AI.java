@@ -13,7 +13,7 @@ import java.util.Random;
  */
 public class AI extends Player {
     
-    public final double difficulty; //the variable that determines how many moves in the future the ai looks
+    public double difficulty; //the variable that determines how many moves in the future the ai looks
     
     public AI(Colour _colour, double _difficulty){
         super(_colour);
@@ -28,6 +28,20 @@ public class AI extends Player {
      */
     @Override
     public Board move(Board board){
+        
+        /*int pieceCount = 64;
+        
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(board.pieces[j][i] == null){
+                    pieceCount -= 1;
+                }
+            }
+        }
+        if(pieceCount <= 6){
+            difficulty = 100000;
+        }*/
+        
         Random random = new Random();
         
         board = Board.cloneBoard(board);

@@ -37,7 +37,7 @@ public class Board implements Serializable{
      */
     public void setupBoard() {
         //initializing black pieces
-        pieces[0][0] = new Piece(PieceType.ROOK, Colour.BLACK);
+        /*pieces[0][0] = new Piece(PieceType.ROOK, Colour.BLACK);
         pieces[0][1] = new Piece(PieceType.KNIGHT, Colour.BLACK);
         pieces[0][2] = new Piece(PieceType.BISHOP, Colour.BLACK);
         pieces[0][3] = new Piece(PieceType.QUEEN, Colour.BLACK);
@@ -61,7 +61,11 @@ public class Board implements Serializable{
 
         for (int i = 0; i < 8; i++) {
             pieces[6][i] = new Piece(PieceType.PAWN, Colour.WHITE);
-        }
+        }*/
+        pieces[0][4] = new Piece(PieceType.KING, Colour.BLACK);
+        pieces[7][0] = new Piece(PieceType.ROOK, Colour.WHITE);
+        pieces[7][4] = new Piece(PieceType.KING, Colour.WHITE);
+        
         turn = true; //it starts as white's turn
     }
 
@@ -497,6 +501,7 @@ public class Board implements Serializable{
                 }
             }
         }
+        
         return allMoves;
     }
 
@@ -571,22 +576,11 @@ public class Board implements Serializable{
         if (pieceCount.get(Colour.BLACK).get(PieceType.KING) == 0) {
             return 100000;
         }
-
-        int[] whiteKing = new int[2];
-        int[] blackKing = new int[2];
         
         //iterating through the board to find 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                /*if ((pieces[i][j] != null)&&(pieces[i][j].pieceType == PieceType.KING)) {
-                    if(pieces[i][j].colour == Colour.WHITE){
-                        whiteKing[0] = i;
-                        whiteKing[1] = j;
-                    }else if(pieces[i][j].colour == Colour.WHITE){
-                        blackKing[0] = i;
-                        blackKing[1] = j;
-                    }
-                } else */if((pieces[i][j] != null)&&(pieces[i][j].pieceType != PieceType.KING)){
+                if((pieces[i][j] != null)&&(pieces[i][j].pieceType != PieceType.KING)){
                     value += getPieceValue(pieces[i][j]);
                 }else {
                     numberPieces--; //subracting 1 for every null value to find total number of pieces
@@ -599,7 +593,7 @@ public class Board implements Serializable{
         } else if (numberPieces >= 6) {//between 6 pieces taken, and 6 pieces left
             
         } else{
-            double endgame = getEndgameValue(numberPieces, pieceCount, whiteKing, blackKing);
+            double endgame = getEndgameValue(numberPieces, pieceCount);
             if(endgame == 0){
                 return 0;
             }else{
@@ -615,10 +609,10 @@ public class Board implements Serializable{
      * pre: takes in the total number of pieces, and the count of the piece types on the board
      * post: returns a double
      */
-    public double getEndgameValue(int numberPieces, EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount, int[] whiteKing, int[] blackKing) {
+    public double getEndgameValue(int numberPieces, EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount) {
         //i know two of them are kings already
         double value = 0;
-/*
+
         if (numberPieces == 2) {
             return 0; //its gotta be a draw
         } else if (numberPieces == 3) {
@@ -628,26 +622,51 @@ public class Board implements Serializable{
                 } else if (pieceCount.get(i).get(PieceType.KNIGHT) > 0) {
                     return 0;
                 } else if (pieceCount.get(i).get(PieceType.QUEEN) > 0) {
-                    value += 3;
+                    getQuadrantValue(i, PieceType.QUEEN);
                 } else if (pieceCount.get(i).get(PieceType.ROOK) > 0) {
-                    value += 1;
+                    getQuadrantValue(i, PieceType.ROOK);
                 }
             }
-            for(int i = 0; i < 8; i++){
-                for(int j = 0; j < 8; j++){
-                    if((pieces[i][j] != null)&&(pieces[i][j].colour == Colour.BLACK)){
-                        value += 10-(i-whiteKing[0]);
-                        value += 10-(j-whiteKing[1]);
-                    }else if((pieces[i][j] != null)&&(pieces[i][j].colour == Colour.WHITE)){
-                        value += 10-(i-blackKing[0]);
-                        value += 10-(j-blackKing[1]);
+        }
+        
+        return value;
+    }
+    
+    public double getQuadrantValue(Colour colour, PieceType pieceType){
+        double value = 0;
+        
+        int pieceX = 1;
+        int pieceY = 1;
+        int kingX = 1;
+        int kingY = 1;
+        
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(pieces[j][i] != null){
+                    if((pieces[j][i].colour == colour)&&(pieces[j][i].pieceType == pieceType)){
+                        pieceX += i;
+                        pieceY += j;
+                    }else if((pieces[j][i].colour != colour)&&(pieces[j][i].pieceType == PieceType.KING)){
+                        kingX += i;
+                        kingY += j;
                     }
                 }
             }
-        } else if (numberPieces == 4) {
-
         }
-        */
+        
+        if((kingX < pieceX)&&(kingY < pieceY)){
+            value = pieceX*pieceY;
+        }else if((kingX < pieceX)&&(kingY > pieceY)){
+            value = (8-pieceY)*pieceX;
+        }else if((kingX > pieceX)&&(kingY < pieceY)){
+            value = pieceY*(8-pieceX);
+        }else if((kingX > pieceX)&&(kingY > pieceY)){
+            value = (8-pieceY)*(8-pieceX);
+        }
+        
+        value = 64-value;
+        value /= 64;
+        
         return value;
     }
     
@@ -737,7 +756,7 @@ public class Board implements Serializable{
         }
         return value;
     }
-
+    
     @Override
     public boolean equals(Object object) {
         if (object instanceof Board) {
