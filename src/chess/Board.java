@@ -7,6 +7,7 @@ import chess.Piece.PawnMoveState;
 import chess.Piece.PieceType;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 
 /**
@@ -588,12 +589,12 @@ public class Board implements Serializable{
             }
         }
 
-        if (numberPieces <= 26) { // 6 pieces taken
+        if (numberPieces >= 26) { // 6 pieces taken
             value += getMidSquaresValue();
         } else if (numberPieces >= 6) {//between 6 pieces taken, and 6 pieces left
             
         } else{
-            double endgame = getEndgameValue(numberPieces, pieceCount);
+            double endgame = getEndgameValue(numberPieces, pieceCount, value);
             if(endgame == 0){
                 return 0;
             }else{
@@ -609,63 +610,131 @@ public class Board implements Serializable{
      * pre: takes in the total number of pieces, and the count of the piece types on the board
      * post: returns a double
      */
-    public double getEndgameValue(int numberPieces, EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount) {
+    public double getEndgameValue(int numberPieces, EnumMap<Colour, EnumMap<PieceType, Integer>> pieceCount, double originalValue) {
+        //the number of pieces does not include the kings
         //i know two of them are kings already
         double value = 0;
 
-        if (numberPieces == 2) {
+        if (numberPieces == 0) {
             return 0; //its gotta be a draw
-        } else if (numberPieces == 3) {
+        } else if (numberPieces == 1) {
             for (Colour i : Colour.values()) {
                 if (pieceCount.get(i).get(PieceType.BISHOP) > 0) {
                     return 0;
                 } else if (pieceCount.get(i).get(PieceType.KNIGHT) > 0) {
                     return 0;
-                } else if (pieceCount.get(i).get(PieceType.QUEEN) > 0) {
-                    getQuadrantValue(i, PieceType.QUEEN);
-                } else if (pieceCount.get(i).get(PieceType.ROOK) > 0) {
-                    getQuadrantValue(i, PieceType.ROOK);
+                } else{
+                    value += getQuadrantValue(i);
+                    value += getKingValue(i, originalValue);
                 }
+            }
+        }else{
+            for (Colour i : Colour.values()) {
+                value += getQuadrantValue(i);
+                value += getKingValue(i, originalValue);
             }
         }
         
         return value;
     }
     
-    public double getQuadrantValue(Colour colour, PieceType pieceType){
+    public double getKingValue(Colour colour, double originalValue){
         double value = 0;
         
-        int pieceX = 1;
-        int pieceY = 1;
-        int kingX = 1;
-        int kingY = 1;
+        if((colour == Colour.BLACK)&&(originalValue >= 0)){
+            return value;
+        }if((colour == Colour.WHITE)&&(originalValue <= 0)){
+            return value;
+        }
+        
+        int whiteX = 0;
+        int whiteY = 0;
+        int blackX = 0;
+        int blackY = 0;
         
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                if(pieces[j][i] != null){
-                    if((pieces[j][i].colour == colour)&&(pieces[j][i].pieceType == pieceType)){
-                        pieceX += i;
-                        pieceY += j;
-                    }else if((pieces[j][i].colour != colour)&&(pieces[j][i].pieceType == PieceType.KING)){
-                        kingX += i;
-                        kingY += j;
+                if((pieces[j][i] != null)&&(pieces[j][i].pieceType == PieceType.KING)){
+                    if(pieces[j][i].colour == Colour.BLACK){
+                        blackX = i+1;
+                        blackY = j+1;
+                    }else if(pieces[j][i].colour == Colour.WHITE){
+                        whiteX = i+1;
+                        whiteY = j+1;
                     }
                 }
             }
         }
         
-        if((kingX < pieceX)&&(kingY < pieceY)){
-            value = pieceX*pieceY;
-        }else if((kingX < pieceX)&&(kingY > pieceY)){
-            value = (8-pieceY)*pieceX;
-        }else if((kingX > pieceX)&&(kingY < pieceY)){
-            value = pieceY*(8-pieceX);
-        }else if((kingX > pieceX)&&(kingY > pieceY)){
-            value = (8-pieceY)*(8-pieceX);
+        value = 100 - (Math.abs(whiteX-blackX))-(Math.abs(whiteY-blackY));
+        
+        value = value/20000;
+        
+        return value;
+    }
+    
+    public double getQuadrantValue(Colour colour){
+        double value = 0;
+        
+        ArrayList<Integer> x = new ArrayList<>();
+        ArrayList<Integer> y = new ArrayList<>();
+        
+        x.add(1);
+        y.add(1);
+        x.add(8);
+        y.add(8);
+        
+        int width, height;
+        
+        int kingX = 0;
+        int kingY = 0;
+        
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(pieces[j][i] != null){
+                    if(pieces[j][i].colour == colour){
+                        if((pieces[j][i].pieceType == PieceType.QUEEN)||(pieces[j][i].pieceType == PieceType.ROOK)){
+                            if(!x.contains(i+1)){
+                                x.add(i+1);
+                            }if(!y.contains(j+1)){
+                                y.add(j+1);
+                            }
+                        }
+                    }else if((pieces[j][i].colour != colour)&&(pieces[j][i].pieceType == PieceType.KING)){
+                        kingX = i+1;
+                        kingY = j+1;
+                    }
+                }
+            }
         }
         
+        Collections.sort(x);
+        Collections.sort(y);
+        
+        int minX = x.get(0);
+        int maxX = x.get(1);
+        for(int i = 1; i < x.size(); i++){
+            if(kingX > x.get(i)){
+                minX = x.get(i-1);
+                maxX = x.get(i);
+            }
+        }
+        width = maxX-minX;
+        
+        int minY = y.get(0);
+        int maxY = y.get(1);
+        for(int i = 1; i < y.size(); i++){
+            if(kingY > y.get(i)){
+                minY = y.get(i-1);
+                maxY = y.get(i);
+            }
+        }
+        height = maxY-minY;
+        
+        value = width*height;
+        
         value = 64-value;
-        value /= 64;
+        value = value/100;
         
         return value;
     }
